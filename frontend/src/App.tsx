@@ -1,4 +1,4 @@
-import { useState } from 'react'
+
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Auth from './pages/Auth/Auth'
 import Feed from './pages/Feed/Feed'
