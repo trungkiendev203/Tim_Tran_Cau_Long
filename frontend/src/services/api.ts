@@ -1,7 +1,12 @@
 import axios from 'axios';
 
+const isProduction = import.meta.env.PROD;
+const API_URL = isProduction 
+  ? 'https://timtrancaulong-production.up.railway.app' 
+  : 'http://localhost:8082';
+
 const api = axios.create({
-  baseURL: 'http://localhost:8082',
+  baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
