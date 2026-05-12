@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ds:comp:search-bar-001 — AI Search Bar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../tokens/tokens.css" />
+  <link rel="stylesheet" href="../../base/base.css" />
+  <style>
+    /* tokens.css + base.css imported above */
+    body { padding: var(--space-xl); background: var(--sm-bg-page); }
+    .showcase { max-width: 600px; }
+    .showcase__title { font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); margin-bottom: var(--space-xl); }
+    .showcase__section { margin-bottom: var(--space-xl); }
+    .showcase__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--sm-text-secondary); text-transform: uppercase; margin-bottom: 12px; }
+
+    /* Search Bar Component */
+    .search-bar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--sm-bg-surface); border: 2px solid var(--sm-border-default); border-radius: var(--radius-lg); transition: border-color var(--transition-base), box-shadow var(--transition-base); }
+    .search-bar:focus-within { border-color: var(--sm-border-focus); box-shadow: 0 0 0 3px rgba(22,163,74,0.1); }
+    .search-bar__icon { font-size: 18px; flex-shrink: 0; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
+    .search-bar__icon--spin { animation: pulse 1s ease infinite; }
+
+    .search-bar__input { flex: 1; border: none; outline: none; font-size: var(--font-size-sm); font-family: var(--font-family); color: var(--sm-text-primary); background: transparent; }
+    .search-bar__input::placeholder { color: var(--sm-text-muted); }
+    .search-bar__input:disabled { opacity: 0.6; }
+
+    .search-bar__btn { min-width: 48px; justify-content: center; } /* Extends .btn--primary via class */
+
+    .search-bar__clear { background: none; border: none; font-size: 16px; color: var(--sm-text-muted); cursor: pointer; padding: 4px; border-radius: var(--radius-sm); }
+    .search-bar__clear:hover { color: var(--sm-text-secondary); background: var(--color-neutral-100); }
+
+    /* Chips */
+    .search-bar__chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; font-size: var(--font-size-xs); font-weight: var(--font-weight-medium); background: var(--color-primary-50); color: var(--color-primary-800); border: 1px solid var(--color-primary-200); border-radius: var(--radius-full); }
+    .chip--level { background: #ede9fe; color: #5b21b6; border-color: #c4b5fd; }
+    .chip--clear { background: var(--color-danger-50); color: var(--color-danger-600); border-color: var(--color-danger-200); cursor: pointer; }
+    .chip--clear:hover { background: #fee2e2; }
+  </style>
+<body>
+  <div class="showcase" data-ds-id="ds:comp:search-bar-001">
+    <h2 class="showcase__title">ds:comp:search-bar-001 — AI Search Bar</h2>
+
+    <!-- Default -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Default</h3>
+      <div class="search-bar" data-ds-id="ds:comp:search-bar-001--default">
+        <span class="search-bar__icon">✨</span>
+        <input class="search-bar__input" type="text" placeholder="Tìm kèo bằng AI... VD: &quot;Kèo tối nay Cầu Giấy TB+&quot;" />
+        <button class="search-bar__btn">Tìm</button>
+      </div>
+    </section>
+
+    <!-- Loading -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Loading</h3>
+      <div class="search-bar search-bar--loading" data-ds-id="ds:comp:search-bar-001--loading">
+        <span class="search-bar__icon search-bar__icon--spin">⚡</span>
+        <input class="search-bar__input" type="text" value="Kèo tối nay Cầu Giấy TB+" disabled />
+        <button class="search-bar__btn" disabled>
+          <span class="spinner"></span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Results (AI filter chips) -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">AI Results (Filter Chips)</h3>
+      <div class="search-bar search-bar--has-results" data-ds-id="ds:comp:search-bar-001--results">
+        <span class="search-bar__icon">✨</span>
+        <input class="search-bar__input" type="text" value="Kèo tối nay Cầu Giấy TB+" />
+        <button class="search-bar__clear">✕</button>
+      </div>
+      <div class="search-bar__chips" data-ds-id="ds:comp:search-bar-001--chips">
+        <span class="chip">📅 Hôm nay</span>
+        <span class="chip">⏰ 18:00 – 23:00</span>
+        <span class="chip">📍 Cầu Giấy</span>
+        <span class="chip chip--level">TB+</span>
+        <button class="chip chip--clear">Xóa bộ lọc AI</button>
+      </div>
+    </section>
+
+    <!-- Results: Empty -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Results: Empty</h3>
+      <div class="search-bar" data-ds-id="ds:comp:search-bar-001--empty">
+        <span class="search-bar__icon">✨</span>
+        <input class="search-bar__input" type="text" value="Kèo bóng rổ" />
+        <button class="search-bar__clear">✕</button>
+      </div>
+      <div style="font-size:var(--font-size-sm);color:var(--sm-text-muted);margin-top:12px;text-align:center;padding:16px;background:var(--sm-bg-surface);border:1px dashed var(--sm-border-default);border-radius:var(--radius-lg);">
+        Không tìm thấy kết quả phù hợp cho <strong>"Kèo bóng rổ"</strong>
+      </div>
+    </section>
+
+    <!-- Error -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Error</h3>
+      <div class="search-bar" style="border-color:var(--color-danger-500);background:var(--color-danger-50);" data-ds-id="ds:comp:search-bar-001--error">
+        <span class="search-bar__icon" style="color:var(--color-danger-500)">⚠️</span>
+        <input class="search-bar__input" type="text" value="Kèo tối nay..." style="color:var(--color-danger-600)" />
+        <button class="search-bar__clear" style="color:var(--color-danger-500)">✕</button>
+      </div>
+      <div style="font-size:12px;color:var(--color-danger-600);font-weight:var(--font-weight-medium);margin-top:8px;">
+        Lỗi phân tích AI, vui lòng thử lại.
+      </div>
+    </section>
+  </div>
+</body>
+</html>

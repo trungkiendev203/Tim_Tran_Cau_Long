@@ -1,0 +1,221 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chill Cầu — Nhắc lịch | ds:screen:reminder-001</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../tokens/tokens.css" />
+  <style>
+    :root { --font-family: 'Inter', -apple-system, sans-serif; --color-primary: #16a34a; --color-primary-hover: #15803d; --shadow-sm: 0 1px 2px rgba(0,0,0,0.05); --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1); --radius-md: 8px; --radius-lg: 12px; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-family); background: var(--sm-bg-page); color: var(--sm-text-primary); transition: background 200ms ease, color 200ms ease; }
+
+    /* Navbar */
+    .navbar { display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 56px; background: var(--sm-bg-surface); border-bottom: 1px solid var(--sm-border-default); z-index: 100; }
+    .navbar__brand { display: flex; align-items: center; gap: 8px; }
+    .navbar__logo { font-size: 24px; }
+    .navbar__name { font-size: 18px; font-weight: 700; color: var(--color-primary); }
+    .navbar__links { display: flex; gap: 4px; }
+    .navbar__link { padding: 8px 16px; font-size: 14px; font-weight: 500; color: var(--sm-text-secondary); text-decoration: none; border-radius: 8px; transition: all 150ms ease; }
+    .navbar__link:hover { background: var(--color-neutral-100); color: var(--sm-text-primary); }
+    .navbar__link--active { background: var(--color-primary-50); color: var(--color-primary-600); font-weight: 600; }
+    .navbar__actions { display: flex; align-items: center; gap: 12px; }
+    .navbar__avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #16a34a, #22c55e); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .navbar__avatar-initial { color: #fff; font-size: 13px; font-weight: 700; }
+
+    /* Navbar actions port */
+    .navbar__icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; padding: 4px; border-radius: 8px; transition: background 150ms ease; color: var(--sm-text-secondary); }
+    .navbar__icon-btn:hover { background: var(--color-neutral-100); color: var(--color-danger-500); }
+    .navbar__toggle { display: flex; align-items: center; gap: 6px; background: var(--color-neutral-100); border: 1px solid var(--sm-border-default); border-radius: 20px; padding: 4px 12px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font-family); color: var(--sm-text-secondary); }
+    .navbar__toggle:hover { background: var(--color-neutral-200); }
+    .btn--warning { background: var(--color-warning-50); color: var(--color-warning-600); border: 1px solid var(--color-warning-400); }
+    .btn--warning:hover { background: var(--color-warning-100); }
+    .btn--sm { padding: 6px 14px; font-size: 12px; }
+
+    /* Page */
+    .page { max-width: 800px; margin: 0 auto; padding: 32px 24px; }
+    .page__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .page__title { font-size: 24px; font-weight: 700; }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 1px solid var(--sm-border-default); padding-bottom: 0; }
+    .tab { padding: 10px 16px; font-size: 14px; font-weight: 500; color: var(--sm-text-secondary); border: none; background: none; cursor: pointer; font-family: var(--font-family); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 150ms ease; }
+    .tab:hover { color: var(--sm-text-primary); }
+    .tab--active { color: var(--color-primary-600); border-bottom-color: var(--color-primary-600); font-weight: 600; }
+
+    /* Reminder cards */
+    .reminder-list { display: flex; flex-direction: column; gap: 16px; }
+    .reminder-card { background: var(--sm-bg-surface); border: 1px solid var(--sm-border-default); border-radius: var(--radius-lg); padding: 16px; box-shadow: var(--shadow-sm); transition: box-shadow 200ms ease; }
+    .reminder-card:hover { box-shadow: var(--shadow-md); }
+    .reminder-card--inactive { opacity: 0.55; }
+    .reminder-card__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .reminder-card__name { font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+
+    /* Toggle */
+    .toggle { position: relative; width: 40px; height: 22px; cursor: pointer; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle__track { position: absolute; inset: 0; background: var(--color-neutral-300); border-radius: 11px; transition: background 200ms ease; }
+    .toggle__thumb { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; background: #fff; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.15); transition: transform 200ms ease; }
+    .toggle input:checked ~ .toggle__track { background: var(--color-primary-600); }
+    .toggle input:checked ~ .toggle__thumb { transform: translateX(18px); }
+
+    .reminder-card__details { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .reminder-card__detail { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--sm-text-secondary); background: var(--color-neutral-100); padding: 4px 10px; border-radius: 6px; }
+    .reminder-card__badges { display: flex; gap: 4px; margin-bottom: 12px; }
+    .badge { display: inline-flex; padding: 3px 8px; font-size: 11px; font-weight: 600; border-radius: 9999px; border: 1.5px solid; }
+    .badge--tb { background: #bfdbfe; color: #1d4ed8; border-color: #60a5fa; }
+    .badge--tb-plus { background: #ede9fe; color: #5b21b6; border-color: #c4b5fd; }
+    .badge--tby { background: #dcfce7; color: #166534; border-color: #86efac; }
+    .reminder-card__match { font-size: 12px; color: var(--color-primary-600); font-weight: 600; display: flex; align-items: center; gap: 4px; }
+    .reminder-card__actions { display: flex; gap: 8px; margin-top: 12px; border-top: 1px solid var(--color-neutral-100); padding-top: 12px; }
+    .reminder-card__action { flex: 1; padding: 6px; font-size: 12px; font-weight: 500; text-align: center; border: none; border-radius: 6px; cursor: pointer; font-family: var(--font-family); transition: background 150ms ease; }
+    .reminder-card__action--edit { background: var(--color-neutral-100); color: var(--sm-text-secondary); }
+    .reminder-card__action--edit:hover { background: var(--color-neutral-200); }
+    .reminder-card__action--delete { background: var(--color-danger-50); color: var(--color-danger-600); }
+    .reminder-card__action--delete:hover { background: var(--color-danger-100); }
+
+    /* Create button */
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; font-size: 14px; font-weight: 600; border: none; border-radius: var(--radius-md); cursor: pointer; font-family: var(--font-family); }
+    .btn--primary { background: var(--color-primary-600); color: #fff; }
+    .btn--primary:hover { background: var(--color-primary-hover); }
+
+    /* Matched feed posts */
+    .matched-feed { margin-top: 24px; }
+    .matched-feed__title { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+    .match-card { background: var(--sm-bg-surface); border: 1px solid var(--sm-border-default); border-radius: var(--radius-lg); padding: 14px 16px; box-shadow: var(--shadow-sm); margin-bottom: 12px; }
+    .match-card__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .match-card__time { font-weight: 600; color: var(--color-primary-600); font-size: 14px; }
+    .match-card__reminder-badge { font-size: 11px; padding: 3px 8px; background: var(--color-primary-50); color: var(--color-primary-600); border: 1px solid var(--color-primary-200); border-radius: 9999px; font-weight: 500; }
+    .match-card__court { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .match-card__meta { font-size: 12px; color: var(--sm-text-secondary); display: flex; gap: 12px; }
+
+    /* Empty */
+    .empty { text-align: center; padding: 48px 24px; }
+    .empty__icon { font-size: 48px; margin-bottom: 12px; opacity: 0.4; }
+    .empty__text { font-size: 16px; font-weight: 600; color: var(--sm-text-secondary); margin-bottom: 4px; }
+    .empty__hint { font-size: 13px; color: var(--sm-text-muted); margin-bottom: 16px; }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar" data-ds-id="ds:comp:navbar-001">
+    <div class="navbar__brand"><span class="navbar__logo">🏸</span><span class="navbar__name">Chill Cầu</span></div>
+    <div class="navbar__links">
+      <a href="../feed/index.html" class="navbar__link">Tìm kèo</a>
+      <a href="../map/index.html" class="navbar__link">Bản đồ</a>
+      <a href="../coming-soon/index.html" class="navbar__link">Xếp hạng</a>
+      <a href="../coming-soon/index.html#bang-gia" class="navbar__link">Bảng giá</a>
+      <a href="../discussion/index.html" class="navbar__link" style="display:flex;align-items:center;gap:4px;">💬 Thảo luận <span style="background:#fef3c7;color:#92400e;border-radius:9999px;font-size:8px;font-weight:700;padding:1px 5px;">Phase 2</span></a>
+    </div>
+    <div class="navbar__actions">
+      <button class="navbar__toggle">🌓 Sáng</button>
+      <a href="#" class="btn--warning btn--sm" style="text-decoration:none; display:inline-flex; align-items:center; border-radius:8px; font-weight:600;">☕ Ủng hộ & Góp ý</a>
+      <button class="navbar__icon-btn">🤍</button>
+      <button class="navbar__icon-btn" style="position:relative; font-size:20px;">🔔<span style="position:absolute;top:-2px;right:-4px;background:#ef4444;color:#fff;font-size:10px;font-weight:700;min-width:16px;height:16px;border-radius:9999px;display:flex;align-items:center;justify-content:center;">3</span></button>
+      <a href="../profile/index.html" class="navbar__avatar" style="text-decoration:none;"><span class="navbar__avatar-initial">K</span></a>
+    </div>
+  </nav>
+
+  <div class="page" data-ds-id="ds:screen:reminder-001">
+    <div class="page__header">
+      <h1 class="page__title">📅 Nhắc lịch</h1>
+      <button class="btn btn--primary">+ Tạo lịch mới</button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab tab--active">Lịch của tôi (2)</button>
+      <button class="tab">Feed phù hợp</button>
+    </div>
+
+    <!-- Reminder list -->
+    <div class="reminder-list">
+      <div class="reminder-card" data-ds-id="ds:comp:reminder-card-001--active">
+        <div class="reminder-card__header">
+          <span class="reminder-card__name">📅 Tối hàng tuần</span>
+          <label class="toggle"><input type="checkbox" checked /><span class="toggle__track"></span><span class="toggle__thumb"></span></label>
+        </div>
+        <div class="reminder-card__details">
+          <span class="reminder-card__detail">📆 T3, T5, T7</span>
+          <span class="reminder-card__detail">⏰ 19:00 – 21:00</span>
+        </div>
+        <div class="reminder-card__badges"><span class="badge badge--tb">TB</span><span class="badge badge--tb-plus">TB+</span></div>
+        <div class="reminder-card__match">✅ 3 kèo phù hợp hôm nay</div>
+        <div class="reminder-card__actions">
+          <button class="reminder-card__action reminder-card__action--edit">✏️ Sửa</button>
+          <button class="reminder-card__action reminder-card__action--delete">🗑️ Xóa</button>
+        </div>
+      </div>
+
+      <div class="reminder-card reminder-card--inactive" data-ds-id="ds:comp:reminder-card-001--inactive">
+        <div class="reminder-card__header">
+          <span class="reminder-card__name">📅 Cuối tuần</span>
+          <label class="toggle"><input type="checkbox" /><span class="toggle__track"></span><span class="toggle__thumb"></span></label>
+        </div>
+        <div class="reminder-card__details">
+          <span class="reminder-card__detail">📆 T7, CN</span>
+          <span class="reminder-card__detail">⏰ 08:00 – 11:00</span>
+        </div>
+        <div class="reminder-card__badges"><span class="badge badge--tby">TBY</span><span class="badge badge--tb">TB</span></div>
+      </div>
+    </div>
+
+    <!-- Matched feed -->
+    <div class="matched-feed" data-ds-id="ds:screen:reminder-001--feed">
+      <h3 class="matched-feed__title">🏸 Kèo phù hợp lịch của bạn</h3>
+      <div class="match-card">
+        <div class="match-card__header">
+          <span class="match-card__time">⏰ 20:00 – 22:00</span>
+          <span class="match-card__reminder-badge">📅 Tối hàng tuần</span>
+        </div>
+        <div class="match-card__court">🏸 Sân A&C số 32 Đại Tú</div>
+        <div class="match-card__meta"><span>📍 2.3 km</span><span>👥 2 slot</span><span>💰 80.000đ</span></div>
+      </div>
+      <div class="match-card">
+        <div class="match-card__header">
+          <span class="match-card__time">⏰ 19:00 – 21:00</span>
+          <span class="match-card__reminder-badge">📅 Tối hàng tuần</span>
+        </div>
+        <div class="match-card__court">🏸 Sân TT9 Mễ Trì</div>
+        <div class="match-card__meta"><span>📍 4.1 km</span><span>👥 3 slot</span><span>💰 70.000đ</span></div>
+      </div>
+    </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════
+         STATE: Empty — Chưa có lịch nhắc (ds:screen:reminder-001--empty)
+         Trigger: user has 0 reminders
+         ═══════════════════════════════════════════════ -->
+    <div style="border-top: 2px dashed var(--sm-border-default); padding-top: 32px; margin-top: 32px;">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--sm-text-muted);margin-bottom:16px;">📭 STATE: Empty — Chưa có lịch nhắc</div>
+      <div style="background: var(--sm-bg-surface); border: 1px solid var(--sm-border-default); border-radius: 12px; padding: 48px 24px; text-align: center;"
+           data-ds-id="ds:screen:reminder-001--empty"
+           role="status" aria-live="polite">
+        <div style="font-size: 48px; margin-bottom: 16px;">📅</div>
+        <h2 style="font-size: 18px; font-weight: 700; color: var(--sm-text-primary); margin-bottom: 8px;">Bạn chưa có lịch nhắc nào</h2>
+        <p style="font-size: 14px; color: var(--sm-text-secondary); margin-bottom: 6px;">Tạo lịch nhắc để Chill Cầu tự động tìm kèo phù hợp cho bạn.</p>
+        <p style="font-size: 12px; color: var(--sm-text-muted); margin-bottom: 24px;">Bạn có thể tạo nhiều lịch nhắc cho các khung giờ khác nhau.</p>
+        <button style="padding:12px 24px;background:var(--color-primary-600);color:#fff;font-size:14px;font-weight:600;border:none;border-radius:8px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;">
+          ➕ Tạo lịch nhắc đầu tiên
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const theme = localStorage.getItem('sm-theme') || 'light';
+    if (theme === 'dark') document.body.classList.add('theme-dark');
+    
+    document.querySelectorAll('.navbar__toggle').forEach(btn => {
+      btn.innerHTML = theme === 'dark' ? '🌞 Sáng' : '🌓 Tối';
+      btn.addEventListener('click', () => {
+        document.body.classList.toggle('theme-dark');
+        const isDark = document.body.classList.contains('theme-dark');
+        localStorage.setItem('sm-theme', isDark ? 'dark' : 'light');
+        document.querySelectorAll('.navbar__toggle').forEach(b => b.innerHTML = isDark ? '🌞 Sáng' : '🌓 Tối');
+      });
+    });
+  </script>
+</body>
+</html>

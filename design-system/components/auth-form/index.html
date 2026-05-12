@@ -1,0 +1,187 @@
+﻿<!--
+  ds:comp:auth-form-001 — Auth Form
+  Usage: Login, Register, Password Reset flows
+  Variants: login, login-error, register, submit-loading, success
+  A11y: form labels with for/id, error messages with aria-describedby
+-->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ds:comp:auth-form-001 — Auth Form (All States)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../tokens/tokens.css" />
+  <style>
+    body { font-family: var(--font-family); background: var(--sm-bg-page); padding: var(--space-xl); color: var(--sm-text-primary); display: flex; flex-wrap: wrap; gap: var(--space-xl); }
+    .showcase-card { background: var(--sm-bg-surface); border: 1px solid var(--sm-border-default); border-radius: var(--radius-lg); overflow: hidden; width: 360px; flex-shrink: 0; box-shadow: var(--shadow-sm); }
+    .showcase-card__label { padding: 8px 16px; font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--sm-text-secondary); text-transform: uppercase; letter-spacing: .05em; background: var(--sm-bg-page); border-bottom: 1px solid var(--color-neutral-100); }
+    .state-tag { display: inline-block; padding: 2px 8px; font-size: 10px; font-weight: 700; border-radius: var(--radius-full); margin-left: 6px; }
+    .state-tag--new { background: var(--color-primary-50); color: var(--color-primary-700); }
+
+    .auth-form { padding: var(--space-xl); }
+    .auth-form__header { text-align: center; margin-bottom: var(--space-xl); }
+    .auth-form__logo { font-size: 32px; margin-bottom: var(--space-sm); }
+    .auth-form__title { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); margin-bottom: 4px; }
+    .auth-form__sub { font-size: var(--font-size-sm); color: var(--sm-text-secondary); }
+
+    .form-group { margin-bottom: var(--space-lg); }
+    .form-label { display: block; font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--sm-text-secondary); margin-bottom: 6px; }
+    .form-input { width: 100%; padding: 10px 14px; font-size: var(--font-size-sm); border: 1.5px solid var(--sm-border-default); border-radius: var(--radius-md); font-family: var(--font-family); color: var(--sm-text-primary); }
+    .form-input--error { border-color: var(--color-danger-500); }
+    .form-input:focus { outline: none; border-color: var(--sm-border-focus); box-shadow: 0 0 0 3px rgba(22,163,74,0.08); }
+    .form-input::placeholder { color: var(--sm-text-muted); }
+    .form-error { font-size: var(--font-size-xs); color: var(--color-danger-500); margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+    .form-hint { font-size: var(--font-size-xs); color: var(--sm-text-muted); margin-top: 4px; }
+
+    .btn { display: flex; width: 100%; justify-content: center; align-items: center; gap: var(--space-sm); padding: 11px 20px; font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); border: 1.5px solid transparent; border-radius: var(--radius-md); cursor: pointer; font-family: var(--font-family); transition: all var(--transition-fast); margin-bottom: var(--space-sm); }
+    .btn--primary { background: var(--color-primary-600); color: #fff; border-color: var(--color-primary-600); }
+    .btn--primary:hover { background: var(--color-primary-700); }
+    .btn--primary:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn--google { background: #fff; color: var(--sm-text-primary); border-color: var(--sm-border-default); }
+    .btn--google:hover { background: var(--sm-bg-page); }
+    .btn:focus-visible { outline: 2px solid var(--sm-border-focus); outline-offset: 2px; }
+
+    .auth-divider { display: flex; align-items: center; gap: 10px; margin: var(--space-lg) 0; font-size: var(--font-size-xs); color: var(--sm-text-muted); }
+    .auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--sm-border-default); }
+    .auth-link { text-align: center; font-size: var(--font-size-xs); color: var(--sm-text-secondary); margin-top: var(--space-md); }
+    .auth-link a { color: var(--color-primary-600); text-decoration: none; font-weight: var(--font-weight-semibold); }
+
+    /* Loading spinner */
+    @keyframes sm-spin { to { transform: rotate(360deg); } }
+    .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.35); border-top-color: #fff; border-radius: 50%; animation: sm-spin 0.6s linear infinite; }
+
+    /* Success state */
+    .auth-success { text-align: center; padding: var(--space-2xl) var(--space-xl); }
+    .auth-success__icon { font-size: 56px; margin-bottom: var(--space-lg); }
+    .auth-success__title { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); color: var(--color-primary-700); margin-bottom: var(--space-sm); }
+    .auth-success__sub { font-size: var(--font-size-sm); color: var(--sm-text-secondary); margin-bottom: var(--space-xl); }
+    .auth-success__redirect { font-size: var(--font-size-xs); color: var(--sm-text-muted); margin-top: 10px; }
+    .progress-bar { width: 100%; height: 4px; background: var(--color-neutral-200); border-radius: var(--radius-sm); overflow: hidden; }
+    .progress-bar__fill { height: 100%; background: var(--color-primary-600); border-radius: var(--radius-sm); animation: progress 2s linear; }
+    @keyframes progress { from { width: 0; } to { width: 100%; } }
+  </style>
+</head>
+<body>
+
+  <!-- STATE 1: Login — Default -->
+  <div class="showcase-card" data-ds-id="ds:comp:auth-form-001--login">
+    <div class="showcase-card__label">Login — Default</div>
+    <div class="auth-form">
+      <div class="auth-form__header">
+        <div class="auth-form__logo">🏸</div>
+        <h2 class="auth-form__title">Đăng nhập</h2>
+        <p class="auth-form__sub">Chào mừng trở lại Chill Cầu</p>
+      </div>
+      <button class="btn btn--google" type="button">
+        <span>🌐</span> Tiếp tục với Google
+      </button>
+      <div class="auth-divider">hoặc</div>
+      <div class="form-group">
+        <label class="form-label" for="login-email">Email</label>
+        <input id="login-email" class="form-input" type="email" placeholder="you@example.com" autocomplete="email" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="login-password">Mật khẩu</label>
+        <input id="login-password" class="form-input" type="password" placeholder="••••••••" autocomplete="current-password" />
+        <div class="form-hint"><a href="#" style="color:var(--color-primary-600);">Quên mật khẩu?</a></div>
+      </div>
+      <button class="btn btn--primary" type="submit">Đăng nhập</button>
+      <div class="auth-link">Chưa có tài khoản? <a href="#">Đăng ký</a></div>
+    </div>
+  </div>
+
+  <!-- STATE 2: Login — Error -->
+  <div class="showcase-card" data-ds-id="ds:comp:auth-form-001--login-error">
+    <div class="showcase-card__label">Login — Error</div>
+    <div class="auth-form">
+      <div class="auth-form__header">
+        <div class="auth-form__logo">🏸</div>
+        <h2 class="auth-form__title">Đăng nhập</h2>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="err-email">Email</label>
+        <input id="err-email" class="form-input form-input--error" type="email" value="wrong@example.com" aria-describedby="err-email-msg" aria-invalid="true" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="err-password">Mật khẩu</label>
+        <input id="err-password" class="form-input form-input--error" type="password" value="wrongpass" aria-describedby="err-auth-msg" aria-invalid="true" />
+        <div id="err-auth-msg" class="form-error" role="alert">⚠️ Email hoặc mật khẩu không đúng</div>
+      </div>
+      <button class="btn btn--primary" type="submit">Đăng nhập</button>
+    </div>
+  </div>
+
+  <!-- STATE 3: Login — Submit Loading (NEW) -->
+  <div class="showcase-card" data-ds-id="ds:comp:auth-form-001--loading">
+    <div class="showcase-card__label">Login — Submit Loading <span class="state-tag state-tag--new">NEW</span></div>
+    <div class="auth-form">
+      <div class="auth-form__header">
+        <div class="auth-form__logo">🏸</div>
+        <h2 class="auth-form__title">Đăng nhập</h2>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="loading-email">Email</label>
+        <input id="loading-email" class="form-input" type="email" value="kien@example.com" readonly />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="loading-pw">Mật khẩu</label>
+        <input id="loading-pw" class="form-input" type="password" value="••••••••" readonly />
+      </div>
+      <button class="btn btn--primary" disabled aria-busy="true" type="button">
+        <span class="spinner" aria-hidden="true"></span>
+        Đang đăng nhập...
+      </button>
+    </div>
+  </div>
+
+  <!-- STATE 4: Login — Success Redirect (NEW) -->
+  <div class="showcase-card" data-ds-id="ds:comp:auth-form-001--success">
+    <div class="showcase-card__label">Login — Success Redirect <span class="state-tag state-tag--new">NEW</span></div>
+    <div class="auth-success" aria-live="polite" role="status">
+      <div class="auth-success__icon">🎉</div>
+      <h2 class="auth-success__title">Đăng nhập thành công!</h2>
+      <p class="auth-success__sub">Chào mừng trở lại, <strong>Kiên Đỗ</strong>!</p>
+      <div class="progress-bar"><div class="progress-bar__fill"></div></div>
+      <div class="auth-success__redirect">Đang chuyển hướng về Tìm kèo...</div>
+    </div>
+  </div>
+
+  <!-- STATE 5: Register -->
+  <div class="showcase-card" data-ds-id="ds:comp:auth-form-001--register">
+    <div class="showcase-card__label">Register</div>
+    <div class="auth-form">
+      <div class="auth-form__header">
+        <div class="auth-form__logo">🏸</div>
+        <h2 class="auth-form__title">Đăng ký</h2>
+        <p class="auth-form__sub">Tạo tài khoản Chill Cầu miễn phí</p>
+      </div>
+      <button class="btn btn--google" type="button"><span>🌐</span> Đăng ký với Google</button>
+      <div class="auth-divider">hoặc</div>
+      <div class="form-group">
+        <label class="form-label" for="reg-name">Họ tên</label>
+        <input id="reg-name" class="form-input" type="text" placeholder="Nguyễn Văn A" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="reg-email">Email</label>
+        <input id="reg-email" class="form-input" type="email" placeholder="you@example.com" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="reg-level">Trình độ</label>
+        <select id="reg-level" class="form-input" style="appearance:auto;">
+          <option value="">-- Chọn trình độ --</option>
+          <option>Y</option><option>TB</option><option>TB+</option><option>Khá</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="reg-pw">Mật khẩu</label>
+        <input id="reg-pw" class="form-input" type="password" placeholder="Tối thiểu 8 ký tự" />
+        <div class="form-hint">Ít nhất 8 ký tự, có chữ hoa và số</div>
+      </div>
+      <button class="btn btn--primary" type="submit">Tạo tài khoản</button>
+      <div class="auth-link">Đã có tài khoản? <a href="#">Đăng nhập</a></div>
+    </div>
+  </div>
+
+</body>
+</html>

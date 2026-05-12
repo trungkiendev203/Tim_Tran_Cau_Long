@@ -1,0 +1,184 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chill Cầu — Trang không tìm thấy (404) | ds:screen:not-found-001</title>
+  <meta name="robots" content="noindex" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../tokens/tokens.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-family); background: var(--sm-bg-page); color: var(--sm-text-primary); min-height: 100vh; display: flex; flex-direction: column; transition: background 200ms ease, color 200ms ease; }
+
+    /* Navbar */
+    .navbar { display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 56px; background: var(--sm-bg-surface); border-bottom: 1px solid var(--sm-border-default); }
+    .navbar__brand { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .navbar__logo { font-size: 24px; }
+    .navbar__name { font-size: 18px; font-weight: 700; color: var(--color-primary-600); }
+    .navbar__links { display: flex; gap: 4px; }
+    .navbar__link { padding: 8px 16px; font-size: 14px; font-weight: 500; color: var(--sm-text-secondary); text-decoration: none; border-radius: 8px; transition: all 150ms ease; }
+    .navbar__link:hover { background: var(--color-neutral-100); color: var(--sm-text-primary); }
+    .navbar__actions { display: flex; align-items: center; gap: 12px; }
+    .navbar__toggle { display: flex; align-items: center; gap: 6px; background: var(--color-neutral-100); border: 1px solid var(--sm-border-default); border-radius: 20px; padding: 4px 12px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font-family); color: var(--sm-text-secondary); }
+    .navbar__toggle:hover { background: var(--color-neutral-200); }
+    .btn { display: inline-flex; align-items: center; font-weight: 600; border-radius: 8px; cursor: pointer; font-family: var(--font-family); text-decoration: none; border: 1.5px solid transparent; transition: all 200ms ease; }
+    .btn--primary { background: var(--color-primary-600); color: #fff; border-color: var(--color-primary-600); }
+    .btn--primary:hover { background: var(--color-primary-700); }
+    .btn--secondary { background: transparent; color: var(--sm-text-secondary); border-color: var(--sm-border-default); }
+    .btn--secondary:hover { background: var(--color-neutral-100); }
+    .btn--warning { background: var(--color-warning-50); color: var(--color-warning-600); border: 1px solid var(--color-warning-400); }
+    .btn--sm { padding: 6px 14px; font-size: 12px; }
+    .btn--lg { padding: 12px 28px; font-size: 16px; }
+
+    /* 404 Layout */
+    .not-found { flex: 1; display: flex; align-items: center; justify-content: center; padding: 48px 24px; }
+    .not-found__card {
+      text-align: center; max-width: 520px; width: 100%;
+    }
+    .not-found__code {
+      font-size: 120px; font-weight: 800; line-height: 1;
+      background: linear-gradient(135deg, var(--color-primary-400), var(--color-primary-600));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+      letter-spacing: -4px;
+    }
+    .not-found__icon { font-size: 48px; margin-bottom: 16px; }
+    .not-found__title { font-size: 24px; font-weight: 700; margin-bottom: 12px; color: var(--sm-text-primary); }
+    .not-found__desc { font-size: 15px; color: var(--sm-text-secondary); line-height: 1.6; margin-bottom: 32px; }
+    .not-found__url {
+      display: inline-block; padding: 8px 16px; background: var(--color-neutral-100);
+      border-radius: 6px; font-family: monospace; font-size: 13px;
+      color: var(--color-danger-600); margin-bottom: 32px;
+      word-break: break-all; max-width: 100%;
+    }
+    .not-found__actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px; }
+    .not-found__divider { font-size: 13px; color: var(--sm-text-muted); margin-bottom: 20px; }
+    .not-found__suggestions { text-align: left; background: var(--sm-bg-surface); border: 1px solid var(--sm-border-default); border-radius: 12px; padding: 20px 24px; }
+    .not-found__suggestions h3 { font-size: 14px; font-weight: 600; margin-bottom: 12px; color: var(--sm-text-primary); }
+    .not-found__links { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .not-found__links a {
+      display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+      text-decoration: none; color: var(--sm-text-primary); font-size: 14px;
+      border-radius: 8px; transition: background 150ms ease;
+    }
+    .not-found__links a:hover { background: var(--color-neutral-50); }
+    .not-found__links .link-icon { font-size: 18px; width: 24px; text-align: center; }
+    .not-found__links .link-desc { font-size: 12px; color: var(--sm-text-muted); display: block; }
+
+    @media (max-width: 600px) {
+      .not-found__code { font-size: 80px; }
+      .not-found__actions { flex-direction: column; }
+      .not-found__actions a, .not-found__actions button { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body data-ds-id="ds:screen:not-found-001">
+
+  <!-- Navbar -->
+  <nav class="navbar" aria-label="Điều hướng chính">
+    <a href="../feed/index.html" class="navbar__brand">
+      <span class="navbar__logo">🏸</span>
+      <span class="navbar__name">Chill Cầu</span>
+    </a>
+    <div class="navbar__links">
+      <a href="../feed/index.html" class="navbar__link">Tìm kèo</a>
+      <a href="../map/index.html" class="navbar__link">Bản đồ</a>
+      <a href="../reminder/index.html" class="navbar__link">Nhắc lịch</a>
+    </div>
+    <div class="navbar__actions">
+      <button class="navbar__toggle" aria-label="Chuyển đổi chế độ sáng/tối">🌓 Tối</button>
+      <a href="../feed/index.html" class="btn btn--primary btn--sm">Tìm kèo ngay</a>
+    </div>
+  </nav>
+
+  <!-- 404 Content -->
+  <main class="not-found" role="main">
+    <div class="not-found__card">
+
+      <div class="not-found__code" aria-hidden="true">404</div>
+      <div class="not-found__icon">🏸</div>
+
+      <h1 class="not-found__title">Trang không tìm thấy</h1>
+      <p class="not-found__desc">
+        Trang bạn tìm kiếm không tồn tại hoặc đã bị di chuyển.<br>
+        Đừng lo — vẫn còn nhiều kèo hay đang chờ bạn!
+      </p>
+
+      <code class="not-found__url" aria-label="URL không tìm thấy" id="error-url">
+        /path/not/found
+      </code>
+
+      <div class="not-found__actions">
+        <a href="../feed/index.html" class="btn btn--primary btn--lg">
+          🏸 Về trang Tìm kèo
+        </a>
+        <button class="btn btn--secondary btn--lg" onclick="history.back()">
+          ← Quay lại
+        </button>
+      </div>
+
+      <div class="not-found__divider">Hoặc tìm kiếm trang bạn cần:</div>
+
+      <div class="not-found__suggestions">
+        <h3>Các trang phổ biến</h3>
+        <ul class="not-found__links" role="list">
+          <li>
+            <a href="../feed/index.html">
+              <span class="link-icon">🏆</span>
+              <div>
+                <span>Tìm kèo cầu lông</span>
+                <span class="link-desc">Xem danh sách kèo hôm nay tại Hà Nội</span>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="../map/index.html">
+              <span class="link-icon">🗺️</span>
+              <div>
+                <span>Bản đồ sân</span>
+                <span class="link-desc">Tìm sân cầu lông gần bạn nhất</span>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="../reminder/index.html">
+              <span class="link-icon">📅</span>
+              <div>
+                <span>Nhắc lịch</span>
+                <span class="link-desc">Đặt lịch chơi và nhận thông báo kèo phù hợp</span>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="../auth/index.html">
+              <span class="link-icon">👤</span>
+              <div>
+                <span>Đăng nhập / Đăng ký</span>
+                <span class="link-desc">Tạo tài khoản để lưu lịch và kèo yêu thích</span>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    // Dark mode
+    const theme = localStorage.getItem('sm-theme') || 'light';
+    if (theme === 'dark') document.body.classList.add('theme-dark');
+    document.querySelector('.navbar__toggle').addEventListener('click', () => {
+      document.body.classList.toggle('theme-dark');
+      const isDark = document.body.classList.contains('theme-dark');
+      localStorage.setItem('sm-theme', isDark ? 'dark' : 'light');
+      document.querySelector('.navbar__toggle').textContent = isDark ? '🌞 Sáng' : '🌓 Tối';
+    });
+
+    // Show actual URL
+    document.getElementById('error-url').textContent = location.pathname + location.search;
+  </script>
+</body>
+</html>

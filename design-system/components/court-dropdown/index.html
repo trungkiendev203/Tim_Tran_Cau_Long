@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ds:comp:court-dropdown-001 — Searchable Court Dropdown</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../tokens/tokens.css" />
+  <style>
+    /* tokens.css imported above — no :root needed */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-family); background: var(--sm-bg-page); padding: var(--space-xl); color: var(--sm-text-primary); }
+    .showcase { max-width: 340px; }
+    .showcase__title { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); margin-bottom: var(--space-xl); }
+    .showcase__section { margin-bottom: var(--space-2xl); }
+    .showcase__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--sm-text-secondary); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 10px; }
+
+    /* Dropdown wrapper */
+    .dropdown { position: relative; }
+    .dropdown__trigger {
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      padding: 9px 12px; font-size: 13px;
+      border: 1.5px solid var(--color-border); border-radius: 8px;
+      background: #fff; cursor: pointer; font-family: var(--font-family);
+      transition: border-color 150ms ease;
+    }
+    .dropdown__trigger:focus, .dropdown--open .dropdown__trigger {
+      outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(22,163,74,0.08);
+    }
+    .dropdown__placeholder { color: #94a3b8; }
+    .dropdown__value { color: #1e293b; font-weight: 500; }
+    .dropdown__arrow { font-size: 10px; color: #94a3b8; transition: transform 150ms ease; }
+    .dropdown--open .dropdown__arrow { transform: rotate(180deg); }
+
+    /* Panel */
+    .dropdown__panel {
+      position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+      background: #fff; border: 1px solid var(--color-border); border-radius: 10px;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); z-index: 50;
+      overflow: hidden;
+    }
+    .dropdown__search-wrap { padding: 8px; border-bottom: 1px solid #f1f5f9; }
+    .dropdown__search {
+      width: 100%; padding: 8px 10px; font-size: 13px;
+      border: 1.5px solid var(--color-border); border-radius: 6px;
+      font-family: var(--font-family);
+    }
+    .dropdown__search:focus { outline: none; border-color: var(--color-primary); }
+    .dropdown__search::placeholder { color: #94a3b8; }
+
+    .dropdown__list { max-height: 200px; overflow-y: auto; padding: 4px 0; }
+    .dropdown__item {
+      padding: 8px 12px; font-size: 13px; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      transition: background 100ms ease;
+    }
+    .dropdown__item:hover { background: #f8fafc; }
+    .dropdown__item--active { background: #f0fdf4; color: var(--color-primary); font-weight: 600; }
+    .dropdown__item-name { display: flex; align-items: center; gap: 6px; }
+    .dropdown__item-district { font-size: 11px; color: #94a3b8; }
+    .dropdown__item-check { color: var(--color-primary); font-size: 14px; }
+
+    .dropdown__empty { padding: 16px; text-align: center; font-size: 13px; color: #94a3b8; }
+
+    /* Selected chip */
+    .dropdown__selected {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 10px; font-size: 12px; font-weight: 500;
+      background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 9999px;
+      color: #166534; margin-top: 8px;
+    }
+    .dropdown__selected-remove { background: none; border: none; cursor: pointer; color: #94a3b8; font-size: 12px; padding: 0 0 0 4px; }
+    .dropdown__selected-remove:hover { color: #ef4444; }
+  </style>
+</head>
+<body>
+  <div class="showcase" data-ds-id="ds:comp:court-dropdown-001">
+    <h2 class="showcase__title">ds:comp:court-dropdown-001</h2>
+
+    <!-- Closed state -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Closed — No selection</h3>
+      <div class="dropdown" data-ds-id="ds:comp:court-dropdown-001--closed">
+        <button class="dropdown__trigger">
+          <span class="dropdown__placeholder">Chọn sân cầu lông...</span>
+          <span class="dropdown__arrow">▼</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Open with search -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Open — Searching</h3>
+      <div class="dropdown dropdown--open" data-ds-id="ds:comp:court-dropdown-001--open">
+        <button class="dropdown__trigger">
+          <span class="dropdown__placeholder">Chọn sân...</span>
+          <span class="dropdown__arrow">▼</span>
+        </button>
+        <div class="dropdown__panel">
+          <div class="dropdown__search-wrap">
+            <input class="dropdown__search" type="text" placeholder="Tìm tên sân..." value="Đại" autofocus />
+          </div>
+          <div class="dropdown__list">
+            <div class="dropdown__item">
+              <span class="dropdown__item-name">🏸 Sân A&C số 32 <strong>Đại</strong> Tú</span>
+              <span class="dropdown__item-district">Hoàng Mai</span>
+            </div>
+            <div class="dropdown__item">
+              <span class="dropdown__item-name">🏸 Sân <strong>Đại</strong> Học TDTT</span>
+              <span class="dropdown__item-district">Từ Liêm</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Selected state -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Selected</h3>
+      <div class="dropdown" data-ds-id="ds:comp:court-dropdown-001--selected">
+        <button class="dropdown__trigger">
+          <span class="dropdown__value">🏸 Sân A&C số 32 Đại Tú</span>
+          <span class="dropdown__arrow">▼</span>
+        </button>
+        <div class="dropdown__selected">
+          Sân A&C Đại Tú <button class="dropdown__selected-remove">✕</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Empty search -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">No results</h3>
+      <div class="dropdown dropdown--open" data-ds-id="ds:comp:court-dropdown-001--empty">
+        <button class="dropdown__trigger">
+          <span class="dropdown__placeholder">Chọn sân...</span>
+          <span class="dropdown__arrow">▼</span>
+        </button>
+        <div class="dropdown__panel">
+          <div class="dropdown__search-wrap">
+            <input class="dropdown__search" type="text" value="xyz123" />
+          </div>
+          <div class="dropdown__empty">😕 Không tìm thấy sân nào</div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

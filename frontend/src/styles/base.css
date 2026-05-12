@@ -1,0 +1,526 @@
+﻿/**
+ * Chill Cầu Design System — Base CSS
+ * Shared atomic classes used across ALL components and screens.
+ *
+ * Usage: @import '../base/base.css' in each component CSS
+ * NOTE: always import tokens.css BEFORE base.css
+ *
+ * Contains:
+ *  - Reset
+ *  - Typography base
+ *  - .btn (all variants + sizes)
+ *  - .form-input, .form-label, .form-group
+ *  - .card
+ *  - .badge
+ *  - Focus visible
+ *  - Skeleton animation
+ *  - Utility: .visually-hidden (a11y)
+ */
+
+/* ═══════════════════════════════════════════════════════════
+   RESET
+═══════════════════════════════════════════════════════════ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TYPOGRAPHY BASE
+═══════════════════════════════════════════════════════════ */
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--sm-text-primary);
+  background-color: var(--sm-bg-page);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  color: var(--sm-text-primary);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BUTTON — single authoritative definition
+   Variants: --primary | --secondary | --danger | --ghost
+   Sizes:    --sm | (default) | --lg
+   States:   :hover | :active | :focus-visible | :disabled | --loading
+═══════════════════════════════════════════════════════════ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: 10px 20px;        /* canonical padding — do NOT override in components */
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    opacity var(--transition-fast);
+  outline: none;
+  user-select: none;
+}
+
+/* Focus visible — WCAG 2.4.7 */
+.btn:focus-visible {
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.35);
+  outline: 2px solid var(--sm-border-focus);
+  outline-offset: 2px;
+}
+
+/* Primary */
+.btn--primary {
+  background: var(--color-primary-600);
+  color: var(--sm-text-inverse);
+  border-color: var(--color-primary-600);
+}
+.btn--primary:hover:not(:disabled) {
+  background: var(--color-primary-700);
+  border-color: var(--color-primary-700);
+}
+.btn--primary:active:not(:disabled) {
+  background: var(--color-primary-800);
+}
+
+/* Secondary */
+.btn--secondary {
+  background: transparent;
+  color: var(--sm-text-secondary);
+  border-color: var(--sm-border-default);
+}
+.btn--secondary:hover:not(:disabled) {
+  background: var(--color-neutral-100);
+  color: var(--sm-text-primary);
+  border-color: var(--color-neutral-300);
+}
+
+/* Danger */
+.btn--danger {
+  background: var(--color-danger-500);
+  color: var(--sm-text-inverse);
+  border-color: var(--color-danger-500);
+}
+.btn--danger:hover:not(:disabled) {
+  background: var(--color-danger-600);
+  border-color: var(--color-danger-600);
+}
+
+/* Danger outline */
+.btn--danger-outline {
+  background: transparent;
+  color: var(--color-danger-600);
+  border-color: var(--color-danger-400);
+}
+.btn--danger-outline:hover:not(:disabled) {
+  background: #fef2f2;
+}
+
+/* Ghost */
+.btn--ghost {
+  background: transparent;
+  color: var(--sm-text-secondary);
+  border-color: transparent;
+}
+.btn--ghost:hover:not(:disabled) {
+  background: var(--color-neutral-100);
+}
+
+/* Sizes */
+.btn--sm {
+  padding: 6px 14px;
+  font-size: var(--font-size-xs);
+  border-radius: var(--radius-sm);
+}
+.btn--lg {
+  padding: 12px 28px;
+  font-size: var(--font-size-base);
+  border-radius: var(--radius-lg);
+}
+.btn--full {
+  width: 100%;
+}
+
+/* Disabled */
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Loading */
+.btn--loading {
+  cursor: wait;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FORM ELEMENTS
+═══════════════════════════════════════════════════════════ */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.form-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--sm-text-secondary);
+  display: block;
+}
+
+.form-label--required::after {
+  content: ' *';
+  color: var(--color-danger-500);
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px 14px;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  color: var(--sm-text-primary);
+  background: var(--sm-bg-surface);
+  border: 1.5px solid var(--sm-border-default);
+  border-radius: var(--radius-md);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.form-input::placeholder {
+  color: var(--sm-text-muted);
+}
+
+.form-input:focus {
+  border-color: var(--sm-border-focus);
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.08);
+}
+
+.form-input:focus-visible {
+  outline: 2px solid var(--sm-border-focus);
+  outline-offset: 2px;
+}
+
+.form-input[readonly],
+.form-input--readonly {
+  background: var(--color-neutral-50);
+  color: var(--sm-text-secondary);
+  cursor: not-allowed;
+}
+
+.form-input--error {
+  border-color: var(--color-danger-500);
+}
+.form-input--error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+}
+
+/* .form-select — native <select> element
+   appearance: auto restores native arrow (not suppressed by .form-input reset)
+   Do NOT apply .form-input to <select> — use .form-select instead */
+.form-select {
+  width: 100%;
+  padding: 10px 14px;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  color: var(--sm-text-primary);
+  background: var(--sm-bg-surface);
+  border: 1.5px solid var(--sm-border-default);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  -webkit-appearance: auto;
+  appearance: auto;
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+.form-select:focus {
+  border-color: var(--sm-border-focus);
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.08);
+}
+.form-select:focus-visible {
+  outline: 2px solid var(--sm-border-focus);
+  outline-offset: 2px;
+}
+
+.form-error {
+  font-size: var(--font-size-xs);
+  color: var(--color-danger-500);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.form-hint {
+  font-size: var(--font-size-xs);
+  color: var(--sm-text-muted);
+}
+
+/* Textarea via form-input */
+textarea.form-input {
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* Native Checkbox & Radio using accent-color */
+.form-checkbox, .form-radio {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--color-primary-600);
+  flex-shrink: 0;
+}
+.form-checkbox:focus-visible, .form-radio:focus-visible {
+  outline: 2px solid var(--sm-border-focus);
+  outline-offset: 2px;
+}
+
+/* Toggle (Switch Native) */
+.form-toggle {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.form-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+.form-toggle__track {
+  position: absolute;
+  inset: 0;
+  background: var(--color-neutral-300);
+  border-radius: 9999px;
+  transition: background var(--transition-fast);
+}
+.form-toggle__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast);
+}
+.form-toggle input:checked ~ .form-toggle__track {
+  background: var(--color-primary-600);
+}
+.form-toggle input:checked ~ .form-toggle__thumb {
+  transform: translateX(18px);
+}
+.form-toggle input:focus-visible ~ .form-toggle__track {
+  outline: 2px solid var(--sm-border-focus);
+  outline-offset: 2px;
+}
+.form-toggle input:disabled ~ .form-toggle__track {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CARD
+═══════════════════════════════════════════════════════════ */
+.card {
+  background: var(--sm-bg-surface);
+  border: 1px solid var(--sm-border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.card--hover {
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+.card--hover:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BADGE
+═══════════════════════════════════════════════════════════ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.badge--success { background: var(--color-primary-50);  color: var(--color-primary-800); border-color: var(--color-primary-200); }
+.badge--info    { background: #eff6ff;                   color: var(--color-accent-700);  border-color: #bfdbfe; }
+.badge--warning { background: #fffbeb;                   color: var(--color-warning-600); border-color: #fde68a; }
+.badge--danger  { background: #fef2f2;                   color: var(--color-danger-600);  border-color: #fecaca; }
+.badge--neutral { background: var(--color-neutral-100);  color: var(--color-neutral-600); border-color: var(--color-neutral-200); }
+
+/* ═══════════════════════════════════════════════════════════
+   SKELETON ANIMATION (shared)
+═══════════════════════════════════════════════════════════ */
+@keyframes sm-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+.skeleton {
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    90deg,
+    var(--color-neutral-200) 25%,
+    var(--color-neutral-100) 50%,
+    var(--color-neutral-200) 75%
+  );
+  background-size: 200% 100%;
+  animation: sm-shimmer 1.5s ease infinite;
+}
+.skeleton--circle { border-radius: var(--radius-full); }
+.skeleton--pill   { border-radius: var(--radius-full); }
+
+/* ═══════════════════════════════════════════════════════════
+   SPINNER
+═══════════════════════════════════════════════════════════ */
+@keyframes sm-spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: var(--radius-full);
+  animation: sm-spin 0.6s linear infinite;
+  flex-shrink: 0;
+}
+.spinner--dark {
+  border-color: rgba(22, 163, 74, 0.2);
+  border-top-color: var(--color-primary-600);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   A11Y UTILITIES
+═══════════════════════════════════════════════════════════ */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Global focus-visible for generic interactive elements */
+[tabindex="0"]:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--sm-border-focus);
+  outline-offset: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+   Mobile-first. Apply .navbar--mobile, hide filter panel, etc.
+   See: livewire-conventions.md for component-level rules.
+═══════════════════════════════════════════════════════════ */
+
+/*
+  Breakpoint scale:
+  --bp-sm  : 480px  — Small phones (landscape)
+  --bp-md  : 768px  — Mobile ↔ Tablet pivot (PRIMARY breakpoint)
+  --bp-lg  : 1024px — Tablet ↔ Desktop pivot
+  --bp-xl  : 1280px — Wide desktop
+
+  Rule of thumb:
+  - < 768px  → Mobile layout   (bottom sheet filters, hamburger nav, single column)
+  - 768px–1023px → Tablet    (2-col layout, collapsed sidebar)
+  - ≥ 1024px → Desktop       (3-col map, sidebar + content feed)
+*/
+
+/* ── Mobile (< 768px) ───────────────────────────────────── */
+@media (max-width: 767px) {
+  /* Navbar: hide links, show hamburger */
+  .navbar__links  { display: none; }
+  .navbar__hamburger { display: flex; }
+
+  /* Filter panel: hidden on mobile — use ds:comp:mobile-filter-001 */
+  .filter-panel   { display: none; }
+
+  /* Feed: single column */
+  .layout-sidebar-content { flex-direction: column; }
+  .layout-sidebar-content .sidebar { display: none; }
+
+  /* Map: full-width, court list stacks below */
+  .layout-master-detail { flex-direction: column; }
+
+  /* Card grid: single column */
+  .card-grid { grid-template-columns: 1fr; }
+
+  /* Modal: full-screen on mobile */
+  .modal { width: 100vw; max-width: 100vw; border-radius: var(--radius-lg) var(--radius-lg) 0 0; margin-top: auto; }
+}
+
+/* ── Tablet (768px – 1023px) ────────────────────────────── */
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Navbar: show links, hide hamburger */
+  .navbar__links    { display: flex; }
+  .navbar__hamburger { display: none; }
+
+  /* Filter panel: show but compact */
+  .filter-panel { display: block; }
+
+  /* 2-column layout */
+  .layout-sidebar-content {
+    display: flex;
+    flex-direction: row;
+    gap: var(--space-lg);
+  }
+  .layout-sidebar-content .sidebar { width: 280px; flex-shrink: 0; }
+}
+
+/* ── Desktop (≥ 1024px) ─────────────────────────────────── */
+@media (min-width: 1024px) {
+  .navbar__links    { display: flex; }
+  .navbar__hamburger { display: none; }
+
+  .layout-sidebar-content .sidebar { width: 320px; }
+
+  /* 3-column map layout */
+  .layout-master-detail {
+    display: grid;
+    grid-template-columns: 280px 320px 1fr;
+    gap: var(--space-lg);
+  }
+}
+

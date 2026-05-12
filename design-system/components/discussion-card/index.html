@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ds:comp:discussion-card-001 — Community Post Card</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../tokens/tokens.css" />
+  <link rel="stylesheet" href="../../base/base.css" />
+  <style>
+    body { padding: var(--space-xl); background: var(--sm-bg-page); font-family: var(--font-family); }
+    .showcase { max-width: 560px; }
+    .showcase__title { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); margin-bottom: 4px; color: var(--sm-text-primary); }
+    .showcase__id { font-size: var(--font-size-xs); color: var(--sm-text-muted); font-family: monospace; margin-bottom: var(--space-xl); }
+    .showcase__section { margin-bottom: var(--space-2xl); }
+    .showcase__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--sm-text-secondary); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 12px; }
+
+    /* ===== DISCUSSION CARD ===== */
+    .disc-card {
+      background: var(--sm-bg-surface);
+      border: 1px solid var(--sm-border-default);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      transition: box-shadow var(--transition-base), transform var(--transition-base);
+    }
+    .disc-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+
+    /* Author row */
+    .disc-card__author {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 16px 10px;
+    }
+    .disc-card__avatar {
+      width: 40px; height: 40px; border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--color-primary-500), var(--color-accent-500));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: var(--font-weight-bold); color: #fff;
+      flex-shrink: 0;
+    }
+    .disc-card__author-info { flex: 1; min-width: 0; }
+    .disc-card__name {
+      font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold);
+      color: var(--sm-text-primary); display: flex; align-items: center; gap: 6px;
+    }
+    .disc-card__time { font-size: var(--font-size-xs); color: var(--sm-text-muted); margin-top: 1px; }
+    .disc-card__more {
+      background: none; border: none; cursor: pointer; padding: 4px 6px;
+      color: var(--sm-text-muted); border-radius: var(--radius-sm);
+      transition: background var(--transition-fast);
+    }
+    .disc-card__more:hover { background: var(--color-neutral-100); }
+
+    /* Tags row */
+    .disc-card__tags { display: flex; gap: 6px; flex-wrap: wrap; padding: 0 16px 10px; }
+    .tag-chip {
+      display: inline-flex; align-items: center; gap: 3px;
+      padding: 2px 10px; border-radius: var(--radius-full);
+      font-size: 11px; font-weight: var(--font-weight-semibold);
+      letter-spacing: 0.01em;
+    }
+    .tag-chip--review { background: #fef3c7; color: #92400e; }
+    .tag-chip--hoidap { background: #ede9fe; color: #5b21b6; }
+    .tag-chip--timdoi { background: #dcfce7; color: #166534; }
+    .tag-chip--meo { background: #dbeafe; color: #1e40af; }
+    .tag-chip--chungvui { background: #fce7f3; color: #9d174d; }
+
+    /* Content */
+    .disc-card__content {
+      padding: 0 16px 12px;
+      font-size: var(--font-size-sm); color: var(--sm-text-primary);
+      line-height: var(--line-height-relaxed);
+    }
+    .disc-card__content--truncated {
+      display: -webkit-box; -webkit-line-clamp: 3;
+      line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .disc-card__read-more {
+      background: none; border: none; cursor: pointer; padding: 0;
+      font-size: var(--font-size-sm); font-weight: var(--font-weight-medium);
+      color: var(--sm-color-accent); font-family: var(--font-family);
+    }
+
+    /* Image grid */
+    .disc-card__images { padding: 0 16px 12px; }
+    .disc-card__img-grid {
+      display: grid; gap: 3px; border-radius: var(--radius-md); overflow: hidden;
+    }
+    .disc-card__img-grid--1 { grid-template-columns: 1fr; }
+    .disc-card__img-grid--2 { grid-template-columns: 1fr 1fr; }
+    .disc-card__img-grid--3 { grid-template-columns: 2fr 1fr; }
+    .disc-card__img-item {
+      background: linear-gradient(135deg, var(--color-primary-50), var(--color-accent-50));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px; min-height: 120px; position: relative; overflow: hidden;
+    }
+    .disc-card__img-item--tall { min-height: 200px; }
+    .disc-card__img-more {
+      position: absolute; inset: 0; background: rgba(0,0,0,0.5);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: var(--font-weight-bold); color: #fff;
+    }
+
+    /* Actions bar */
+    .disc-card__actions {
+      display: flex; gap: 0;
+      border-top: 1px solid var(--sm-border-default);
+      padding: 2px 0;
+    }
+    .disc-card__action {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      gap: 5px; padding: 9px 8px;
+      font-size: 13px; font-weight: var(--font-weight-medium);
+      color: var(--sm-text-secondary); background: none; border: none;
+      cursor: pointer; border-radius: var(--radius-md);
+      transition: background var(--transition-fast), color var(--transition-fast);
+      font-family: var(--font-family);
+    }
+    .disc-card__action:hover { background: var(--color-neutral-100); color: var(--sm-text-primary); }
+    .disc-card__action--liked { color: var(--color-danger-500); }
+    .disc-card__action--liked:hover { color: var(--color-danger-600); }
+    .disc-card__action--bookmarked { color: var(--color-warning-500); }
+    .disc-card__action + .disc-card__action { border-left: 1px solid var(--sm-border-default); }
+    .disc-card__count { font-size: 12px; }
+
+    /* Comment preview strip */
+    .disc-card__comment-preview {
+      padding: 0 16px 12px;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .disc-card__comment-item {
+      display: flex; gap: 8px; align-items: flex-start;
+    }
+    .disc-card__comment-avatar {
+      width: 24px; height: 24px; border-radius: var(--radius-full);
+      background: var(--color-neutral-200);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: var(--font-weight-bold);
+      color: var(--sm-text-secondary); flex-shrink: 0;
+    }
+    .disc-card__comment-bubble {
+      background: var(--color-neutral-100); border-radius: 0 var(--radius-md) var(--radius-md) var(--radius-md);
+      padding: 6px 10px; font-size: 12px; color: var(--sm-text-primary);
+    }
+    .disc-card__comment-name { font-weight: var(--font-weight-semibold); margin-bottom: 1px; }
+    .disc-card__view-more {
+      font-size: 12px; color: var(--sm-text-muted); cursor: pointer;
+      background: none; border: none; padding: 0; font-family: var(--font-family);
+    }
+    .disc-card__view-more:hover { color: var(--sm-color-accent); }
+  </style>
+</head>
+<body>
+  <div class="showcase" data-ds-id="ds:comp:discussion-card-001">
+    <h2 class="showcase__title">Community Post Card</h2>
+    <div class="showcase__id">ds:comp:discussion-card-001 · Phase 2 · Implements US-20→23, 26, 27</div>
+
+    <!-- STATE: Default (text only) -->
+    <section class="showcase__section">
+      <div class="showcase__label">Default — Text Post</div>
+      <article class="disc-card" data-ds-id="ds:comp:discussion-card-001--text">
+        <div class="disc-card__author">
+          <div class="disc-card__avatar">K</div>
+          <div class="disc-card__author-info">
+            <div class="disc-card__name">
+              Kiên Nguyễn
+              <span class="badge badge--tb" style="font-size:10px;padding:1px 6px;">TB+</span>
+            </div>
+            <div class="disc-card__time">2 giờ trước · #review-sân</div>
+          </div>
+          <button class="disc-card__more" aria-label="Tùy chọn bài viết">•••</button>
+        </div>
+        <div class="disc-card__tags">
+          <span class="tag-chip tag-chip--review">#review-sân</span>
+        </div>
+        <div class="disc-card__content disc-card__content--truncated">
+          Mình vừa thử sân Hà Đông Sport lần đầu, sân khá ổn, ánh sáng tốt, gỗ trơn hơi một chút nhưng không ảnh hưởng nhiều. Giá 80k/người buổi chiều hợp lý. Nhân viên thân thiện. Recommend cho anh em quận Hà Đông!
+        </div>
+        <button class="disc-card__read-more">Xem thêm</button>
+        <div class="disc-card__comment-preview">
+          <div class="disc-card__comment-item">
+            <div class="disc-card__comment-avatar">M</div>
+            <div class="disc-card__comment-bubble">
+              <div class="disc-card__comment-name">Minh Tú</div>
+              Cảm ơn bạn, mình cũng hay chơi ở đó 👍
+            </div>
+          </div>
+          <button class="disc-card__view-more">Xem thêm 3 bình luận...</button>
+        </div>
+        <div class="disc-card__actions">
+          <button class="disc-card__action disc-card__action--liked" aria-pressed="true" data-ds-id="ds:comp:discussion-card-001--like">
+            ❤️ <span class="disc-card__count">12</span>
+          </button>
+          <button class="disc-card__action" data-ds-id="ds:comp:discussion-card-001--comment">
+            💬 <span class="disc-card__count">4</span>
+          </button>
+          <button class="disc-card__action" data-ds-id="ds:comp:discussion-card-001--share">
+            🔗 Chia sẻ
+          </button>
+          <button class="disc-card__action disc-card__action--bookmarked" aria-pressed="true" data-ds-id="ds:comp:discussion-card-001--bookmark">
+            🔖
+          </button>
+        </div>
+      </article>
+    </section>
+
+    <!-- STATE: With Images -->
+    <section class="showcase__section">
+      <div class="showcase__label">Image Post — 3 ảnh (2+1 grid)</div>
+      <article class="disc-card" data-ds-id="ds:comp:discussion-card-001--images">
+        <div class="disc-card__author">
+          <div class="disc-card__avatar" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">H</div>
+          <div class="disc-card__author-info">
+            <div class="disc-card__name">
+              Hùng Anh
+              <span class="badge badge--kha" style="font-size:10px;padding:1px 6px;">Khá</span>
+            </div>
+            <div class="disc-card__time">5 giờ trước</div>
+          </div>
+          <button class="disc-card__more" aria-label="Tùy chọn">•••</button>
+        </div>
+        <div class="disc-card__tags">
+          <span class="tag-chip tag-chip--chungvui">#chung-vui</span>
+        </div>
+        <div class="disc-card__content">
+          Buổi training chiều nay cùng nhóm cực vui! 4 máy đấu giải cờ blitz thắng thua đều vui 😄
+        </div>
+        <div class="disc-card__images">
+          <div class="disc-card__img-grid disc-card__img-grid--3">
+            <div class="disc-card__img-item disc-card__img-item--tall">🏸</div>
+            <div style="display:grid;gap:3px;">
+              <div class="disc-card__img-item">🏆</div>
+              <div class="disc-card__img-item" style="position:relative;">
+                🎯
+                <div class="disc-card__img-more">+2</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="disc-card__actions">
+          <button class="disc-card__action" aria-pressed="false">🤍 <span class="disc-card__count">8</span></button>
+          <button class="disc-card__action">💬 <span class="disc-card__count">2</span></button>
+          <button class="disc-card__action">🔗 Chia sẻ</button>
+          <button class="disc-card__action">🔖</button>
+        </div>
+      </article>
+    </section>
+
+    <!-- STATE: Loading Skeleton -->
+    <section class="showcase__section">
+      <div class="showcase__label">Loading State (Skeleton)</div>
+      <article class="disc-card" data-ds-id="ds:comp:discussion-card-001--loading" aria-busy="true">
+        <div class="disc-card__author">
+          <div class="skeleton" style="width:40px;height:40px;border-radius:50%;"></div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
+            <div class="skeleton" style="width:120px;height:14px;border-radius:4px;"></div>
+            <div class="skeleton" style="width:80px;height:11px;border-radius:4px;"></div>
+          </div>
+        </div>
+        <div style="padding:0 16px 12px;display:flex;flex-direction:column;gap:6px;">
+          <div class="skeleton" style="width:100%;height:13px;border-radius:4px;"></div>
+          <div class="skeleton" style="width:90%;height:13px;border-radius:4px;"></div>
+          <div class="skeleton" style="width:70%;height:13px;border-radius:4px;"></div>
+        </div>
+        <div style="padding:0 16px 12px;">
+          <div class="skeleton" style="width:100%;height:100px;border-radius:8px;"></div>
+        </div>
+        <div class="disc-card__actions">
+          <div class="skeleton" style="flex:1;height:36px;border-radius:6px;margin:4px;"></div>
+          <div class="skeleton" style="flex:1;height:36px;border-radius:6px;margin:4px;"></div>
+          <div class="skeleton" style="flex:1;height:36px;border-radius:6px;margin:4px;"></div>
+        </div>
+      </article>
+    </section>
+
+    <!-- STATE: Guest (no interaction) -->
+    <section class="showcase__section">
+      <div class="showcase__label">Guest View — Không thể like/comment</div>
+      <article class="disc-card" data-ds-id="ds:comp:discussion-card-001--guest">
+        <div class="disc-card__author">
+          <div class="disc-card__avatar" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">L</div>
+          <div class="disc-card__author-info">
+            <div class="disc-card__name">Linh Phạm <span class="badge badge--tby" style="font-size:10px;padding:1px 6px;">TBY</span></div>
+            <div class="disc-card__time">1 ngày trước</div>
+          </div>
+        </div>
+        <div class="disc-card__tags">
+          <span class="tag-chip tag-chip--hoidap">#hỏi-đáp</span>
+        </div>
+        <div class="disc-card__content">
+          Mình mới tập cầu lông được 2 tháng, có bạn nào biết cách cầm vợt kiểu Forehand đúng không? Thầy dạy mình hay bảo tay mình sai mà mình không hiểu sai chỗ nào 😅
+        </div>
+        <div class="disc-card__actions">
+          <button class="disc-card__action" style="opacity:.5;cursor:not-allowed;" disabled title="Đăng nhập để thích">🤍 <span class="disc-card__count">5</span></button>
+          <button class="disc-card__action" style="opacity:.5;cursor:not-allowed;" disabled title="Đăng nhập để bình luận">💬 <span class="disc-card__count">7</span></button>
+          <button class="disc-card__action">🔗 Chia sẻ</button>
+          <button class="disc-card__action" style="opacity:.5;cursor:not-allowed;" disabled>🔖</button>
+        </div>
+      </article>
+    </section>
+  </div>
+  <script>
+    const theme = localStorage.getItem('sm-theme') || 'light';
+    if (theme === 'dark') document.body.classList.add('theme-dark');
+  </script>
+</body>
+</html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ds:comp:post-composer-001 — Community Post Composer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../tokens/tokens.css" />
+  <link rel="stylesheet" href="../../base/base.css" />
+  <style>
+    body { padding: var(--space-xl); background: var(--sm-bg-page); font-family: var(--font-family); }
+    .showcase { max-width: 560px; }
+    .showcase__title { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); margin-bottom: 4px; color: var(--sm-text-primary); }
+    .showcase__id { font-size: var(--font-size-xs); color: var(--sm-text-muted); font-family: monospace; margin-bottom: var(--space-xl); }
+    .showcase__section { margin-bottom: var(--space-2xl); }
+    .showcase__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--sm-text-secondary); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 12px; }
+
+    /* ===== POST COMPOSER ===== */
+    .composer {
+      background: var(--sm-bg-surface);
+      border: 1px solid var(--sm-border-default);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    /* Collapsed trigger */
+    .composer--collapsed .composer__trigger {
+      display: flex; align-items: center; gap: 10px; padding: 14px 16px; cursor: pointer;
+    }
+    .composer__trigger-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--color-primary-500), var(--color-accent-500));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; color: #fff; font-weight: 700;
+    }
+    .composer__trigger-input {
+      flex: 1; padding: 8px 12px; border-radius: var(--radius-full);
+      border: 1.5px solid var(--sm-border-default); background: var(--sm-bg-page);
+      font-size: var(--font-size-sm); color: var(--sm-text-muted);
+      cursor: pointer;
+    }
+
+    /* Expanded form */
+    .composer__header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 16px 10px;
+      border-bottom: 1px solid var(--sm-border-default);
+    }
+    .composer__avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--color-primary-500), var(--color-accent-500));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 700; color: #fff;
+    }
+    .composer__user { font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); color: var(--sm-text-primary); }
+    .composer__audience { font-size: var(--font-size-xs); color: var(--sm-text-muted); }
+
+    .composer__body { padding: 12px 16px; }
+
+    /* Textarea */
+    .composer__textarea {
+      width: 100%; min-height: 100px;
+      border: none; outline: none; resize: none;
+      font-family: var(--font-family);
+      font-size: var(--font-size-sm); line-height: var(--line-height-relaxed);
+      color: var(--sm-text-primary); background: transparent;
+    }
+    .composer__textarea::placeholder { color: var(--sm-text-muted); }
+    .composer__char-count {
+      text-align: right; font-size: 11px; color: var(--sm-text-muted);
+      margin-top: 4px;
+    }
+    .composer__char-count--warning { color: var(--color-warning-500); }
+    .composer__char-count--danger { color: var(--color-danger-500); }
+
+    /* Tag selector */
+    .composer__tags-label {
+      font-size: 11px; font-weight: var(--font-weight-semibold);
+      color: var(--sm-text-secondary); text-transform: uppercase; letter-spacing: .04em;
+      margin-bottom: 6px;
+    }
+    .composer__tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+    .tag-chip { display: inline-flex; align-items: center; gap: 3px; padding: 3px 10px; border-radius: var(--radius-full); font-size: 11px; font-weight: 600; border: 1.5px solid transparent; cursor: pointer; transition: all var(--transition-fast); }
+    .tag-chip--review { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+    .tag-chip--review.is-active { background: #f59e0b; color: #fff; border-color: #f59e0b; }
+    .tag-chip--hoidap { background: #ede9fe; color: #5b21b6; border-color: #ddd6fe; }
+    .tag-chip--hoidap.is-active { background: #7c3aed; color: #fff; border-color: #7c3aed; }
+    .tag-chip--timdoi { background: #dcfce7; color: #166534; border-color: #bbf7d0; }
+    .tag-chip--timdoi.is-active { background: #16a34a; color: #fff; border-color: #16a34a; }
+    .tag-chip--meo { background: #dbeafe; color: #1e40af; border-color: #bfdbfe; }
+    .tag-chip--meo.is-active { background: #2563eb; color: #fff; border-color: #2563eb; }
+    .tag-chip--chungvui { background: #fce7f3; color: #9d174d; border-color: #fbcfe8; }
+    .tag-chip--chungvui.is-active { background: #db2777; color: #fff; border-color: #db2777; }
+
+    /* Image upload zone */
+    .composer__upload {
+      border: 2px dashed var(--sm-border-default); border-radius: var(--radius-md);
+      padding: 20px; text-align: center; cursor: pointer; margin-bottom: 12px;
+      transition: border-color var(--transition-fast), background var(--transition-fast);
+    }
+    .composer__upload:hover { border-color: var(--color-primary-400); background: var(--color-primary-50); }
+    .composer__upload-icon { font-size: 24px; margin-bottom: 6px; }
+    .composer__upload-text { font-size: var(--font-size-sm); color: var(--sm-text-secondary); }
+    .composer__upload-hint { font-size: 11px; color: var(--sm-text-muted); margin-top: 3px; }
+
+    /* Image previews */
+    .composer__image-previews { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .composer__image-thumb {
+      width: 80px; height: 80px; border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--color-primary-50), var(--color-accent-50));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; position: relative; overflow: hidden;
+      border: 1.5px solid var(--sm-border-default);
+    }
+    .composer__image-remove {
+      position: absolute; top: 3px; right: 3px;
+      background: rgba(0,0,0,0.6); color: #fff;
+      border: none; border-radius: 50%; width: 18px; height: 18px;
+      font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Action bar */
+    .composer__footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px;
+      border-top: 1px solid var(--sm-border-default);
+      gap: 8px;
+    }
+    .composer__tools { display: flex; gap: 4px; }
+    .composer__tool-btn {
+      background: none; border: none; cursor: pointer;
+      padding: 6px 8px; border-radius: var(--radius-sm);
+      font-size: 16px; color: var(--sm-text-muted);
+      transition: background var(--transition-fast), color var(--transition-fast);
+    }
+    .composer__tool-btn:hover { background: var(--color-neutral-100); color: var(--sm-text-primary); }
+    .composer__actions { display: flex; gap: 8px; }
+    .composer__cancel { background: none; border: 1px solid var(--sm-border-default); color: var(--sm-text-secondary); border-radius: var(--radius-full); padding: 6px 14px; font-size: var(--font-size-sm); cursor: pointer; transition: all var(--transition-fast); font-family: var(--font-family); }
+    .composer__cancel:hover { background: var(--color-neutral-100); }
+    .composer__submit { border: none; background: var(--color-primary-600); color: #fff; border-radius: var(--radius-full); padding: 6px 16px; font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); cursor: pointer; transition: background var(--transition-fast); font-family: var(--font-family); }
+    .composer__submit:hover { background: var(--color-primary-700); }
+    .composer__submit:disabled { background: var(--color-neutral-300); cursor: not-allowed; }
+
+    /* Submitting state */
+    .composer--submitting .composer__submit { opacity: 0.7; cursor: not-allowed; }
+    .composer--submitting .composer__textarea { opacity: 0.6; pointer-events: none; }
+
+    /* Validation error */
+    .composer__validation { background: var(--color-danger-50); border: 1px solid #fca5a5; border-radius: var(--radius-md); padding: 8px 12px; margin-bottom: 10px; font-size: var(--font-size-xs); color: var(--color-danger-600); }
+
+    /* Guest CTA */
+    .composer--guest {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px;
+    }
+    .composer__guest-text { font-size: var(--font-size-sm); color: var(--sm-text-secondary); }
+    .composer__guest-cta { background: var(--color-primary-600); color: #fff; border: none; border-radius: var(--radius-full); padding: 7px 18px; font-size: var(--font-size-sm); font-weight: 600; cursor: pointer; font-family: var(--font-family); }
+  </style>
+</head>
+<body>
+  <div class="showcase" data-ds-id="ds:comp:post-composer-001">
+    <h2 class="showcase__title">Post Composer</h2>
+    <div class="showcase__id">ds:comp:post-composer-001 · Phase 2 · Implements US-20, US-22</div>
+
+    <!-- STATE: Collapsed (trigger) -->
+    <section class="showcase__section">
+      <div class="showcase__label">Collapsed — Trigger Bar</div>
+      <div class="composer composer--collapsed" data-ds-id="ds:comp:post-composer-001--collapsed">
+        <div class="composer__trigger">
+          <div class="composer__trigger-avatar">K</div>
+          <div class="composer__trigger-input">Chia sẻ điều gì đó với cộng đồng...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATE: Expanded + Typing with images -->
+    <section class="showcase__section">
+      <div class="showcase__label">Expanded — Typing with Images & Tags</div>
+      <div class="composer" data-ds-id="ds:comp:post-composer-001--expanded">
+        <div class="composer__header">
+          <div class="composer__avatar">K</div>
+          <div>
+            <div class="composer__user">Kiên Nguyễn <span class="badge badge--tb" style="font-size:10px;">TB+</span></div>
+            <div class="composer__audience">🌐 Công khai</div>
+          </div>
+        </div>
+        <div class="composer__body">
+          <textarea class="composer__textarea" placeholder="Chia sẻ điều gì đó với cộng đồng...">Mình vừa thử sân Hà Đông Sport lần đầu, sân khá ổn, ánh sáng tốt. Giá 80k/người hợp lý</textarea>
+          <div class="composer__char-count">82/1000</div>
+
+          <!-- Tag selector -->
+          <div class="composer__tags-label">Chủ đề (chọn 1–3)</div>
+          <div class="composer__tags" id="tagSelector">
+            <button class="tag-chip tag-chip--review is-active" onclick="this.classList.toggle('is-active')"># review-sân</button>
+            <button class="tag-chip tag-chip--hoidap" onclick="this.classList.toggle('is-active')"># hỏi-đáp</button>
+            <button class="tag-chip tag-chip--timdoi" onclick="this.classList.toggle('is-active')"># tìm-đôi</button>
+            <button class="tag-chip tag-chip--meo" onclick="this.classList.toggle('is-active')"># mẹo-kỹ-thuật</button>
+            <button class="tag-chip tag-chip--chungvui" onclick="this.classList.toggle('is-active')"># chung-vui</button>
+          </div>
+
+          <!-- Image previews -->
+          <div class="composer__image-previews">
+            <div class="composer__image-thumb">🏸 <button class="composer__image-remove" aria-label="Xóa ảnh">✕</button></div>
+            <div class="composer__image-thumb">🏟️ <button class="composer__image-remove" aria-label="Xóa ảnh">✕</button></div>
+            <div class="composer__upload" style="width:80px;height:80px;padding:0;display:flex;align-items:center;justify-content:center;font-size:20px;">+</div>
+          </div>
+        </div>
+        <div class="composer__footer">
+          <div class="composer__tools">
+            <button class="composer__tool-btn" title="Thêm ảnh" aria-label="Thêm ảnh">🖼️</button>
+            <button class="composer__tool-btn" title="Emoji" aria-label="Chọn emoji">😊</button>
+          </div>
+          <div class="composer__actions">
+            <button class="composer__cancel">Hủy</button>
+            <button class="composer__submit">Đăng bài</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATE: Validation error -->
+    <section class="showcase__section">
+      <div class="showcase__label">Validation Error — No Tag Selected</div>
+      <div class="composer" data-ds-id="ds:comp:post-composer-001--error">
+        <div class="composer__header">
+          <div class="composer__avatar">K</div>
+          <div><div class="composer__user">Kiên Nguyễn</div></div>
+        </div>
+        <div class="composer__body">
+          <textarea class="composer__textarea">Nội dung bài viết...</textarea>
+          <div class="composer__validation">⚠️ Vui lòng chọn ít nhất 1 chủ đề cho bài viết của bạn.</div>
+          <div class="composer__tags">
+            <button class="tag-chip tag-chip--review"># review-sân</button>
+            <button class="tag-chip tag-chip--hoidap"># hỏi-đáp</button>
+          </div>
+        </div>
+        <div class="composer__footer">
+          <div class="composer__tools"></div>
+          <div class="composer__actions">
+            <button class="composer__cancel">Hủy</button>
+            <button class="composer__submit" disabled>Đăng bài</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATE: Submitting -->
+    <section class="showcase__section">
+      <div class="showcase__label">Submitting State</div>
+      <div class="composer composer--submitting" data-ds-id="ds:comp:post-composer-001--submitting">
+        <div class="composer__header">
+          <div class="composer__avatar">K</div>
+          <div><div class="composer__user">Kiên Nguyễn</div></div>
+        </div>
+        <div class="composer__body">
+          <textarea class="composer__textarea" disabled>Nội dung bài viết đang được đăng...</textarea>
+        </div>
+        <div class="composer__footer">
+          <div></div>
+          <div class="composer__actions">
+            <button class="composer__submit composer--submitting" disabled>⏳ Đang đăng...</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATE: Guest -->
+    <section class="showcase__section">
+      <div class="showcase__label">Guest State — Prompt to Login</div>
+      <div class="composer" data-ds-id="ds:comp:post-composer-001--guest">
+        <div class="composer--guest">
+          <span class="composer__guest-text">🔒 Đăng nhập để chia sẻ với cộng đồng</span>
+          <button class="composer__guest-cta">Đăng nhập</button>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+    const theme = localStorage.getItem('sm-theme') || 'light';
+    if (theme === 'dark') document.body.classList.add('theme-dark');
+    // Char counter
+    const ta = document.querySelector('.composer__textarea');
+    const counter = document.querySelector('.composer__char-count');
+    if (ta && counter) {
+      ta.addEventListener('input', function() {
+        const n = this.value.length;
+        counter.textContent = `${n}/1000`;
+        counter.className = 'composer__char-count' + (n > 950 ? ' composer__char-count--danger' : n > 850 ? ' composer__char-count--warning' : '');
+      });
+    }
+  </script>
+</body>
+</html>

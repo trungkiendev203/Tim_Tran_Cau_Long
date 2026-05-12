@@ -1,0 +1,283 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chill Cầu — Hồ sơ cá nhân | ds:screen:profile-001</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../tokens/tokens.css" />
+  <style>
+    :root { --font-family: 'Inter', -apple-system, sans-serif; --color-primary: #16a34a; --color-primary-hover: #15803d; --shadow-sm: 0 1px 2px rgba(0,0,0,0.05); --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1); --radius-md: 8px; --radius-lg: 12px; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-family); background: var(--sm-bg-page); color: var(--sm-text-primary); transition: background 200ms ease, color 200ms ease; }
+
+    /* Navbar */
+    .navbar { display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 56px; background: var(--sm-bg-surface); border-bottom: 1px solid var(--sm-border-default); z-index: 100; }
+    .navbar__brand { display: flex; align-items: center; gap: 8px; }
+    .navbar__logo { font-size: 24px; }
+    .navbar__name { font-size: 18px; font-weight: 700; color: var(--color-primary); }
+    .navbar__links { display: flex; gap: 4px; }
+    .navbar__link { padding: 8px 16px; font-size: 14px; font-weight: 500; color: var(--sm-text-secondary); text-decoration: none; border-radius: 8px; transition: all 150ms ease; }
+    .navbar__link:hover { background: var(--color-neutral-100); color: var(--sm-text-primary); }
+    .navbar__link--active { background: var(--color-primary-50); color: var(--color-primary-600); font-weight: 600; }
+    .navbar__actions { display: flex; align-items: center; gap: 12px; }
+    .navbar__avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #16a34a, #22c55e); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .navbar__avatar-initial { color: #fff; font-size: 13px; font-weight: 700; }
+    
+    /* Navbar actions port */
+    .navbar__icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; padding: 4px; border-radius: 8px; transition: background 150ms ease; color: var(--sm-text-secondary); }
+    .navbar__icon-btn:hover { background: var(--color-neutral-100); color: var(--color-danger-500); }
+    .navbar__toggle { display: flex; align-items: center; gap: 6px; background: var(--color-neutral-100); border: 1px solid var(--sm-border-default); border-radius: 20px; padding: 4px 12px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font-family); color: var(--sm-text-secondary); }
+    .navbar__toggle:hover { background: var(--color-neutral-200); }
+    .btn--warning { background: var(--color-warning-50); color: var(--color-warning-600); border: 1px solid var(--color-warning-400); }
+    .btn--warning:hover { background: var(--color-warning-100); }
+    .btn--sm { padding: 6px 14px; font-size: 12px; }
+
+    /* Page */
+    .page { max-width: 640px; margin: 0 auto; padding: 32px 24px; }
+    .page__title { font-size: 24px; font-weight: 700; margin-bottom: 24px; }
+
+    /* Profile header */
+    .profile-header { display: flex; gap: 20px; align-items: center; padding: 24px; background: var(--sm-bg-surface); border: 1px solid var(--sm-border-default); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); margin-bottom: 24px; }
+    .profile-avatar { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, #16a34a, #22c55e); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; color: #fff; flex-shrink: 0; }
+    .profile-info { flex: 1; }
+    .profile-name { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .profile-email { font-size: 13px; color: var(--sm-text-secondary); margin-bottom: 8px; }
+    .profile-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .profile-tag { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; font-size: 12px; font-weight: 500; background: var(--color-neutral-100); color: var(--sm-text-secondary); border-radius: 6px; }
+    .profile-tag--level { background: #bfdbfe; color: #1d4ed8; }
+
+    /* Settings sections */
+    .settings-section { background: var(--sm-bg-surface); border: 1px solid var(--sm-border-default); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); margin-bottom: 16px; overflow: hidden; }
+    .settings-section__header { padding: 14px 20px; border-bottom: 1px solid var(--color-neutral-100); }
+    .settings-section__title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+    .settings-section__body { padding: 16px 20px; }
+
+    .form-group { margin-bottom: 16px; }
+    .form-group:last-child { margin-bottom: 0; }
+    .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--sm-text-secondary); margin-bottom: 6px; }
+    .form-input { width: 100%; padding: 10px 14px; font-size: 14px; border: 1.5px solid var(--sm-border-default); background: transparent; color: var(--sm-text-primary); border-radius: 8px; font-family: var(--font-family); transition: border-color 150ms ease; }
+    .form-input:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(22,163,74,0.08); }
+    .form-input::placeholder { color: var(--sm-text-muted); }
+    .form-input--readonly { background: var(--color-neutral-50); color: var(--sm-text-secondary); cursor: not-allowed; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    /* Toggle setting */
+    .setting-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--color-neutral-50); }
+    .setting-item:last-child { border-bottom: none; }
+    .setting-item__label { font-size: 14px; font-weight: 500; }
+    .setting-item__desc { font-size: 12px; color: var(--sm-text-muted); margin-top: 2px; }
+    .toggle { position: relative; width: 40px; height: 22px; cursor: pointer; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle__track { position: absolute; inset: 0; background: var(--color-neutral-300); border-radius: 11px; transition: background 200ms ease; }
+    .toggle__thumb { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; background: #fff; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.15); transition: transform 200ms ease; }
+    .toggle input:checked ~ .toggle__track { background: var(--color-primary-600); }
+    .toggle input:checked ~ .toggle__thumb { transform: translateX(18px); }
+
+    /* Buttons */
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; font-size: 14px; font-weight: 600; border: 1.5px solid transparent; border-radius: 8px; cursor: pointer; font-family: var(--font-family); transition: all 150ms ease; }
+    .btn--primary { background: var(--color-primary-600); color: #fff; border-color: var(--color-primary-600); }
+    .btn--primary:hover { background: var(--color-primary-hover); }
+    .btn--secondary { background: transparent; border-color: var(--sm-border-default); color: var(--sm-text-secondary); }
+    .btn--secondary:hover { background: var(--color-neutral-100); }
+    .btn--danger-outline { background: transparent; border-color: var(--color-danger-400); color: var(--color-danger-600); }
+    .btn--danger-outline:hover { background: var(--color-danger-50); }
+    .btn-group { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+
+    /* Favorite section */
+    .fav-list { display: flex; flex-direction: column; gap: 8px; }
+    .fav-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--color-neutral-50); border-radius: 8px; }
+    .fav-item__info { display: flex; flex-direction: column; }
+    .fav-item__court { font-size: 14px; font-weight: 600; }
+    .fav-item__meta { font-size: 12px; color: var(--sm-text-secondary); margin-top: 2px; }
+    .fav-item__remove { background: none; border: none; font-size: 16px; cursor: pointer; color: var(--sm-text-muted); padding: 4px; }
+    .fav-item__remove:hover { color: var(--color-danger-500); }
+
+    .empty-state { text-align: center; padding: 24px; }
+    .empty-state__icon { font-size: 32px; margin-bottom: 8px; opacity: 0.4; }
+    .empty-state__text { font-size: 13px; color: var(--sm-text-secondary); }
+  </style>
+</head>
+<body>
+  <nav class="navbar" data-ds-id="ds:comp:navbar-001">
+    <div class="navbar__brand"><span class="navbar__logo">🏸</span><span class="navbar__name">Chill Cầu</span></div>
+    <div class="navbar__links">
+      <a href="../feed/index.html" class="navbar__link">Tìm kèo</a>
+      <a href="../map/index.html" class="navbar__link">Bản đồ</a>
+      <a href="../coming-soon/index.html" class="navbar__link">Xếp hạng</a>
+      <a href="../coming-soon/index.html#bang-gia" class="navbar__link">Bảng giá</a>
+      <a href="../discussion/index.html" class="navbar__link" style="display:flex;align-items:center;gap:4px;">💬 Thảo luận <span style="background:#fef3c7;color:#92400e;border-radius:9999px;font-size:8px;font-weight:700;padding:1px 5px;">Phase 2</span></a>
+    </div>
+    <div class="navbar__actions">
+      <button class="navbar__toggle">🌓 Sáng</button>
+      <a href="#" class="btn btn--warning btn--sm" style="text-decoration:none;">☕ Ủng hộ & Góp ý</a>
+      <button class="navbar__icon-btn">🤍</button>
+      <button class="navbar__bell" style="position:relative;background:none;border:none;font-size:20px;cursor:pointer;">🔔<span style="position:absolute;top:-2px;right:-4px;background:#ef4444;color:#fff;font-size:10px;font-weight:700;min-width:16px;height:16px;border-radius:9999px;display:flex;align-items:center;justify-content:center;">3</span></button>
+      <a href="../profile/index.html" class="navbar__avatar" style="text-decoration:none;"><span class="navbar__avatar-initial">K</span></a>
+    </div>
+  </nav>
+
+  <div class="page" data-ds-id="ds:screen:profile-001">
+    <h1 class="page__title">👤 Hồ sơ cá nhân</h1>
+
+    <!-- Profile Header -->
+    <div class="profile-header" data-ds-id="ds:screen:profile-001--header">
+      <div class="profile-avatar">K</div>
+      <div class="profile-info">
+        <div class="profile-name" style="align-items: center; display: flex; gap: 8px;">Kiên Đỗ <span style="color:var(--color-accent-600);font-size:16px;" title="Tài khoản đã xác thực">✔️</span></div>
+        <div class="profile-email">kien@example.com</div>
+        <div class="profile-tags" style="margin-top: 8px;">
+          <span class="profile-tag profile-tag--level">🏸 TB+</span>
+          <span class="profile-tag">📍 Cầu Giấy</span>
+          <span class="profile-tag">🌟 Uy tín: 98%</span>
+        </div>
+      </div>
+      
+      <!-- Public Profile Actions -->
+      <div style="margin-left: auto; display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
+        <button class="btn btn--primary btn--sm" style="width: 140px; justify-content: center;">👤 Kết bạn</button>
+        <a href="../../components/report-modal/index.html" class="btn btn--danger-outline btn--sm" style="width: 140px; justify-content: center; text-decoration: none;">🚨 Báo cáo</a>
+      </div>
+    </div>
+
+    <!-- Personal Info -->
+    <div class="settings-section" data-ds-id="ds:screen:profile-001--info">
+      <div class="settings-section__header"><h3 class="settings-section__title">📝 Thông tin cá nhân</h3></div>
+      <div class="settings-section__body">
+        <div class="form-group">
+          <label class="form-label">Họ tên</label>
+          <input class="form-input" type="text" value="Kiên Đỗ" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Trình độ</label>
+            <select class="form-input" style="appearance:auto;"><option>Y</option><option>TB-</option><option>TB</option><option selected>TB+</option><option>Khá</option><option>Giỏi</option></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Quận thường chơi</label>
+            <select class="form-input" style="appearance:auto;"><option selected>Cầu Giấy</option><option>Hoàng Mai</option><option>Ba Đình</option><option>Hà Đông</option></select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input form-input--readonly" type="email" value="kien@example.com" readonly />
+        </div>
+        <div class="btn-group">
+          <button class="btn btn--secondary">Hủy</button>
+          <button class="btn btn--primary">Lưu thay đổi</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Settings -->
+    <div class="settings-section" data-ds-id="ds:screen:profile-001--notifications">
+      <div class="settings-section__header"><h3 class="settings-section__title">🔔 Cài đặt thông báo</h3></div>
+      <div class="settings-section__body">
+        <div class="setting-item">
+          <div>
+            <div class="setting-item__label">Email khi có kèo mới</div>
+            <div class="setting-item__desc">Gửi mail khi lịch nhắc match được kèo mới</div>
+          </div>
+          <label class="toggle"><input type="checkbox" checked /><span class="toggle__track"></span><span class="toggle__thumb"></span></label>
+        </div>
+        <div class="setting-item">
+          <div>
+            <div class="setting-item__label">Thông báo in-app</div>
+            <div class="setting-item__desc">Hiển thị thông báo bell icon</div>
+          </div>
+          <label class="toggle"><input type="checkbox" checked /><span class="toggle__track"></span><span class="toggle__thumb"></span></label>
+        </div>
+        <div class="setting-item">
+          <div>
+            <div class="setting-item__label">Nhắc trước giờ chơi</div>
+            <div class="setting-item__desc">Nhắc nhở 2 giờ trước kèo</div>
+          </div>
+          <label class="toggle"><input type="checkbox" /><span class="toggle__track"></span><span class="toggle__thumb"></span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Favorites -->
+    <div class="settings-section" data-ds-id="ds:screen:profile-001--favorites">
+      <div class="settings-section__header"><h3 class="settings-section__title">❤️ Bài yêu thích (3)</h3></div>
+      <div class="settings-section__body">
+        <div class="fav-list">
+          <div class="fav-item">
+            <div class="fav-item__info">
+              <span class="fav-item__court">🏸 Sân A&C Đại Tú — 20:00</span>
+              <span class="fav-item__meta">TB+ · Hoàng Mai · 2.3 km</span>
+            </div>
+            <button class="fav-item__remove">✕</button>
+          </div>
+          <div class="fav-item">
+            <div class="fav-item__info">
+              <span class="fav-item__court">🏸 Sân TT9 Mễ Trì — 19:00</span>
+              <span class="fav-item__meta">TBY · Nam Từ Liêm · 4.1 km</span>
+            </div>
+            <button class="fav-item__remove">✕</button>
+          </div>
+          <div class="fav-item">
+            <div class="fav-item__info">
+              <span class="fav-item__court">🏸 Sân Hà Đông Sport — 06:00</span>
+              <span class="fav-item__meta">Khá · Hà Đông · 8.5 km</span>
+            </div>
+            <button class="fav-item__remove">✕</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Account actions -->
+    <div class="settings-section" data-ds-id="ds:screen:profile-001--account">
+      <div class="settings-section__header"><h3 class="settings-section__title">⚙️ Tài khoản</h3></div>
+      <div class="settings-section__body">
+        <div class="btn-group" style="justify-content:flex-start;">
+          <button class="btn btn--secondary">🔑 Đổi mật khẩu</button>
+          <button class="btn btn--danger-outline">🚪 Đăng xuất</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════
+         STATE: Error — Không load được hồ sơ (NEW)
+         DS-ID: ds:screen:profile-001--error
+         Trigger: Network error / auth session expired / server 500
+         ═══════════════════════════════════════════════ -->
+    <div style="border-top: 2px dashed #e2e8f0; padding-top: 32px; margin-top: 32px;">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#94a3b8;margin-bottom:16px;">⚠️ STATE: Error — Không load được hồ sơ</div>
+      <div class="settings-section"
+           data-ds-id="ds:screen:profile-001--error"
+           role="alert"
+           aria-live="assertive">
+        <div class="settings-section__body" style="padding: 40px 24px; text-align: center;">
+          <div style="font-size: 48px; margin-bottom: 16px;">😵</div>
+          <h2 style="font-size: 18px; font-weight: 700; color: #1e293b; margin-bottom: 8px;">Không thể tải hồ sơ</h2>
+          <p style="font-size: 14px; color: #64748b; margin-bottom: 6px;">Có lỗi xảy ra khi kết nối với máy chủ.</p>
+          <p style="font-size: 12px; color: #94a3b8; margin-bottom: 24px;">Mã lỗi: 503 — Service Unavailable</p>
+          <div style="display: flex; gap: 10px; justify-content: center;">
+            <button class="btn btn--primary" onclick="location.reload()">🔄 Thử lại</button>
+            <button class="btn btn--secondary">🏠 Về trang chủ</button>
+          </div>
+          <p style="font-size: 12px; color: #94a3b8; margin-top: 16px;">Nếu lỗi tiếp tục, vui lòng liên hệ <a href="mailto:support@Chill Cầu.vn" style="color: #16a34a;">support@Chill Cầu.vn</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const theme = localStorage.getItem('sm-theme') || 'light';
+    if (theme === 'dark') document.body.classList.add('theme-dark');
+    
+    document.querySelectorAll('.navbar__toggle').forEach(btn => {
+      btn.innerHTML = theme === 'dark' ? '🌞 Sáng' : '🌓 Tối';
+      btn.addEventListener('click', () => {
+        document.body.classList.toggle('theme-dark');
+        const isDark = document.body.classList.contains('theme-dark');
+        localStorage.setItem('sm-theme', isDark ? 'dark' : 'light');
+        document.querySelectorAll('.navbar__toggle').forEach(b => b.innerHTML = isDark ? '🌞 Sáng' : '🌓 Tối');
+      });
+    });
+  </script>
+</body>
+</html>

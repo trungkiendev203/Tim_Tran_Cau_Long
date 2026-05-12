@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ds:comp:skeleton-001 — Skeleton Loading Patterns</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../tokens/tokens.css" />
+  <!--
+    ds:comp:skeleton-001 — Skeleton Loading
+    Usage: Placeholder while async content loads — replaces blank/empty space
+    Variants: navbar, post-card, filter-panel, reminder-card
+    Do NOT: Use spinner alone when layout is known — skeleton is always better UX
+    A11y: Container must have aria-busy="true" and aria-label describing what is loading
+  -->
+  <style>
+    /* tokens.css imported above — no :root needed */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-family); background: var(--sm-bg-page); padding: var(--space-xl); color: var(--sm-text-primary); }
+    .showcase { max-width: 480px; }
+    .showcase__title { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); margin-bottom: var(--space-xl); }
+    .showcase__section { margin-bottom: var(--space-2xl); }
+    .showcase__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--sm-text-secondary); text-transform: uppercase; letter-spacing: .05em; margin-bottom: var(--space-md); }
+
+    /* [FIX] Renamed from .sk → .skeleton, .sk--circle → .skeleton--circle, .sk--pill → .skeleton--pill
+       to match canonical class names in base/base.css */
+    @keyframes sm-shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+    .skeleton {
+      border-radius: var(--radius-sm);
+      background: linear-gradient(
+        90deg,
+        var(--color-neutral-200) 25%,
+        var(--color-neutral-100) 50%,
+        var(--color-neutral-200) 75%
+      );
+      background-size: 200% 100%;
+      animation: sm-shimmer 1.5s ease infinite;
+    }
+    .skeleton--circle { border-radius: var(--radius-full); }
+    .skeleton--pill   { border-radius: var(--radius-full); }
+
+    /* Post card skeleton layout */
+    .sk-card { background: var(--sm-bg-surface); border: 1px solid var(--sm-border-default); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: var(--space-md); }
+    .sk-card__header { display: flex; justify-content: space-between; padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--color-neutral-100); background: var(--sm-bg-page); }
+    .sk-card__body { padding: var(--space-lg); display: flex; flex-direction: column; gap: 10px; }
+    .sk-card__badges { display: flex; gap: 6px; }
+    .sk-card__actions { display: flex; border-top: 1px solid var(--color-neutral-100); }
+    .sk-card__action { flex: 1; padding: var(--space-md); display: flex; justify-content: center; }
+    .sk-card__action + .sk-card__action { border-left: 1px solid var(--color-neutral-100); }
+
+    /* Navbar skeleton layout */
+    .sk-navbar { display: flex; align-items: center; justify-content: space-between; padding: 0 var(--space-xl); height: 56px; background: var(--sm-bg-surface); border: 1px solid var(--sm-border-default); border-radius: var(--radius-lg); margin-bottom: var(--space-md); }
+    .sk-navbar__left { display: flex; align-items: center; gap: var(--space-sm); }
+    .sk-navbar__links { display: flex; gap: var(--space-sm); }
+    .sk-navbar__right { display: flex; gap: var(--space-sm); align-items: center; }
+
+    /* Filter panel skeleton layout */
+    .sk-filter { background: var(--sm-bg-surface); border: 1px solid var(--sm-border-default); border-radius: var(--radius-lg); padding: var(--space-lg); }
+    .sk-filter__group { margin-bottom: 14px; }
+    .sk-filter__group:last-child { margin-bottom: 0; }
+    .sk-filter__btns { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    /* Reminder card skeleton layout */
+    .sk-reminder { background: var(--sm-bg-surface); border: 1px solid var(--sm-border-default); border-radius: var(--radius-lg); padding: var(--space-lg); margin-bottom: var(--space-md); }
+    .sk-reminder__header { display: flex; justify-content: space-between; margin-bottom: var(--space-md); }
+    .sk-reminder__tags { display: flex; gap: 6px; }
+  </style>
+</head>
+<body>
+  <div class="showcase" data-ds-id="ds:comp:skeleton-001">
+    <h2 class="showcase__title">ds:comp:skeleton-001 — Skeleton Loading</h2>
+
+    <!-- Navbar Skeleton -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Navbar Skeleton</h3>
+      <!-- [A11Y] aria-busy + aria-label on container -->
+      <div class="sk-navbar" data-ds-id="ds:comp:skeleton-001--navbar" aria-busy="true" aria-label="Đang tải thanh điều hướng">
+        <div class="sk-navbar__left">
+          <div class="skeleton skeleton--circle" style="width:28px;height:28px;"></div>
+          <div class="skeleton" style="width:100px;height:18px;"></div>
+        </div>
+        <div class="sk-navbar__links">
+          <div class="skeleton" style="width:60px;height:14px;"></div>
+          <div class="skeleton" style="width:50px;height:14px;"></div>
+          <div class="skeleton" style="width:55px;height:14px;"></div>
+        </div>
+        <div class="sk-navbar__right">
+          <div class="skeleton skeleton--circle" style="width:24px;height:24px;"></div>
+          <div class="skeleton skeleton--circle" style="width:32px;height:32px;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Post Card Skeleton -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Post Card Skeleton</h3>
+      <div class="sk-card" data-ds-id="ds:comp:skeleton-001--post-card" aria-busy="true" aria-label="Đang tải bài đăng">
+        <div class="sk-card__header">
+          <div class="skeleton" style="width:120px;height:16px;"></div>
+          <div class="skeleton" style="width:60px;height:12px;"></div>
+        </div>
+        <div class="sk-card__body">
+          <div class="skeleton" style="width:200px;height:18px;"></div>
+          <div class="skeleton" style="width:140px;height:14px;"></div>
+          <div class="sk-card__badges">
+            <div class="skeleton skeleton--pill" style="width:36px;height:22px;"></div>
+            <div class="skeleton skeleton--pill" style="width:36px;height:22px;"></div>
+          </div>
+          <div class="skeleton" style="width:100%;height:14px;"></div>
+          <div class="skeleton" style="width:70%;height:14px;"></div>
+        </div>
+        <div class="sk-card__actions">
+          <div class="sk-card__action"><div class="skeleton" style="width:80px;height:14px;"></div></div>
+          <div class="sk-card__action"><div class="skeleton" style="width:50px;height:14px;"></div></div>
+          <div class="sk-card__action"><div class="skeleton" style="width:60px;height:14px;"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filter Panel Skeleton -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Filter Panel Skeleton</h3>
+      <div class="sk-filter" data-ds-id="ds:comp:skeleton-001--filter" aria-busy="true" aria-label="Đang tải bộ lọc">
+        <div class="sk-filter__group">
+          <div class="skeleton" style="width:80px;height:12px;margin-bottom:8px;"></div>
+          <div class="skeleton" style="width:100%;height:36px;"></div>
+        </div>
+        <div class="sk-filter__group">
+          <div class="skeleton" style="width:60px;height:12px;margin-bottom:8px;"></div>
+          <div class="skeleton" style="width:100%;height:36px;"></div>
+        </div>
+        <div class="sk-filter__group">
+          <div class="skeleton" style="width:50px;height:12px;margin-bottom:8px;"></div>
+          <div class="sk-filter__btns">
+            <div class="skeleton skeleton--pill" style="width:30px;height:26px;"></div>
+            <div class="skeleton skeleton--pill" style="width:30px;height:26px;"></div>
+            <div class="skeleton skeleton--pill" style="width:40px;height:26px;"></div>
+            <div class="skeleton skeleton--pill" style="width:40px;height:26px;"></div>
+            <div class="skeleton skeleton--pill" style="width:30px;height:26px;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reminder Card Skeleton -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Reminder Card Skeleton</h3>
+      <div class="sk-reminder" data-ds-id="ds:comp:skeleton-001--reminder" aria-busy="true" aria-label="Đang tải lịch nhắc">
+        <div class="sk-reminder__header">
+          <div class="skeleton" style="width:120px;height:16px;"></div>
+          <div class="skeleton skeleton--pill" style="width:40px;height:22px;"></div>
+        </div>
+        <div class="sk-reminder__tags">
+          <div class="skeleton" style="width:70px;height:24px;border-radius:6px;"></div>
+          <div class="skeleton" style="width:90px;height:24px;border-radius:6px;"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

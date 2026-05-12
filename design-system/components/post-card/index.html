@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ds:comp:post-card-001 — Match Post Card</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../tokens/tokens.css" />
+  <link rel="stylesheet" href="../../base/base.css" />
+  <style>
+    /* tokens.css + base.css imported above */
+    body { padding: var(--space-xl); background: var(--sm-bg-page); }
+    .showcase { max-width: 480px; }
+    .showcase__title { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); margin-bottom: var(--space-xl); }
+    .showcase__section { margin-bottom: var(--space-xl); }
+    .showcase__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--sm-text-secondary); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 12px; }
+
+    /* ===== POST CARD ===== */
+    .post-card { background: var(--sm-bg-surface); border: 1px solid var(--sm-border-default); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); overflow: hidden; transition: box-shadow var(--transition-base), transform var(--transition-base); }
+    .post-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+
+    .post-card__header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--color-neutral-100); background: var(--color-neutral-50); }
+    .post-card__time { display: flex; align-items: center; gap: 6px; font-weight: var(--font-weight-semibold); font-size: 15px; color: var(--color-primary-600); }
+    .post-card__time-icon { font-size: 14px; }
+    .post-card__posted { font-size: var(--font-size-xs); color: var(--sm-text-muted); }
+
+    .post-card__body { padding: 16px; }
+    .post-card__court { font-size: var(--font-size-base); font-weight: var(--font-weight-semibold); display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+    .post-card__court-icon { font-size: 18px; }
+
+    .post-card__meta { display: flex; gap: 12px; font-size: var(--font-size-sm); color: var(--sm-text-secondary); margin-bottom: 10px; }
+    .post-card__distance { color: var(--color-primary-600); font-weight: var(--font-weight-medium); }
+
+    .post-card__badges { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+
+    .post-card__details { display: flex; gap: 16px; font-size: var(--font-size-sm); color: var(--sm-text-primary); margin-bottom: 10px; flex-wrap: wrap; }
+    .post-card__slots strong { color: var(--color-primary-600); }
+
+    .post-card__summary { font-size: var(--font-size-sm); color: var(--sm-text-secondary); line-height: var(--line-height-relaxed); display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+    .post-card__actions { display: flex; gap: 0; border-top: 1px solid var(--color-neutral-100); }
+    .post-card__action { flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px; padding: 10px 8px; font-size: var(--font-size-xs); font-weight: var(--font-weight-medium); color: var(--sm-text-secondary); background: none; border: none; cursor: pointer; transition: background var(--transition-fast), color var(--transition-fast); font-family: var(--font-family); text-decoration: none; }
+    .post-card__action:hover { background: var(--color-neutral-100); color: var(--sm-text-primary); }
+    .post-card__action--fb:hover { color: #1877f2; }
+    .post-card__action--fav:hover { color: var(--color-danger-500); }
+    .post-card__action + .post-card__action { border-left: 1px solid var(--color-neutral-100); }
+
+    /* ===== LOCAL SKELETON UTILS ===== */
+    .skeleton--w40  { width: 40px; }  .skeleton--w60  { width: 60px; }
+    .skeleton--w70  { width: 70px; }  .skeleton--w100 { width: 100px; }
+    .skeleton--w120 { width: 120px; } .skeleton--w160 { width: 160px; }
+    .skeleton--w200 { width: 200px; } .skeleton--full { width: 100%; }
+    .skeleton--h12 { height: 12px; } .skeleton--h14 { height: 14px; }
+    .skeleton--h16 { height: 16px; } .skeleton--h20 { height: 20px; }
+    .skeleton--h22 { height: 22px; } .skeleton--h32 { height: 32px; }
+
+    .post-card--skeleton .post-card__body { display: flex; flex-direction: column; }
+    .post-card--skeleton .post-card__actions { gap: 8px; padding: 10px 16px; }
+
+    /* ===== EMPTY STATE ===== */
+    .post-card--empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 24px; text-align: center; }
+    .post-card__empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
+    .post-card__empty-text { font-size: var(--font-size-base); font-weight: var(--font-weight-semibold); color: var(--sm-text-secondary); margin-bottom: 4px; }
+    .post-card__empty-hint { font-size: var(--font-size-sm); color: var(--sm-text-muted); }
+
+    /* ===== ERROR STATE ===== */
+    .post-card--error { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 24px; text-align: center; }
+    .post-card__error-icon { font-size: 40px; margin-bottom: 12px; }
+    .post-card__error-text { font-size: 15px; font-weight: var(--font-weight-medium); color: var(--color-danger-500); margin-bottom: 12px; }
+  </style>
+<body>
+  <div class="showcase" data-ds-id="ds:comp:post-card-001">
+    <h2 class="showcase__title">ds:comp:post-card-001 — Match Post Card</h2>
+
+    <!-- STATE: Default -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Default State</h3>
+      <article class="post-card" data-ds-id="ds:comp:post-card-001--default">
+        <div class="post-card__header">
+          <div class="post-card__time">
+            <span class="post-card__time-icon">⏰</span>
+            <span class="post-card__time-text">20:00 – 22:00</span>
+          </div>
+          <span class="post-card__posted">3 giờ trước</span>
+        </div>
+        <div class="post-card__body">
+          <h3 class="post-card__court">
+            <span class="post-card__court-icon">🏸</span>
+            Sân A&C số 32 Đại Tú
+          </h3>
+          <div class="post-card__meta">
+            <span class="post-card__distance">📍 2.3 km</span>
+            <span class="post-card__district">Hoàng Mai</span>
+          </div>
+          <div class="post-card__badges">
+            <span class="badge badge--tb">TB</span>
+            <span class="badge badge--tb-plus">TB+</span>
+          </div>
+          <div class="post-card__details">
+            <span class="post-card__slots">👥 Cần thêm <strong>2</strong> người</span>
+            <span class="post-card__gender">♂ Nam</span>
+            <span class="post-card__fee">💰 80.000đ/người</span>
+          </div>
+          <p class="post-card__summary">Sân mới, có quạt, nước uống. Anh em TB TB+ vào kèo nhé, thiếu 2 máy. Liên hệ trước 18h.</p>
+        </div>
+        <div class="post-card__actions">
+          <a href="#" class="post-card__action post-card__action--fb" data-ds-id="ds:comp:post-card-001--fb-link">
+            <span>📘</span> Xem trên Facebook
+          </a>
+          <button class="post-card__action" data-ds-id="ds:comp:post-card-001--share">
+            <span>🔗</span> Chia sẻ
+          </button>
+          <button class="post-card__action post-card__action--fav" data-ds-id="ds:comp:post-card-001--fav">
+            <span>🤍</span> Yêu thích
+          </button>
+        </div>
+      </article>
+    </section>
+
+    <!-- STATE: Loading (Skeleton) -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Loading State (Skeleton)</h3>
+      <article class="post-card post-card--skeleton" data-ds-id="ds:comp:post-card-001--loading">
+        <div class="post-card__header">
+          <div class="skeleton skeleton--w120 skeleton--h16"></div>
+          <div class="skeleton skeleton--w60 skeleton--h12"></div>
+        </div>
+        <div class="post-card__body">
+          <div class="skeleton skeleton--w200 skeleton--h20"></div>
+          <div class="skeleton skeleton--w160 skeleton--h14" style="margin-top:8px"></div>
+          <div style="display:flex;gap:6px;margin-top:12px">
+            <div class="skeleton skeleton--w40 skeleton--h22 skeleton--round"></div>
+            <div class="skeleton skeleton--w40 skeleton--h22 skeleton--round"></div>
+          </div>
+          <div class="skeleton skeleton--full skeleton--h14" style="margin-top:12px"></div>
+          <div class="skeleton skeleton--w200 skeleton--h14" style="margin-top:4px"></div>
+        </div>
+        <div class="post-card__actions">
+          <div class="skeleton skeleton--w100 skeleton--h32"></div>
+          <div class="skeleton skeleton--w60 skeleton--h32"></div>
+          <div class="skeleton skeleton--w70 skeleton--h32"></div>
+        </div>
+      </article>
+    </section>
+
+    <!-- STATE: Empty -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Empty State</h3>
+      <div class="post-card post-card--empty" data-ds-id="ds:comp:post-card-001--empty">
+        <div class="post-card__empty-icon">🏸</div>
+        <p class="post-card__empty-text">Chưa có kèo nào phù hợp</p>
+        <p class="post-card__empty-hint">Thử mở rộng bộ lọc hoặc chọn ngày khác</p>
+      </div>
+    </section>
+
+    <!-- STATE: Error -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Error State</h3>
+      <div class="post-card post-card--error" data-ds-id="ds:comp:post-card-001--error">
+        <div class="post-card__error-icon">⚠️</div>
+        <p class="post-card__error-text">Không thể tải dữ liệu</p>
+        <button class="btn btn--primary btn--sm">Thử lại</button>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

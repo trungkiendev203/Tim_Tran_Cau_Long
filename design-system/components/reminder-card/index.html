@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ds:comp:reminder-card-001 — Reminder Card</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../tokens/tokens.css" />
+  <style>
+    /* tokens.css imported above — no :root needed */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-family); background: var(--sm-bg-page); padding: var(--space-xl); color: var(--sm-text-primary); }
+    .showcase { max-width: 420px; }
+    .showcase__title { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); margin-bottom: var(--space-xl); }
+    .showcase__section { margin-bottom: var(--space-lg); }
+    .showcase__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--sm-text-secondary); text-transform: uppercase; letter-spacing: .05em; margin-bottom: var(--space-md); }
+
+    .reminder-card {
+      background: var(--sm-bg-surface); border: 1px solid var(--sm-border-default); border-radius: var(--radius-lg);
+      padding: var(--space-lg); box-shadow: var(--shadow-sm);
+      transition: box-shadow var(--transition-normal);
+    }
+    .reminder-card:hover { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    .reminder-card--inactive { opacity: 0.55; }
+
+    .reminder-card__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .reminder-card__name { font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+    .reminder-card__name-icon { font-size: 16px; }
+
+    /* Toggle */
+    .toggle { position: relative; width: 40px; height: 22px; cursor: pointer; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle__track {
+      position: absolute; inset: 0; background: #cbd5e1; border-radius: 11px;
+      transition: background 200ms ease;
+    }
+    .toggle__thumb {
+      position: absolute; top: 2px; left: 2px; width: 18px; height: 18px;
+      background: #fff; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+      transition: transform 200ms ease;
+    }
+    .toggle input:checked ~ .toggle__track { background: var(--color-primary-600); }
+    .toggle input:checked ~ .toggle__thumb { transform: translateX(18px); }
+
+    .reminder-card__details { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .reminder-card__detail {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 12px; color: #64748b; background: #f1f5f9;
+      padding: 4px 10px; border-radius: 6px;
+    }
+
+    .reminder-card__badges { display: flex; gap: 4px; margin-bottom: 12px; }
+    .badge { display: inline-flex; padding: 3px 8px; font-size: 11px; font-weight: 600; border-radius: 9999px; border: 1.5px solid; }
+    .badge--tb { background: #bfdbfe; color: #1d4ed8; border-color: #60a5fa; }
+    .badge--tb-plus { background: #ede9fe; color: #5b21b6; border-color: #c4b5fd; }
+
+    .reminder-card__match { font-size: var(--font-size-xs); color: var(--color-primary-600); font-weight: var(--font-weight-semibold); display: flex; align-items: center; gap: 4px; }
+
+    .reminder-card__actions { display: flex; gap: 8px; margin-top: 12px; border-top: 1px solid #f1f5f9; padding-top: 12px; }
+    .reminder-card__action {
+      flex: 1; padding: 6px; font-size: 12px; font-weight: 500; text-align: center;
+      border: none; border-radius: 6px; cursor: pointer; font-family: var(--font-family);
+      transition: background 150ms ease;
+    }
+    .reminder-card__action--edit { background: #f1f5f9; color: #475569; }
+    .reminder-card__action--edit:hover { background: #e2e8f0; }
+    .reminder-card__action--delete { background: #fef2f2; color: #dc2626; }
+    .reminder-card__action--delete:hover { background: #fee2e2; }
+  </style>
+</head>
+<body>
+  <div class="showcase" data-ds-id="ds:comp:reminder-card-001">
+    <h2 class="showcase__title">ds:comp:reminder-card-001 — Reminder Card</h2>
+
+    <!-- Active -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Active</h3>
+      <div class="reminder-card" data-ds-id="ds:comp:reminder-card-001--active">
+        <div class="reminder-card__header">
+          <span class="reminder-card__name"><span class="reminder-card__name-icon">📅</span> Tối hàng tuần</span>
+          <label class="toggle"><input type="checkbox" checked /><span class="toggle__track"></span><span class="toggle__thumb"></span></label>
+        </div>
+        <div class="reminder-card__details">
+          <span class="reminder-card__detail">📆 T3, T5, T7</span>
+          <span class="reminder-card__detail">⏰ 19:00 – 21:00</span>
+        </div>
+        <div class="reminder-card__badges"><span class="badge badge--tb">TB</span><span class="badge badge--tb-plus">TB+</span></div>
+        <div class="reminder-card__match">✅ 3 kèo phù hợp hôm nay</div>
+        <div class="reminder-card__actions">
+          <button class="reminder-card__action reminder-card__action--edit">✏️ Sửa</button>
+          <button class="reminder-card__action reminder-card__action--delete">🗑️ Xóa</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Inactive -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Inactive</h3>
+      <div class="reminder-card reminder-card--inactive" data-ds-id="ds:comp:reminder-card-001--inactive">
+        <div class="reminder-card__header">
+          <span class="reminder-card__name"><span class="reminder-card__name-icon">📅</span> Cuối tuần</span>
+          <label class="toggle"><input type="checkbox" /><span class="toggle__track"></span><span class="toggle__thumb"></span></label>
+        </div>
+        <div class="reminder-card__details">
+          <span class="reminder-card__detail">📆 T7, CN</span>
+          <span class="reminder-card__detail">⏰ 08:00 – 11:00</span>
+        </div>
+        <div class="reminder-card__badges"><span class="badge badge--tb">TB</span></div>
+      </div>
+    </section>
+
+    <!-- Loading (Skeleton) -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Loading / Skeleton</h3>
+      <div class="reminder-card" aria-busy="true" aria-label="Đang tải lịch nhắc" data-ds-id="ds:comp:reminder-card-001--loading">
+        <div class="reminder-card__header">
+          <div style="display:flex;align-items:center;gap:6px;"><div class="skeleton skeleton--circle" style="width:16px;height:16px;"></div><div class="skeleton" style="width:120px;height:20px;border-radius:4px;"></div></div>
+          <div class="skeleton switch-sk" style="width:40px;height:22px;border-radius:11px;"></div>
+        </div>
+        <div class="reminder-card__details">
+          <div class="skeleton" style="width:80px;height:22px;border-radius:6px;"></div>
+          <div class="skeleton" style="width:100px;height:22px;border-radius:6px;"></div>
+        </div>
+        <div class="reminder-card__badges"><div class="skeleton skeleton--pill" style="width:40px;height:20px;"></div></div>
+      </div>
+    </section>
+
+    <!-- Error -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Error</h3>
+      <div class="reminder-card" style="text-align:center;padding:32px 16px;border-color:var(--color-danger-200);background:var(--color-danger-50);" data-ds-id="ds:comp:reminder-card-001--error">
+        <div style="font-size:24px;margin-bottom:8px">⚠️</div>
+        <p style="font-size:var(--font-size-sm);color:var(--color-danger-600);font-weight:var(--font-weight-medium);margin-bottom:12px">Không thể tải lịch nhắc</p>
+        <button class="btn btn--secondary" style="background:#fff;border-color:var(--color-danger-200);">Thử lại</button>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

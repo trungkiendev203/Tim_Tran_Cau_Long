@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ds:comp:button-001 — Chill Cầu Button</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../tokens/tokens.css" />
+  <link rel="stylesheet" href="../../base/base.css" />
+  <style>
+    /* Showcase layout */
+    body { padding: var(--space-xl); background: var(--sm-bg-page); }
+    .showcase { max-width: 800px; }
+    .showcase__title { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); margin-bottom: var(--space-xl); }
+    .showcase__group { margin-bottom: var(--space-xl); display: flex; align-items: center; gap: var(--space-md); flex-wrap: wrap; }
+    .showcase__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--sm-text-secondary); text-transform: uppercase; letter-spacing: .05em; width: 80px; flex-shrink: 0; }
+
+    /* Component-level: icon inside button */
+    .btn__icon { font-size: 16px; line-height: 1; }
+
+    /* Loading spinner inside button — extends base .spinner */
+    .btn--loading .btn__icon { display: none; }
+
+    /* Hover lift on primary only */
+    .btn--primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+    .btn--primary:active:not(:disabled) { transform: translateY(0); box-shadow: var(--shadow-sm); }
+
+    /* Disabled override for primary — show tinted green */
+    .btn--primary:disabled { background-color: var(--color-primary-200); border-color: var(--color-primary-200); opacity: 1; }
+
+    /* Hover lift on danger */
+    .btn--danger:hover:not(:disabled) { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+
+    /* Size fix: btn--lg radius aligned to token */
+    .btn--lg { border-radius: var(--radius-lg); }
+  </style>
+</head>
+<body>
+  <div class="showcase" data-ds-id="ds:comp:button-001">
+    <h2 class="showcase__title">ds:comp:button-001 — Button</h2>
+
+    <!-- Primary -->
+    <section class="showcase__group">
+      <h3 class="showcase__label">Primary</h3>
+      <button class="btn btn--primary" data-ds-id="ds:comp:button-001--primary">Tìm kèo ngay</button>
+      <button class="btn btn--primary btn--hover" data-ds-id="ds:comp:button-001--primary-hover">Hover</button>
+      <button class="btn btn--primary btn--active" data-ds-id="ds:comp:button-001--primary-active">Active</button>
+      <button class="btn btn--primary" disabled data-ds-id="ds:comp:button-001--primary-disabled">Disabled</button>
+    </section>
+
+    <!-- Secondary -->
+    <section class="showcase__group">
+      <h3 class="showcase__label">Secondary</h3>
+      <button class="btn btn--secondary" data-ds-id="ds:comp:button-001--secondary">Lọc kèo</button>
+      <button class="btn btn--secondary btn--hover" data-ds-id="ds:comp:button-001--secondary-hover">Hover</button>
+      <button class="btn btn--secondary btn--active" data-ds-id="ds:comp:button-001--secondary-active">Active</button>
+      <button class="btn btn--secondary" disabled data-ds-id="ds:comp:button-001--secondary-disabled">Disabled</button>
+    </section>
+
+    <!-- Danger -->
+    <section class="showcase__group">
+      <h3 class="showcase__label">Danger</h3>
+      <button class="btn btn--danger" data-ds-id="ds:comp:button-001--danger">Xóa lịch</button>
+      <button class="btn btn--danger btn--hover" data-ds-id="ds:comp:button-001--danger-hover">Hover</button>
+      <button class="btn btn--danger btn--active" data-ds-id="ds:comp:button-001--danger-active">Active</button>
+      <button class="btn btn--danger" disabled data-ds-id="ds:comp:button-001--danger-disabled">Disabled</button>
+    </section>
+
+    <!-- Sizes -->
+    <section class="showcase__group">
+      <h3 class="showcase__label">Sizes</h3>
+      <button class="btn btn--primary btn--sm" data-ds-id="ds:comp:button-001--sm">Nhỏ</button>
+      <button class="btn btn--primary" data-ds-id="ds:comp:button-001--md">Vừa</button>
+      <button class="btn btn--primary btn--lg" data-ds-id="ds:comp:button-001--lg">Lớn</button>
+    </section>
+
+    <!-- Icon Button -->
+    <section class="showcase__group">
+      <h3 class="showcase__label">Icon + Text</h3>
+      <button class="btn btn--primary btn--icon" data-ds-id="ds:comp:button-001--icon">
+        <span class="btn__icon">🏸</span> Tìm kèo
+      </button>
+      <button class="btn btn--secondary btn--icon" data-ds-id="ds:comp:button-001--icon-secondary">
+        <span class="btn__icon">🗺️</span> Bản đồ
+      </button>
+    </section>
+  </div>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ds:comp:notification-bell-001 — Notification Bell</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../tokens/tokens.css" />
+  <style>
+    /* tokens.css imported above — no :root needed */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-family); background: var(--sm-bg-page); padding: var(--space-xl); color: var(--sm-text-primary); }
+    .showcase { max-width: 400px; }
+    .showcase__title { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); margin-bottom: var(--space-xl); }
+    .showcase__section { margin-bottom: var(--space-2xl); }
+    .showcase__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--sm-text-secondary); text-transform: uppercase; letter-spacing: .05em; margin-bottom: var(--space-md); }
+
+    .bell-wrap { position: relative; display: inline-block; }
+    .bell-btn {
+      background: none; border: none; font-size: 24px; cursor: pointer;
+      padding: 8px; border-radius: 8px; transition: background 150ms ease;
+    }
+    .bell-btn:hover { background: #f1f5f9; }
+    .bell-count {
+      position: absolute; top: 2px; right: 2px;
+      background: #ef4444; color: #fff; font-size: 10px; font-weight: 700;
+      min-width: 18px; height: 18px; border-radius: 9999px;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 4px; border: 2px solid #fff;
+    }
+
+    .notif-dropdown {
+      width: 340px; background: var(--sm-bg-surface); border: 1px solid var(--sm-border-default);
+      border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+      overflow: hidden; margin-top: var(--space-sm);
+    }
+    .notif-dropdown__header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 16px; border-bottom: 1px solid #f1f5f9;
+    }
+    .notif-dropdown__title { font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); }
+    .notif-dropdown__mark { font-size: var(--font-size-xs); color: var(--color-primary-600); cursor: pointer; background: none; border: none; font-family: var(--font-family); }
+
+    .notif-item {
+      padding: 12px 16px; display: flex; gap: 10px;
+      border-bottom: 1px solid #f8fafc; cursor: pointer;
+      transition: background 150ms ease;
+    }
+    .notif-item:hover { background: #f8fafc; }
+    .notif-item--unread { background: var(--color-primary-50); }
+    .notif-item__icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+    .notif-item__body { flex: 1; }
+    .notif-item__text { font-size: var(--font-size-xs); line-height: var(--line-height-relaxed); }
+    .notif-item__text strong { font-weight: var(--font-weight-semibold); color: var(--sm-text-primary); }
+    .notif-item__time { font-size: 11px; color: var(--sm-text-muted); margin-top: 2px; }
+    .notif-item__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-primary-600); flex-shrink: 0; margin-top: 6px; }
+
+    .notif-dropdown__footer { padding: 10px; text-align: center; }
+    .notif-dropdown__footer a { font-size: var(--font-size-xs); color: var(--color-primary-600); font-weight: var(--font-weight-medium); text-decoration: none; }
+
+    /* Empty state */
+    .notif-empty { padding: 32px 16px; text-align: center; }
+    .notif-empty__icon { font-size: 32px; margin-bottom: var(--space-sm); opacity: 0.4; }
+    .notif-empty__text { font-size: var(--font-size-xs); color: var(--sm-text-muted); }
+  </style>
+</head>
+<body>
+  <div class="showcase" data-ds-id="ds:comp:notification-bell-001">
+    <h2 class="showcase__title">ds:comp:notification-bell-001</h2>
+
+    <!-- With notifications -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Has Notifications</h3>
+      <div class="bell-wrap" data-ds-id="ds:comp:notification-bell-001--has-notif">
+        <button class="bell-btn">🔔</button>
+        <span class="bell-count">3</span>
+      </div>
+      <div class="notif-dropdown" data-ds-id="ds:comp:notification-bell-001--dropdown">
+        <div class="notif-dropdown__header">
+          <span class="notif-dropdown__title">Thông báo</span>
+          <button class="notif-dropdown__mark">Đánh dấu đã đọc</button>
+        </div>
+        <div class="notif-item notif-item--unread">
+          <span class="notif-item__icon">🏸</span>
+          <div class="notif-item__body">
+            <p class="notif-item__text">Có <strong>kèo mới</strong> phù hợp lịch <strong>"Tối hàng tuần"</strong> — Sân A&C Đại Tú, TB+</p>
+            <span class="notif-item__time">5 phút trước</span>
+          </div>
+          <span class="notif-item__dot"></span>
+        </div>
+        <div class="notif-item notif-item--unread">
+          <span class="notif-item__icon">📅</span>
+          <div class="notif-item__body">
+            <p class="notif-item__text">Nhắc nhở: Kèo <strong>20:00 tối nay</strong> tại sân Hà Đông</p>
+            <span class="notif-item__time">15 phút trước</span>
+          </div>
+          <span class="notif-item__dot"></span>
+        </div>
+        <div class="notif-item">
+          <span class="notif-item__icon">✅</span>
+          <div class="notif-item__body">
+            <p class="notif-item__text">Lịch <strong>"Cuối tuần"</strong> đã được tạo thành công</p>
+            <span class="notif-item__time">2 giờ trước</span>
+          </div>
+        </div>
+        <div class="notif-dropdown__footer"><a href="#">Xem tất cả thông báo</a></div>
+      </div>
+    </section>
+
+    <!-- Empty -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Empty</h3>
+      <div class="bell-wrap" data-ds-id="ds:comp:notification-bell-001--empty">
+        <button class="bell-btn">🔔</button>
+      </div>
+      <div class="notif-dropdown">
+        <div class="notif-dropdown__header">
+          <span class="notif-dropdown__title">Thông báo</span>
+        </div>
+        <div class="notif-empty">
+          <div class="notif-empty__icon">🔕</div>
+          <p class="notif-empty__text">Chưa có thông báo mới</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Loading -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Loading / Skeleton</h3>
+      <div class="bell-wrap" data-ds-id="ds:comp:notification-bell-001--loading">
+        <button class="bell-btn" disabled>🔔</button>
+      </div>
+      <div class="notif-dropdown" aria-busy="true" aria-label="Đang tải thông báo">
+        <div class="notif-dropdown__header">
+          <span class="notif-dropdown__title">Thông báo</span>
+        </div>
+        <div class="notif-item">
+          <div class="skeleton skeleton--circle" style="width:32px;height:32px;flex-shrink:0;"></div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
+            <div class="skeleton" style="width:100%;height:14px;border-radius:4px;"></div>
+            <div class="skeleton" style="width:80%;height:14px;border-radius:4px;"></div>
+            <div class="skeleton" style="width:40px;height:10px;border-radius:2px;margin-top:4px;"></div>
+          </div>
+        </div>
+        <div class="notif-item">
+          <div class="skeleton skeleton--circle" style="width:32px;height:32px;flex-shrink:0;"></div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
+            <div class="skeleton" style="width:90%;height:14px;border-radius:4px;"></div>
+            <div class="skeleton" style="width:60%;height:14px;border-radius:4px;"></div>
+            <div class="skeleton" style="width:40px;height:10px;border-radius:2px;margin-top:4px;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Error -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Error / Offline</h3>
+      <div class="bell-wrap" data-ds-id="ds:comp:notification-bell-001--error">
+        <button class="bell-btn" disabled style="opacity:0.5;">🔔</button>
+      </div>
+      <div class="notif-dropdown">
+        <div class="notif-dropdown__header">
+          <span class="notif-dropdown__title">Thông báo</span>
+        </div>
+        <div class="notif-empty" style="padding:32px 16px;text-align:center;">
+          <div class="notif-empty__icon" style="color:var(--color-danger-500);opacity:1;">⚠️</div>
+          <p class="notif-empty__text" style="color:var(--color-danger-600);margin-bottom:12px;">Không thể kết nối máy chủ</p>
+          <button class="btn btn--secondary" style="font-size:12px;padding:6px 12px;background:#fff;">Thử lại</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ds:screen:feed-states — Feed Empty/Offline/Error States</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --font-family: 'Inter', -apple-system, sans-serif; --color-primary: #16a34a; --color-primary-hover: #15803d; --color-border: #e2e8f0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-family); background: #f8fafc; padding: 24px; color: #1e293b; display: flex; gap: 24px; flex-wrap: wrap; }
+
+    .state-card { width: 380px; background: #fff; border: 1px solid var(--color-border); border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); overflow: hidden; }
+    .state-card__label { padding: 10px 16px; background: #f8fafc; font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: .05em; border-bottom: 1px solid #f1f5f9; }
+    .state-card__body { padding: 48px 32px; text-align: center; }
+
+    .state-icon { font-size: 56px; margin-bottom: 16px; }
+    .state-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .state-desc { font-size: 14px; color: #64748b; line-height: 1.5; margin-bottom: 20px; }
+    .state-hint { font-size: 12px; color: #94a3b8; margin-top: 12px; }
+
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 24px; font-size: 14px; font-weight: 600; border: 1.5px solid transparent; border-radius: 8px; cursor: pointer; font-family: var(--font-family); }
+    .btn--primary { background: var(--color-primary); color: #fff; }
+    .btn--secondary { background: transparent; border-color: var(--color-border); color: #475569; }
+    .btn-group { display: flex; gap: 8px; justify-content: center; }
+
+    /* Offline indicator */
+    .offline-bar { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px; font-size: 12px; font-weight: 600; background: #fef3c7; color: #92400e; border-bottom: 1px solid #fde68a; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .offline-dot { width: 6px; height: 6px; border-radius: 50%; background: #f59e0b; animation: blink 1.5s ease infinite; }
+
+    /* Permission card extra */
+    .perm-list { text-align: left; margin: 0 auto 16px; max-width: 240px; }
+    .perm-item { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: #475569; margin-bottom: 8px; }
+    .perm-item__icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  </style>
+</head>
+<body>
+  <!-- STATE: Empty — No results -->
+  <div class="state-card" data-ds-id="ds:screen:feed-states--empty">
+    <div class="state-card__label">State: Empty (No results)</div>
+    <div class="state-card__body">
+      <div class="state-icon">🏸</div>
+      <h2 class="state-title">Chưa có kèo nào phù hợp</h2>
+      <p class="state-desc">Không tìm thấy kèo nào khớp bộ lọc của bạn. Hãy thử tìm kiếm khác.</p>
+      <div class="btn-group">
+        <button class="btn btn--secondary">Xóa bộ lọc</button>
+        <button class="btn btn--primary">✨ Thử AI Search</button>
+      </div>
+      <p class="state-hint">💡 Tip: Tạo lịch nhắc để được thông báo khi có kèo mới</p>
+    </div>
+  </div>
+
+  <!-- STATE: Error -->
+  <div class="state-card" data-ds-id="ds:screen:feed-states--error">
+    <div class="state-card__label">State: Error (Server)</div>
+    <div class="state-card__body">
+      <div class="state-icon">⚠️</div>
+      <h2 class="state-title">Không thể tải dữ liệu</h2>
+      <p class="state-desc">Đã xảy ra lỗi khi tải danh sách kèo. Vui lòng thử lại sau vài giây.</p>
+      <div class="btn-group">
+        <button class="btn btn--primary">🔄 Tải lại</button>
+      </div>
+      <p class="state-hint">Mã lỗi: 500 · Liên hệ support nếu lỗi lặp lại</p>
+    </div>
+  </div>
+
+  <!-- STATE: Offline -->
+  <div class="state-card" data-ds-id="ds:screen:feed-states--offline">
+    <div class="state-card__label">State: Offline</div>
+    <div class="offline-bar"><span class="offline-dot"></span> Bạn đang offline</div>
+    <div class="state-card__body">
+      <div class="state-icon">📡</div>
+      <h2 class="state-title">Mất kết nối mạng</h2>
+      <p class="state-desc">Chill Cầu cần internet để tải danh sách kèo mới nhất từ Facebook.</p>
+      <button class="btn btn--primary">🔄 Kiểm tra kết nối</button>
+      <p class="state-hint">Dữ liệu hiển thị có thể đã cũ</p>
+    </div>
+  </div>
+
+  <!-- STATE: Permission Denied (Location) -->
+  <div class="state-card" data-ds-id="ds:screen:feed-states--permission">
+    <div class="state-card__label">State: Permission Denied</div>
+    <div class="state-card__body">
+      <div class="state-icon">📍</div>
+      <h2 class="state-title">Cho phép truy cập vị trí</h2>
+      <p class="state-desc">Chill Cầu cần vị trí để hiển thị kèo gần bạn và tính khoảng cách.</p>
+      <div class="perm-list">
+        <div class="perm-item"><span class="perm-item__icon">📍</span> Tính khoảng cách đến sân</div>
+        <div class="perm-item"><span class="perm-item__icon">🗺️</span> Hiển thị sân xung quanh bạn</div>
+        <div class="perm-item"><span class="perm-item__icon">🔒</span> Vị trí không được lưu trữ</div>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn--secondary">Bỏ qua</button>
+        <button class="btn btn--primary">Cho phép vị trí</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATE: First-time / Onboarding -->
+  <div class="state-card" data-ds-id="ds:screen:feed-states--onboarding">
+    <div class="state-card__label">State: First-time User</div>
+    <div class="state-card__body">
+      <div class="state-icon">👋</div>
+      <h2 class="state-title">Chào mừng đến Chill Cầu!</h2>
+      <p class="state-desc">Tìm kèo cầu lông phù hợp trong vài giây — không cần lướt Facebook cả tiếng đồng hồ.</p>
+      <div class="btn-group">
+        <button class="btn btn--primary">🏸 Bắt đầu tìm kèo</button>
+      </div>
+      <p class="state-hint">Đã có 200+ kèo hôm nay tại Hà Nội</p>
+    </div>
+  </div>
+</body>
+</html>

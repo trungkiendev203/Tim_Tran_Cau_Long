@@ -1,0 +1,216 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ds:comp:modal-001 — Modal / Dialog</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!--
+    ds:comp:modal-001 — Modal / Dialog
+    Usage: Overlay dialogs requiring user action (confirm, form, share)
+    Variants: confirm, form, share
+    Do NOT: Use for non-blocking info — use Toast instead
+    Props: open, title, size (sm | md | lg)
+    A11y: role="dialog" + aria-modal + aria-labelledby + focus trap required in JS
+  -->
+  <link rel="stylesheet" href="../../tokens/tokens.css" />
+  <link rel="stylesheet" href="../../base/base.css" />
+  <style>
+    /* tokens.css + base.css imported above — .btn, .form-input, .form-label, .form-group come from base.css */
+    body { padding: var(--space-xl); }
+    .showcase { max-width: 550px; }
+    .showcase__title { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); margin-bottom: var(--space-xl); }
+    .showcase__section { margin-bottom: 40px; }
+    .showcase__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--sm-text-secondary); text-transform: uppercase; letter-spacing: .05em; margin-bottom: var(--space-md); }
+
+    /* Overlay */
+    .modal-overlay { background: var(--sm-bg-overlay); border-radius: var(--radius-xl); padding: var(--space-2xl); display: flex; align-items: center; justify-content: center; }
+
+    /* Modal container */
+    .modal { background: var(--sm-bg-surface); border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); width: 100%; max-width: 480px; overflow: hidden; animation: modalIn var(--transition-slow); }
+    @keyframes modalIn { from { opacity: 0; transform: translateY(16px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+    .modal__header { display: flex; justify-content: space-between; align-items: center; padding: var(--space-lg) 20px; border-bottom: 1px solid var(--color-neutral-100); }
+    .modal__title { font-size: var(--font-size-base); font-weight: var(--font-weight-bold); display: flex; align-items: center; gap: var(--space-sm); }
+    .modal__close { background: none; border: none; font-size: 18px; color: var(--sm-text-muted); cursor: pointer; padding: var(--space-xs); border-radius: var(--radius-sm); transition: background var(--transition-fast); line-height: 1; }
+    .modal__close:hover { background: var(--color-neutral-100); color: var(--sm-text-secondary); }
+    .modal__close:focus-visible { outline: 2px solid var(--sm-border-focus); outline-offset: 2px; }
+
+    .modal__body { padding: 20px; }
+    .modal__text { font-size: var(--font-size-sm); color: var(--sm-text-secondary); line-height: var(--line-height-relaxed); }
+    .modal__footer { display: flex; justify-content: flex-end; gap: var(--space-sm); padding: 14px 20px; border-top: 1px solid var(--color-neutral-100); background: var(--sm-bg-page); }
+
+    /* Modal-specific overrides: slightly smaller btn padding for compact dialogs */
+    .modal .btn { padding: 9px 18px; }
+    /* Modal-specific: form-group spacing override */
+    .modal .form-group { margin-bottom: 14px; }
+    .modal .form-group:last-child { margin-bottom: 0; }
+
+    .filter-btns { display: flex; gap: 5px; flex-wrap: wrap; }
+    .filter-btn { padding: 5px 10px; font-size: var(--font-size-xs); font-weight: var(--font-weight-medium); border: 1.5px solid var(--sm-border-default); border-radius: var(--radius-full); background: #fff; color: var(--sm-text-secondary); cursor: pointer; font-family: var(--font-family); }
+    .filter-btn--active { background: var(--color-primary-50); border-color: var(--color-primary-300); color: var(--color-primary-600); font-weight: var(--font-weight-semibold); }
+    .day-btns { display: flex; gap: 4px; }
+    .day-btn { width: 36px; height: 36px; border-radius: var(--radius-md); border: 1.5px solid var(--sm-border-default); background: #fff; font-size: 11px; font-weight: var(--font-weight-semibold); cursor: pointer; font-family: var(--font-family); color: var(--sm-text-secondary); display: flex; align-items: center; justify-content: center; }
+    .day-btn--active { background: var(--color-primary-50); border-color: var(--color-primary-300); color: var(--color-primary-600); }
+  </style>
+</head>
+<body>
+  <div class="showcase" data-ds-id="ds:comp:modal-001">
+    <h2 class="showcase__title">ds:comp:modal-001 — Modal / Dialog</h2>
+
+    <!-- Confirm modal -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Confirm Dialog</h3>
+      <div class="modal-overlay" role="presentation">
+        <!-- [A11Y FIX] role="dialog", aria-modal, aria-labelledby -->
+        <div class="modal"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="modal-confirm-title"
+             data-ds-id="ds:comp:modal-001--confirm">
+          <div class="modal__header">
+            <span id="modal-confirm-title" class="modal__title">⚠️ Xóa lịch nhắc</span>
+            <!-- [A11Y FIX] aria-label="Đóng" on close button -->
+            <button class="modal__close" aria-label="Đóng hộp thoại">✕</button>
+          </div>
+          <div class="modal__body">
+            <p class="modal__text">Bạn có chắc muốn xóa lịch <strong>"Tối hàng tuần"</strong>? Hành động này không thể hoàn tác.</p>
+          </div>
+          <div class="modal__footer">
+            <button class="btn btn--secondary">Hủy</button>
+            <button class="btn btn--danger">Xóa</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Form modal: Create reminder -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Form Modal — Tạo lịch nhắc</h3>
+      <div class="modal-overlay" role="presentation">
+        <div class="modal"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="modal-form-title"
+             data-ds-id="ds:comp:modal-001--form">
+          <div class="modal__header">
+            <span id="modal-form-title" class="modal__title">📅 Tạo lịch nhắc mới</span>
+            <button class="modal__close" aria-label="Đóng hộp thoại">✕</button>
+          </div>
+          <div class="modal__body">
+            <div class="form-group">
+              <label class="form-label" for="reminder-name">Tên lịch</label>
+              <input id="reminder-name" class="form-input" type="text" placeholder="VD: Tối hàng tuần" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Ngày trong tuần</label>
+              <div class="day-btns" role="group" aria-label="Chọn ngày trong tuần">
+                <button class="day-btn" aria-pressed="false">T2</button>
+                <button class="day-btn day-btn--active" aria-pressed="true">T3</button>
+                <button class="day-btn" aria-pressed="false">T4</button>
+                <button class="day-btn day-btn--active" aria-pressed="true">T5</button>
+                <button class="day-btn" aria-pressed="false">T6</button>
+                <button class="day-btn day-btn--active" aria-pressed="true">T7</button>
+                <button class="day-btn" aria-pressed="false">CN</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Khung giờ</label>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <input class="form-input" type="time" value="19:00" aria-label="Giờ bắt đầu" style="flex:1;" />
+                <span style="color:var(--sm-text-muted);" aria-hidden="true">→</span>
+                <input class="form-input" type="time" value="21:00" aria-label="Giờ kết thúc" style="flex:1;" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Trình độ</label>
+              <div class="filter-btns" role="group" aria-label="Chọn trình độ">
+                <button class="filter-btn" aria-pressed="false">Y</button>
+                <button class="filter-btn" aria-pressed="false">TBY</button>
+                <button class="filter-btn filter-btn--active" aria-pressed="true">TB</button>
+                <button class="filter-btn filter-btn--active" aria-pressed="true">TB+</button>
+                <button class="filter-btn" aria-pressed="false">Khá</button>
+              </div>
+            </div>
+          </div>
+          <div class="modal__footer">
+            <button class="btn btn--secondary">Hủy</button>
+            <button class="btn btn--primary">Tạo lịch</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Share modal -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Share Dialog</h3>
+      <div class="modal-overlay" role="presentation">
+        <div class="modal"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="modal-share-title"
+             data-ds-id="ds:comp:modal-001--share">
+          <div class="modal__header">
+            <span id="modal-share-title" class="modal__title">🔗 Chia sẻ kèo</span>
+            <button class="modal__close" aria-label="Đóng hộp thoại">✕</button>
+          </div>
+          <div class="modal__body">
+            <div class="form-group">
+              <label class="form-label" for="share-url">Link chia sẻ</label>
+              <div style="display:flex;gap:8px;">
+                <input id="share-url" class="form-input" type="text" value="https://Chill Cầu.vn/posts/123" readonly style="flex:1;" />
+                <button class="btn btn--primary">📋 Copy</button>
+              </div>
+            </div>
+            <p class="modal__text" style="margin-top:8px;">Hoặc chia sẻ qua:</p>
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <button class="btn btn--secondary" style="flex:1;">💬 Zalo</button>
+              <button class="btn btn--secondary" style="flex:1;">📘 Facebook</button>
+              <button class="btn btn--secondary" style="flex:1;">📧 Email</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    /* 
+      Focus Trap Pattern (Vanilla JS)
+      Developer Integration Note: Use this logic when opening a modal.
+    */
+    function setupModalFocusTrap(modalElement) {
+      const focusableSelectors = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+      const focusableElements = modalElement.querySelectorAll(focusableSelectors);
+      if (focusableElements.length === 0) return;
+      
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      modalElement.addEventListener('keydown', function(e) {
+        if (e.key === 'Tab') {
+          if (e.shiftKey) { // Shift + Tab
+            if (document.activeElement === firstElement) {
+              lastElement.focus();
+              e.preventDefault();
+            }
+          } else { // Tab
+            if (document.activeElement === lastElement) {
+              firstElement.focus();
+              e.preventDefault();
+            }
+          }
+        }
+        if (e.key === 'Escape') {
+          // Implement close logic here
+          console.log('Close modal requested via Escape key');
+        }
+      });
+    }
+
+    // In a real app, call setupModalFocusTrap(modal) when the modal opens.
+    // For this showcase, we will apply it to all modals:
+    document.querySelectorAll('[role="dialog"]').forEach(setupModalFocusTrap);
+  </script>
+</body>
+</html>

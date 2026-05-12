@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ds:comp:toast-001 — Toast Notifications</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../tokens/tokens.css" />
+  <link rel="stylesheet" href="../../base/base.css" />
+  <!--
+    ds:comp:toast-001 — Toast Notification
+    Usage: Brief non-blocking feedback after user actions
+    Variants: success, error, info, warning
+    Do NOT: Use for blocking actions requiring user response — use Modal instead
+    A11y: role="alert" (error/warning) or role="status" (success/info) required
+    Props: variant, message, action-label, duration (auto-dismiss ms)
+  -->
+  <style>
+    /* tokens.css + base.css imported — reset/body come from base.css */
+    body { padding: var(--space-xl); }
+    .showcase { max-width: 420px; }
+    .showcase__title { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); margin-bottom: var(--space-xl); }
+    .showcase__section { margin-bottom: var(--space-lg); }
+    .showcase__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--sm-text-secondary); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 10px; }
+
+    .toast {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: var(--space-md) var(--space-lg); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      animation: slideIn var(--transition-slow);
+      position: relative;
+    }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+
+    .toast__icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .toast__body { flex: 1; }
+    .toast__title { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); margin-bottom: 2px; }
+    .toast__message { font-size: var(--font-size-xs); line-height: var(--line-height-snug); }
+    .toast__close { background: none; border: none; font-size: 14px; cursor: pointer; padding: 2px; border-radius: var(--radius-sm); position: absolute; top: var(--space-sm); right: var(--space-sm); opacity: 0.5; }
+    .toast__close:hover { opacity: 1; }
+    .toast__close:focus-visible { outline: 2px solid var(--sm-border-focus); outline-offset: 2px; }
+    .toast__action { background: none; border: none; font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); cursor: pointer; padding: 0; margin-top: var(--space-xs); font-family: var(--font-family); text-decoration: underline; }
+
+    /* Progress bar */
+    .toast__progress { position: absolute; bottom: 0; left: 0; height: 3px; border-radius: 0 0 var(--radius-lg) var(--radius-lg); animation: progress 5s linear; }
+    @keyframes progress { from { width: 100%; } to { width: 0; } }
+
+    /* Variants — using token colors where mapped */
+    .toast--success { background: var(--color-primary-50); border: 1px solid var(--color-primary-200); }
+    .toast--success .toast__title { color: var(--color-primary-800); }
+    .toast--success .toast__message { color: var(--color-primary-700); }
+    .toast--success .toast__close { color: var(--color-primary-800); }
+    .toast--success .toast__action { color: var(--color-primary-600); }
+    .toast--success .toast__progress { background: var(--color-primary-500); }
+
+    .toast--error { background: #fef2f2; border: 1px solid var(--color-danger-400); }
+    .toast--error .toast__title { color: #991b1b; }
+    .toast--error .toast__message { color: var(--color-danger-600); }
+    .toast--error .toast__close { color: #991b1b; }
+    .toast--error .toast__action { color: var(--color-danger-500); }
+    .toast--error .toast__progress { background: var(--color-danger-500); }
+
+    .toast--info { background: #eff6ff; border: 1px solid #bfdbfe; }
+    .toast--info .toast__title { color: var(--color-accent-700); }
+    .toast--info .toast__message { color: var(--color-accent-600); }
+    .toast--info .toast__close { color: var(--color-accent-700); }
+    .toast--info .toast__progress { background: var(--color-accent-500); }
+
+    .toast--warning { background: #fffbeb; border: 1px solid #fde68a; }
+    .toast--warning .toast__title { color: #92400e; }
+    .toast--warning .toast__message { color: var(--color-warning-600); }
+    .toast--warning .toast__close { color: #92400e; }
+    .toast--warning .toast__progress { background: var(--color-warning-500); }
+
+    /* Positioning demo */
+    .toast-stack { position: relative; display: flex; flex-direction: column; gap: var(--space-sm); }
+  </style>
+</head>
+<body>
+  <div class="showcase" data-ds-id="ds:comp:toast-001">
+    <h2 class="showcase__title">ds:comp:toast-001 — Toast</h2>
+
+    <div class="toast-stack">
+      <section class="showcase__section">
+        <h3 class="showcase__label">Success</h3>
+        <!-- [A11Y FIX] role="status" = polite (does NOT interrupt screen reader) -->
+        <div class="toast toast--success" role="status" aria-live="polite" data-ds-id="ds:comp:toast-001--success">
+          <span class="toast__icon" aria-hidden="true">✅</span>
+          <div class="toast__body">
+            <div class="toast__title">Lịch nhắc đã được tạo</div>
+            <div class="toast__message">"Tối hàng tuần" — T3, T5, T7 · 19:00–21:00</div>
+            <button class="toast__action">Xem lịch →</button>
+          </div>
+          <button class="toast__close" aria-label="Đóng thông báo">✕</button>
+          <div class="toast__progress" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <section class="showcase__section">
+        <h3 class="showcase__label">Error</h3>
+        <!-- [A11Y FIX] role="alert" = assertive (interrupts screen reader immediately) -->
+        <div class="toast toast--error" role="alert" aria-live="assertive" data-ds-id="ds:comp:toast-001--error">
+          <span class="toast__icon" aria-hidden="true">❌</span>
+          <div class="toast__body">
+            <div class="toast__title">Không thể tải dữ liệu</div>
+            <div class="toast__message">Kiểm tra kết nối mạng và thử lại.</div>
+            <button class="toast__action">Thử lại</button>
+          </div>
+          <button class="toast__close" aria-label="Đóng thông báo">✕</button>
+          <div class="toast__progress" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <section class="showcase__section">
+        <h3 class="showcase__label">Info</h3>
+        <div class="toast toast--info" role="status" aria-live="polite" data-ds-id="ds:comp:toast-001--info">
+          <span class="toast__icon" aria-hidden="true">ℹ️</span>
+          <div class="toast__body">
+            <div class="toast__title">Đã copy link chia sẻ</div>
+            <div class="toast__message">Dán link vào Zalo hoặc tin nhắn để chia sẻ kèo.</div>
+          </div>
+          <button class="toast__close" aria-label="Đóng thông báo">✕</button>
+          <div class="toast__progress" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <section class="showcase__section">
+        <h3 class="showcase__label">Warning</h3>
+        <div class="toast toast--warning" role="alert" aria-live="assertive" data-ds-id="ds:comp:toast-001--warning">
+          <span class="toast__icon" aria-hidden="true">⚠️</span>
+          <div class="toast__body">
+            <div class="toast__title">Kèo sắp hết slot</div>
+            <div class="toast__message">Chỉ còn 1 chỗ ở sân A&C Đại Tú lúc 20:00.</div>
+          </div>
+          <button class="toast__close" aria-label="Đóng thông báo">✕</button>
+          <div class="toast__progress" aria-hidden="true"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

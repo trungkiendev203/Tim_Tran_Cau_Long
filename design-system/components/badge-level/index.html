@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ds:comp:badge-level-001 — Skill Level Badge</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../tokens/tokens.css" />
+  <link rel="stylesheet" href="../../base/base.css" />
+  <style>
+    /* tokens.css + base.css imported above */
+    body { padding: var(--space-xl); }
+    .showcase { max-width: 800px; }
+    .showcase__title { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); margin-bottom: var(--space-xl); }
+    .showcase__group { margin-bottom: var(--space-xl); display: flex; align-items: center; gap: var(--space-sm); flex-wrap: wrap; }
+    .showcase__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--sm-text-secondary); text-transform: uppercase; letter-spacing: .05em; width: 80px; flex-shrink: 0; }
+
+    /* .badge is in base.css, here we only declare extra specific size overrides and colors */
+    .badge--sm { padding: 2px 8px; font-size: 10px; }
+    .badge--lg { padding: 6px 14px; font-size: 14px; }
+
+    .badge--y      { background: #fef9c3; color: #854d0e; border-color: #fde047; }
+    .badge--y-plus { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
+    .badge--tby      { background: #dcfce7; color: #166534; border-color: #86efac; }
+    .badge--tby-plus { background: #d1fae5; color: #065f46; border-color: #6ee7b7; }
+    .badge--tb-minus { background: #dbeafe; color: #1e40af; border-color: #93c5fd; }
+    .badge--tb       { background: #bfdbfe; color: #1d4ed8; border-color: #60a5fa; }
+    .badge--tb-plus  { background: #ede9fe; color: #5b21b6; border-color: #c4b5fd; }
+    .badge--tb-plus2 { background: #fae8ff; color: #86198f; border-color: #e879f9; }
+    .badge--kha  { background: #ffe4e6; color: #9f1239; border-color: #fda4af; }
+    .badge--gioi { background: #fef2f2; color: #7f1d1d; border-color: #f87171; }
+  </style></head>
+<body>
+  <div class="showcase" data-ds-id="ds:comp:badge-level-001">
+    <h2 class="showcase__title">ds:comp:badge-level-001 — Skill Level Badge</h2>
+    <section class="showcase__group">
+      <span class="badge badge--y" data-ds-id="ds:comp:badge-level-001--y">Y</span>
+      <span class="badge badge--y-plus" data-ds-id="ds:comp:badge-level-001--y-plus">Y+</span>
+      <span class="badge badge--tby" data-ds-id="ds:comp:badge-level-001--tby">TBY</span>
+      <span class="badge badge--tby-plus" data-ds-id="ds:comp:badge-level-001--tby-plus">TBY+</span>
+      <span class="badge badge--tb-minus" data-ds-id="ds:comp:badge-level-001--tb-minus">TB-</span>
+      <span class="badge badge--tb" data-ds-id="ds:comp:badge-level-001--tb">TB</span>
+      <span class="badge badge--tb-plus" data-ds-id="ds:comp:badge-level-001--tb-plus">TB+</span>
+      <span class="badge badge--tb-plus2" data-ds-id="ds:comp:badge-level-001--tb-plus2">TB++</span>
+      <span class="badge badge--kha" data-ds-id="ds:comp:badge-level-001--kha">Khá</span>
+      <span class="badge badge--gioi" data-ds-id="ds:comp:badge-level-001--gioi">Giỏi</span>
+    </section>
+    <section class="showcase__group">
+      <h3 class="showcase__label">Sizes</h3>
+      <span class="badge badge--tb badge--sm">TB sm</span>
+      <span class="badge badge--tb">TB default</span>
+      <span class="badge badge--tb badge--lg">TB lg</span>
+    </section>
+  </div>
+</body>
+</html>

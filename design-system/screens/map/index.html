@@ -1,0 +1,473 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chill Cầu — Bản đồ sân cầu lông | ds:screen:map-001</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../tokens/tokens.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    :root { --font-family: 'Inter', -apple-system, sans-serif; --color-primary: #16a34a; --color-primary-hover: #15803d; --shadow-sm: 0 1px 2px rgba(0,0,0,0.05); --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1); --radius-md: 8px; --radius-lg: 12px; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-family); background: var(--sm-bg-page); color: var(--sm-text-primary); min-height: 100vh; display: flex; flex-direction: column; transition: background 200ms ease, color 200ms ease; }
+
+    /* Navbar */
+    .navbar { display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 56px; background: var(--sm-bg-surface); border-bottom: 1px solid var(--sm-border-default); z-index: 100; }
+    .navbar__brand { display: flex; align-items: center; gap: 8px; }
+    .navbar__logo { font-size: 24px; }
+    .navbar__name { font-size: 18px; font-weight: 700; color: var(--color-primary); }
+    .navbar__links { display: flex; gap: 4px; }
+    .navbar__link { padding: 8px 16px; font-size: 14px; font-weight: 500; color: var(--sm-text-secondary); text-decoration: none; border-radius: 8px; transition: all 150ms ease; }
+    .navbar__link:hover { background: var(--color-neutral-100); color: var(--sm-text-primary); }
+    .navbar__link--active { background: var(--color-primary-50); color: var(--color-primary-600); font-weight: 600; }
+    .navbar__actions { display: flex; align-items: center; gap: 12px; }
+    .navbar__avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #16a34a, #22c55e); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .navbar__avatar-initial { color: #fff; font-size: 13px; font-weight: 700; }
+
+    /* Master-Detail Layout -> 3 Column */
+    .layout-master-detail { display: grid; grid-template-columns: 320px 320px 1fr; flex: 1; overflow: hidden; }
+    @media (max-width: 1024px) { .layout-master-detail { grid-template-columns: 320px 1fr; } .map-filter-col { display: none; } }
+    @media (max-width: 768px) { .layout-master-detail { grid-template-columns: 1fr; } .map-panel { display: none; } }
+    
+    /* Filter Sidebar (Middle Column) */
+    .map-filter-col { overflow-y: auto; border-right: 1px solid var(--sm-border-default); background: var(--sm-bg-surface); padding: 16px; }
+    .filter-group { margin-bottom: 14px; }
+    .filter-group__label { font-size: 11px; font-weight: 600; color: var(--sm-text-secondary); margin-bottom: 6px; display: block; }
+    .filter-input, .filter-date, .filter-time, .filter-select { width: 100%; padding: 8px 12px; font-size: 13px; border: 1.5px solid var(--sm-border-default); border-radius: var(--radius-md); font-family: var(--font-family); background: transparent; color: var(--sm-text-primary); }
+    .filter-input:focus, .filter-select:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(22,163,74,0.08); }
+    .filter-time-range { display: flex; gap: 8px; align-items: center; }
+    .filter-time { flex: 1; }
+    .filter-btns { display: flex; gap: 5px; flex-wrap: wrap; }
+    .filter-btn { padding: 5px 10px; font-size: 11px; font-weight: 500; border: 1.5px solid var(--sm-border-default); border-radius: 9999px; background: transparent; color: var(--sm-text-secondary); cursor: pointer; }
+    .filter-btn:hover { border-color: var(--color-neutral-300); background: var(--color-neutral-100); }
+    .filter-btn--active { background: var(--color-primary-50); border-color: var(--color-primary-300); color: var(--color-primary-600); font-weight: 600; }
+    
+    /* Navbar actions port */
+    .navbar__icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; padding: 4px; border-radius: 8px; transition: background 150ms ease; color: var(--sm-text-secondary); }
+    .navbar__icon-btn:hover { background: var(--color-neutral-100); color: var(--color-danger-500); }
+    .navbar__toggle { display: flex; align-items: center; gap: 6px; background: var(--color-neutral-100); border: 1px solid var(--sm-border-default); border-radius: 20px; padding: 4px 12px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font-family); color: var(--sm-text-secondary); }
+    .navbar__toggle:hover { background: var(--color-neutral-200); }
+    .btn--warning { background: var(--color-warning-50); color: var(--color-warning-600); border: 1px solid var(--color-warning-400); }
+    .btn--warning:hover { background: var(--color-warning-100); }
+    .btn--sm { padding: 6px 14px; font-size: 12px; }
+    .btn { display: inline-flex; align-items: center; font-weight: 600; border-radius: 8px; cursor: pointer; font-family: var(--font-family); text-decoration: none; border: 1.5px solid transparent; transition: all 200ms ease; }
+    .btn--primary { background: var(--color-primary-600); color: var(--sm-text-inverse); border-color: var(--color-primary-600); }
+
+    /* Sidebar (Court List) */
+    .court-sidebar { overflow-y: auto; border-right: 1px solid var(--sm-border-default); background: var(--sm-bg-surface); }
+    .court-sidebar__header { padding: 16px; border-bottom: 1px solid var(--color-neutral-100); position: sticky; top: 0; background: var(--sm-bg-surface); z-index: 10; }
+    .court-sidebar__title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .court-sidebar__search { width: 100%; padding: 8px 12px; font-size: 13px; border: 1.5px solid var(--sm-border-default); border-radius: var(--radius-md); font-family: var(--font-family); background: transparent; color: var(--sm-text-primary); }
+    .court-sidebar__search:focus { outline: none; border-color: var(--color-primary); }
+    .court-sidebar__search::placeholder { color: var(--sm-text-muted); }
+
+    .court-list { padding: 0; }
+    .court-item { padding: 14px 16px; border-bottom: 1px solid var(--color-neutral-50); cursor: pointer; transition: background 150ms ease; }
+    .court-item:hover { background: var(--color-neutral-50); }
+    .court-item--active { background: var(--color-primary-50); border-left: 3px solid var(--color-primary-600); }
+    .court-item__name { font-size: 14px; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+    .court-item__meta { display: flex; gap: 10px; font-size: 12px; color: var(--sm-text-secondary); margin-bottom: 6px; }
+    .court-item__distance { color: var(--color-primary-600); font-weight: 500; }
+    .court-item__posts { font-size: 12px; color: var(--color-primary-600); font-weight: 600; }
+    .court-item__actions { display: flex; gap: 8px; margin-top: 6px; }
+    .court-item__btn { padding: 4px 10px; font-size: 11px; font-weight: 500; border: 1px solid var(--sm-border-default); border-radius: 6px; background: transparent; color: var(--sm-text-primary); cursor: pointer; font-family: var(--font-family); transition: all 150ms ease; }
+    .court-item__btn:hover { background: var(--color-neutral-100); }
+    .court-item__btn--dir { color: var(--color-primary-600); border-color: var(--color-primary-200); }
+
+    /* Map Panel (placeholder) */
+    .map-panel { position: relative; background: var(--color-neutral-200); display: flex; align-items: center; justify-content: center; }
+    .map-placeholder { text-align: center; color: var(--sm-text-secondary); }
+    .map-placeholder__icon { font-size: 64px; margin-bottom: 12px; opacity: 0.4; }
+    .map-placeholder__text { font-size: 18px; font-weight: 600; }
+    .map-placeholder__sub { font-size: 13px; color: var(--sm-text-muted); margin-top: 4px; }
+
+    /* Map overlay controls */
+    .map-floating-card { position: absolute; top: 24px; left: 24px; width: 260px; background: var(--sm-bg-surface); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 16px; z-index: 1000; border: 1px solid var(--sm-border-default); }
+    .map-floating-card__title { font-size: 14px; font-weight: 700; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+    .map-floating-card__desc { font-size: 12px; color: var(--sm-text-secondary); line-height: 1.5; margin-bottom: 12px; }
+    .map-floating-card__tag { display: inline-block; padding: 4px 10px; background: var(--color-accent-50); color: var(--color-accent-600); font-size: 11px; font-weight: 600; border-radius: 9999px; margin-bottom: 12px; }
+    
+    .map-fab-group { position: absolute; bottom: 24px; right: 24px; display: flex; flex-direction: column; gap: 12px; align-items: flex-end; z-index: 1000; }
+    .map-fab { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 9999px; font-weight: 600; font-size: 13px; color: #fff; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-family: var(--font-family); transition: transform 150ms ease; }
+    .map-fab:hover { transform: translateY(-2px); }
+    .map-fab--ai { background: linear-gradient(135deg, #0ea5e9, #3b82f6); }
+    .map-fab--app { background: var(--color-primary-600); }
+    .map-fab-icon { width: 40px; height: 40px; border-radius: 50%; background: var(--sm-bg-surface); color: var(--sm-text-primary); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-md); cursor: pointer; border: 1px solid var(--sm-border-default); font-size: 16px; margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar" data-ds-id="ds:comp:navbar-001">
+    <div class="navbar__brand"><span class="navbar__logo">🏸</span><span class="navbar__name">Chill Cầu</span></div>
+    <div class="navbar__links">
+      <a href="../feed/index.html" class="navbar__link">Tìm kèo</a>
+      <a href="#" class="navbar__link navbar__link--active">Bản đồ</a>
+      <a href="../coming-soon/index.html" class="navbar__link">Xếp hạng</a>
+      <a href="../coming-soon/index.html#bang-gia" class="navbar__link">Bảng giá</a>
+      <a href="../discussion/index.html" class="navbar__link" style="display:flex;align-items:center;gap:4px;">💬 Thảo luận <span style="background:#fef3c7;color:#92400e;border-radius:9999px;font-size:8px;font-weight:700;padding:1px 5px;">Phase 2</span></a>
+    </div>
+    <div class="navbar__actions">
+      <button class="navbar__toggle">🌓 Sáng</button>
+      <a href="#" class="btn btn--warning btn--sm" style="text-decoration:none;">☕ Ủng hộ & Góp ý</a>
+      <button class="navbar__icon-btn">🤍</button>
+      <button class="navbar__bell" style="position:relative;background:none;border:none;font-size:20px;cursor:pointer;">🔔<span style="position:absolute;top:-2px;right:-4px;background:#ef4444;color:#fff;font-size:10px;font-weight:700;min-width:16px;height:16px;border-radius:9999px;display:flex;align-items:center;justify-content:center;">3</span></button>
+      <a href="../profile/index.html" class="navbar__avatar" style="text-decoration:none;"><span class="navbar__avatar-initial">K</span></a>
+    </div>
+  </nav>
+
+  <!-- Master-Detail Layout -->
+  <main class="layout-master-detail" data-ds-id="ds:layout:master-detail-001">
+
+    <!-- MASTER: Court List — Default State -->
+    <aside class="court-sidebar" data-ds-id="ds:screen:map-001--sidebar">
+      <div class="court-sidebar__header">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <h3 class="court-sidebar__title" style="margin:0;">📍 Danh sách sân</h3>
+          <button style="display:flex; align-items:center; gap:4px; padding:4px 8px; font-size:12px; font-weight:600; background:var(--color-accent-50); color:var(--color-accent-600); border:1px solid var(--color-accent-400); border-radius:6px; cursor:pointer;">
+            <span style="font-size:14px;">≏</span> Bộ lọc <span style="background:var(--color-accent-600); color:#fff; width:16px; height:16px; display:flex; align-items:center; justify-content:center; border-radius:50%; font-size:10px;">1</span>
+          </button>
+        </div>
+        <div style="font-size:12px; color:var(--sm-text-secondary); margin-bottom:12px;">100 sân · 145 bài đăng khớp lọc · Gần nhất trước</div>
+        <input class="court-sidebar__search" type="text" placeholder="Tìm sân theo tên, địa chỉ, quận..." />
+      </div>
+      <div class="court-list">
+        <div class="court-item court-item--active">
+          <div class="court-item__name">🏸 Sân A&C số 32 Đại Tú</div>
+          <div class="court-item__meta"><span class="court-item__distance">📍 2.3 km</span><span>Hoàng Mai</span></div>
+          <div class="court-item__posts">5 kèo đang có</div>
+          <div class="court-item__actions">
+            <button class="court-item__btn court-item__btn--dir">🗺️ Chỉ đường</button>
+            <button class="court-item__btn">Xem kèo</button>
+          </div>
+        </div>
+        <div class="court-item">
+          <div class="court-item__name">🏸 Sân TT9 Mễ Trì</div>
+          <div class="court-item__meta"><span class="court-item__distance">📍 4.1 km</span><span>Nam Từ Liêm</span></div>
+          <div class="court-item__posts">3 kèo đang có</div>
+          <div class="court-item__actions">
+            <button class="court-item__btn court-item__btn--dir">🗺️ Chỉ đường</button>
+            <button class="court-item__btn">Xem kèo</button>
+          </div>
+        </div>
+        <div class="court-item">
+          <div class="court-item__name">🏸 Sân Hà Đông Sport</div>
+          <div class="court-item__meta"><span class="court-item__distance">📍 8.5 km</span><span>Hà Đông</span></div>
+          <div class="court-item__posts">2 kèo đang có</div>
+          <div class="court-item__actions">
+            <button class="court-item__btn court-item__btn--dir">🗺️ Chỉ đường</button>
+            <button class="court-item__btn">Xem kèo</button>
+          </div>
+        </div>
+        <div class="court-item">
+          <div class="court-item__name">🏸 Sân Thành Công</div>
+          <div class="court-item__meta"><span class="court-item__distance">📍 3.2 km</span><span>Ba Đình</span></div>
+          <div class="court-item__posts">1 kèo đang có</div>
+          <div class="court-item__actions">
+            <button class="court-item__btn court-item__btn--dir">🗺️ Chỉ đường</button>
+            <button class="court-item__btn">Xem kèo</button>
+          </div>
+        </div>
+        <div class="court-item">
+          <div class="court-item__name">🏸 VĐV Cầu Lông HN</div>
+          <div class="court-item__meta"><span class="court-item__distance">📍 5.7 km</span><span>Cầu Giấy</span></div>
+          <div class="court-item__posts">0 kèo</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MIDDLE COLUMN: Filter -->
+    <aside class="map-filter-col">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h3 style="font-size:14px; font-weight:700; display:flex; align-items:center; gap:6px;">≏ Bộ lọc tìm kèo</h3>
+        <button style="font-size:12px; padding:4px 8px; border:1px solid var(--sm-border-default); border-radius:6px; background:var(--sm-bg-surface); color:var(--sm-text-primary); cursor:pointer;">Thu gọn</button>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-group__label">🔍 Tìm kiếm nhanh</label>
+        <input class="filter-input" type="text" placeholder="Nhập tên sân, khu vực..." />
+      </div>
+      <div class="filter-group">
+        <label class="filter-group__label">Ngày chơi</label>
+        <input class="filter-date" type="date" value="2026-03-18" />
+      </div>
+      <div class="filter-group">
+        <label class="filter-group__label">⏰ Khung giờ chơi</label>
+        <div class="filter-time-range">
+          <select class="filter-select" style="flex:1;"><option>20:00</option></select>
+          <span style="font-size:12px; color:var(--sm-text-secondary);">Đến</span>
+          <select class="filter-select" style="flex:1;"><option></option></select>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label class="filter-group__label">Trình độ</label>
+        <div class="filter-btns">
+          <button class="filter-btn">Y</button>
+          <button class="filter-btn">Y+</button>
+          <button class="filter-btn">TBY</button>
+          <button class="filter-btn">TBY+</button>
+          <button class="filter-btn">TB-</button>
+          <button class="filter-btn">TB</button>
+          <button class="filter-btn">TB+</button>
+          <button class="filter-btn">TB++</button>
+          <button class="filter-btn">Khá</button>
+          <button class="filter-btn">Giỏi</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label class="filter-group__label">👥 Số slot cần thêm</label>
+        <div class="filter-btns">
+          <button class="filter-btn filter-btn--active">Tất cả</button>
+          <button class="filter-btn">1-2 người</button>
+          <button class="filter-btn">3-4 người</button>
+          <button class="filter-btn">5+ người</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label class="filter-group__label">📍 Khoảng cách tối đa</label>
+        <select class="filter-select"><option>Tất cả</option></select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-group__label">Đối tượng</label>
+        <select class="filter-select"><option>Nam &amp; Nữ</option></select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-group__label">🏸 Hình thức</label>
+        <div class="filter-btns">
+          <button class="filter-btn filter-btn--active">Giao lưu</button>
+          <button class="filter-btn">Đối kháng</button>
+          <button class="filter-btn">Tập luyện</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- DETAIL: Map -->
+    <div class="map-panel" data-ds-id="ds:screen:map-001--map">
+      <!-- Floating Card overlay -->
+      <div class="map-floating-card">
+        <div class="map-floating-card__title">
+          Khu vực trên bản đồ
+          <button style="background:none; border:1px solid var(--sm-border-default); border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:12px; color:var(--sm-text-secondary);">✕</button>
+        </div>
+        <p class="map-floating-card__desc">Chọn một vùng ngay trên bản đồ để lọc sân theo khu vực bạn muốn.</p>
+        <span class="map-floating-card__tag">Đang lọc trong phạm vi 5km</span>
+        <button class="btn btn--primary" style="width:100%; justify-content:center; background:#0ea5e9; border-color:#0ea5e9;">Chỉnh sửa khu vực</button>
+      </div>
+
+      <!-- Floating Action Buttons -->
+      <div class="map-fab-group">
+        <button class="map-fab-icon">🎯</button>
+        <button class="map-fab-icon" style="margin-bottom:8px;">🧭</button>
+        <button class="map-fab map-fab--ai">
+          <span style="font-size:18px;">✨</span>
+          <div style="text-align:left; line-height:1.2;">
+            <div>Trợ lý AI</div>
+            <div style="font-size:10px; font-weight:500; opacity:0.9;">Tìm kiếm bằng AI</div>
+          </div>
+        </button>
+        <button class="map-fab map-fab--app">
+          <span>↓</span> Cài app
+        </button>
+      </div>
+
+      <!-- Placeholder for Leaflet.js -->
+      <div class="map-placeholder">
+        <div class="map-placeholder__icon">🗺️</div>
+        <div class="map-placeholder__text">Leaflet.js Map</div>
+        <div class="map-placeholder__sub">Bản đồ sân cầu lông Hà Nội sẽ render ở đây</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════
+       STATE: Map — Permission Denied (NEW) (ds:screen:map-001--permission-denied)
+       Trigger: user.deny(geolocation) || browser blocks location
+       Shows BELOW the main layout as a showcase state card
+       ═══════════════════════════════════════════════ -->
+  <div style="padding: 24px; background: var(--color-neutral-100); border-top: 2px dashed var(--color-neutral-300);">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--sm-text-muted);margin-bottom:12px;">⚠️ STATE: Permission Denied — Từ chối vị trí</div>
+    <div style="display: grid; grid-template-columns: 340px 1fr; background: var(--sm-bg-surface); border: 1px solid var(--sm-border-default); border-radius: 12px; overflow: hidden; max-width: 900px;">
+      <!-- Sidebar state: permission denied -->
+      <div style="padding: 24px; border-right: 1px solid var(--color-neutral-100);"
+           data-ds-id="ds:screen:map-001--permission-denied"
+           role="status" aria-live="polite">
+        <div style="text-align: center; padding: 20px 0;">
+          <div style="font-size: 40px; margin-bottom: 12px;">📵</div>
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--sm-text-primary);">Chill Cầu cần vị trí của bạn</h3>
+          <p style="font-size: 13px; color: var(--sm-text-secondary); line-height: 1.5; margin-bottom: 16px;">
+            Để hiển thị sân cầu lông gần bạn, Chill Cầu cần biết vị trí của bạn.
+          </p>
+          <p style="font-size: 12px; color: var(--sm-text-muted); margin-bottom: 20px;">
+            🔒 Vị trí của bạn không được lưu trữ — chỉ dùng để tìm sân gần nhất.
+          </p>
+          <button style="width:100%;padding:10px;background:var(--color-primary-600);color:#fff;font-size:13px;font-weight:600;border:none;border-radius:8px;cursor:pointer;font-family:inherit;margin-bottom:8px;">
+            📍 Cho phép truy cập vị trí
+          </button>
+          <div style="font-size: 12px; color: var(--sm-text-secondary); margin: 12px 0 8px; text-align: left; font-weight: 600;">Hoặc nhập địa điểm thủ công:</div>
+          <input type="text" placeholder="VD: Hoàng Mai, Hà Nội..." style="width:100%;padding:9px 12px;font-size:13px;border:1.5px solid var(--sm-border-default);border-radius:8px;font-family:inherit;margin-bottom:8px;background:transparent;color:var(--sm-text-primary);" aria-label="Nhập địa điểm tìm kiếm thủ công" />
+          <button style="width:100%;padding:8px;background:var(--color-neutral-100);color:var(--sm-text-secondary);font-size:13px;font-weight:600;border:1.5px solid var(--sm-border-default);border-radius:8px;cursor:pointer;font-family:inherit;">
+            🔍 Tìm kiếm
+          </button>
+        </div>
+      </div>
+      <!-- Map panel: greyed out -->
+      <div style="background: var(--color-neutral-200); display: flex; align-items: center; justify-content: center; min-height: 200px;">
+        <div style="text-align: center; color: var(--sm-text-muted);">
+          <div style="font-size: 48px; margin-bottom: 8px; opacity: 0.4;">🗺️</div>
+          <div style="font-size: 14px; color: var(--sm-text-muted);">Bản đồ sẽ hiển thị sau khi cho phép vị trí</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       STATE: Map — Empty (0 results) (ds:screen:map-001--empty)
+       Trigger: filter returns 0 courts
+       ═══════════════════════════════════════════════ -->
+  <div style="padding: 24px; background: var(--color-neutral-100); border-top: 2px dashed var(--color-neutral-300);">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--sm-text-muted);margin-bottom:12px;">📭 STATE: Empty — Không tìm thấy sân</div>
+    <div style="display: grid; grid-template-columns: 340px 1fr; background: var(--sm-bg-surface); border: 1px solid var(--sm-border-default); border-radius: 12px; overflow: hidden; max-width: 900px;">
+      <div style="padding: 24px; border-right: 1px solid var(--color-neutral-100);"
+           data-ds-id="ds:screen:map-001--empty"
+           role="status" aria-live="polite">
+        <div style="text-align: center; padding: 32px 16px;">
+          <div style="font-size: 48px; margin-bottom: 12px;">🔍</div>
+          <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--sm-text-primary);">Không tìm thấy sân nào</h3>
+          <p style="font-size: 13px; color: var(--sm-text-secondary); line-height: 1.5; margin-bottom: 16px;">
+            Không có sân cầu lông nào khớp với bộ lọc của bạn. Thử mở rộng phạm vi tìm kiếm.
+          </p>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <button style="width:100%;padding:10px;background:var(--color-primary-600);color:#fff;font-size:13px;font-weight:600;border:none;border-radius:8px;cursor:pointer;font-family:inherit;">
+              🔄 Xóa bộ lọc
+            </button>
+            <button style="width:100%;padding:8px;background:var(--color-neutral-100);color:var(--sm-text-secondary);font-size:13px;font-weight:600;border:1.5px solid var(--sm-border-default);border-radius:8px;cursor:pointer;font-family:inherit;">
+              📍 Mở rộng phạm vi 10km
+            </button>
+          </div>
+        </div>
+      </div>
+      <div style="background: var(--color-neutral-200); display: flex; align-items: center; justify-content: center; min-height: 200px;">
+        <div style="text-align: center; color: var(--sm-text-muted);">
+          <div style="font-size: 48px; margin-bottom: 8px; opacity: 0.4;">🗺️</div>
+          <div style="font-size: 14px;">Không có sân nào trong khu vực này</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       STATE: Map — Loading (ds:screen:map-001--loading)
+       Trigger: Initial page load / courts API fetching
+       ═══════════════════════════════════════════════ -->
+  <div style="padding: 24px; background: var(--color-neutral-100); border-top: 2px dashed var(--color-neutral-300);">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--sm-text-muted);margin-bottom:12px;">⏳ STATE: Loading — Đang tải dữ liệu sân</div>
+    <div style="display: grid; grid-template-columns: 340px 1fr; background: var(--sm-bg-surface); border: 1px solid var(--sm-border-default); border-radius: 12px; overflow: hidden; max-width: 900px;">
+      <div data-ds-id="ds:screen:map-001--loading" aria-busy="true" aria-label="Đang tải danh sách sân"
+           style="padding: 16px; border-right: 1px solid var(--color-neutral-100);">
+        <!-- Skeleton header -->
+        <div style="margin-bottom:16px;">
+          <div class="skeleton" style="width:140px;height:22px;border-radius:4px;margin-bottom:8px;"></div>
+          <div class="skeleton" style="width:220px;height:14px;border-radius:4px;margin-bottom:12px;"></div>
+          <div class="skeleton" style="width:100%;height:36px;border-radius:8px;"></div>
+        </div>
+        <!-- Skeleton court items -->
+        <div style="display:flex;flex-direction:column;gap:1px;">
+          <div style="padding:14px 0;border-bottom:1px solid var(--color-neutral-50);">
+            <div class="skeleton" style="width:70%;height:18px;border-radius:4px;margin-bottom:6px;"></div>
+            <div style="display:flex;gap:10px;margin-bottom:6px;">
+              <div class="skeleton" style="width:60px;height:14px;border-radius:4px;"></div>
+              <div class="skeleton" style="width:80px;height:14px;border-radius:4px;"></div>
+            </div>
+            <div class="skeleton" style="width:90px;height:14px;border-radius:4px;margin-bottom:8px;"></div>
+            <div style="display:flex;gap:8px;">
+              <div class="skeleton" style="width:80px;height:26px;border-radius:6px;"></div>
+              <div class="skeleton" style="width:70px;height:26px;border-radius:6px;"></div>
+            </div>
+          </div>
+          <div style="padding:14px 0;border-bottom:1px solid var(--color-neutral-50);">
+            <div class="skeleton" style="width:55%;height:18px;border-radius:4px;margin-bottom:6px;"></div>
+            <div style="display:flex;gap:10px;margin-bottom:6px;">
+              <div class="skeleton" style="width:55px;height:14px;border-radius:4px;"></div>
+              <div class="skeleton" style="width:70px;height:14px;border-radius:4px;"></div>
+            </div>
+            <div class="skeleton" style="width:75px;height:14px;border-radius:4px;"></div>
+          </div>
+          <div style="padding:14px 0;">
+            <div class="skeleton" style="width:65%;height:18px;border-radius:4px;margin-bottom:6px;"></div>
+            <div style="display:flex;gap:10px;">
+              <div class="skeleton" style="width:65px;height:14px;border-radius:4px;"></div>
+              <div class="skeleton" style="width:60px;height:14px;border-radius:4px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Map panel loading -->
+      <div style="background: var(--color-neutral-200); display:flex; align-items:center; justify-content:center; min-height:220px; position:relative;">
+        <div style="text-align:center; color:var(--sm-text-muted);">
+          <div style="font-size:48px;margin-bottom:12px;opacity:0.4;animation:sm-shimmer 1.5s ease infinite;">🗺️</div>
+          <div class="skeleton" style="width:160px;height:16px;border-radius:4px;margin:0 auto 8px;"></div>
+          <div class="skeleton" style="width:120px;height:12px;border-radius:4px;margin:0 auto;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       STATE: Map — API Error (ds:screen:map-001--error)
+       Trigger: Courts API 5xx / network failure
+       ═══════════════════════════════════════════════ -->
+  <div style="padding: 24px; background: var(--color-neutral-100); border-top: 2px dashed var(--color-neutral-300);">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--sm-text-muted);margin-bottom:12px;">❌ STATE: API Error — Lỗi tải dữ liệu</div>
+    <div style="display: grid; grid-template-columns: 340px 1fr; background: var(--sm-bg-surface); border: 1px solid var(--color-danger-200); border-radius: 12px; overflow: hidden; max-width: 900px;">
+      <div data-ds-id="ds:screen:map-001--error"
+           role="alert" aria-live="assertive"
+           style="padding: 24px; border-right: 1px solid var(--color-neutral-100); background: var(--color-danger-50);">
+        <div style="text-align:center; padding: 20px 0;">
+          <div style="font-size:40px; margin-bottom:12px;">⚠️</div>
+          <h3 style="font-size:16px; font-weight:700; margin-bottom:8px; color:var(--color-danger-700);">Không thể tải dữ liệu sân</h3>
+          <p style="font-size:13px; color:var(--color-danger-600); line-height:1.5; margin-bottom:16px;">
+            Đã xảy ra lỗi khi kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng và thử lại.
+          </p>
+          <p style="font-size:11px; color:var(--sm-text-muted); margin-bottom:20px; font-family:monospace;">
+            Error: 503 Service Unavailable
+          </p>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <button style="width:100%; padding:10px; background:var(--color-primary-600); color:#fff; font-size:13px; font-weight:600; border:none; border-radius:8px; cursor:pointer; font-family:inherit;"
+              onclick="location.reload()">
+              🔄 Thử lại
+            </button>
+            <a href="../feed/index.html"
+               style="width:100%; padding:8px; background:transparent; color:var(--sm-text-secondary); font-size:13px; font-weight:600; border:1.5px solid var(--sm-border-default); border-radius:8px; cursor:pointer; font-family:inherit; text-align:center; text-decoration:none; display:block;">
+              ← Quay lại Tìm kèo
+            </a>
+          </div>
+          <div style="margin-top:16px; font-size:11px; color:var(--sm-text-muted);">
+            Nếu lỗi tiếp tục, liên hệ: <a href="mailto:support@Chill Cầu.vn" style="color:var(--color-primary-600);">support@Chill Cầu.vn</a>
+          </div>
+        </div>
+      </div>
+      <div style="background:var(--color-neutral-200); display:flex; align-items:center; justify-content:center; min-height:220px;">
+        <div style="text-align:center; color:var(--sm-text-muted);">
+          <div style="font-size:48px; margin-bottom:8px; opacity:0.4;">🗺️</div>
+          <div style="font-size:14px; color:var(--color-danger-500);">Dữ liệu bản đồ không khả dụng</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const theme = localStorage.getItem('sm-theme') || 'light';
+    if (theme === 'dark') document.body.classList.add('theme-dark');
+    
+    document.querySelectorAll('.navbar__toggle').forEach(btn => {
+      btn.innerHTML = theme === 'dark' ? '🌞 Sáng' : '🌓 Tối';
+      btn.addEventListener('click', () => {
+        document.body.classList.toggle('theme-dark');
+        const isDark = document.body.classList.contains('theme-dark');
+        localStorage.setItem('sm-theme', isDark ? 'dark' : 'light');
+        document.querySelectorAll('.navbar__toggle').forEach(b => b.innerHTML = isDark ? '🌞 Sáng' : '🌓 Tối');
+      });
+    });
+  </script>
+</body>
+</html>

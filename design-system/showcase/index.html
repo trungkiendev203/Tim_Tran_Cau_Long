@@ -1,0 +1,484 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chill Cầu — Design System Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../tokens/tokens.css" />
+  <style>
+    :root {
+      --font-family: 'Inter', -apple-system, sans-serif;
+      --color-primary: #16a34a; --color-primary-light: #f0fdf4;
+      --color-accent: #2563eb; --color-accent-light: #eff6ff;
+      --color-danger: #ef4444; --color-danger-light: #fef2f2;
+      --color-border: var(--sm-border-default);
+      --color-bg: var(--sm-bg-page);
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-family); background: var(--sm-bg-page); color: var(--sm-text-primary); transition: background 200ms ease, color 200ms ease; }
+
+    /* === Header === */
+    .hub-header {
+      background: linear-gradient(135deg, #166534 0%, #16a34a 40%, #22c55e 100%);
+      padding: 48px 32px; text-align: center; color: #fff;
+    }
+    .hub-header__logo { font-size: 48px; margin-bottom: 8px; }
+    .hub-header__title { font-size: 32px; font-weight: 800; margin-bottom: 4px; }
+    .hub-header__subtitle { font-size: 16px; opacity: 0.85; font-weight: 400; }
+    .hub-header__stats { display: flex; justify-content: center; gap: 32px; margin-top: 24px; }
+    .stat { text-align: center; }
+    .stat__value { font-size: 28px; font-weight: 800; }
+    .stat__label { font-size: 12px; opacity: 0.75; margin-top: 2px; }
+
+    /* === Nav === */
+    .hub-nav {
+      position: sticky; top: 0; z-index: 50;
+      background: var(--color-bg); border-bottom: 1px solid var(--color-border);
+      padding: 0 32px; display: flex; gap: 0; overflow-x: auto;
+    }
+    .hub-nav__link {
+      padding: 14px 16px; font-size: 13px; font-weight: 500; color: var(--sm-text-secondary);
+      text-decoration: none; border-bottom: 2px solid transparent;
+      white-space: nowrap; transition: all 150ms ease;
+    }
+    .hub-nav__link:hover { color: var(--sm-text-primary); }
+    .hub-nav__link--active { color: var(--color-primary); border-bottom-color: var(--color-primary); font-weight: 600; }
+
+    /* === Sections === */
+    .hub-section { max-width: 1100px; margin: 0 auto; padding: 48px 32px; }
+    .hub-section + .hub-section { border-top: 1px solid #f1f5f9; }
+    .hub-section__header { margin-bottom: 24px; }
+    .hub-section__title { font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .hub-section__desc { font-size: 14px; color: #64748b; margin-top: 4px; }
+
+    /* === Component Grid === */
+    .comp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .comp-card {
+      background: var(--sm-bg-surface); border: 1px solid var(--sm-border-default);
+      border-radius: 12px; overflow: hidden; transition: box-shadow 200ms ease, transform 200ms ease;
+      text-decoration: none; color: inherit;
+    }
+    .comp-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .comp-card__preview {
+      height: 140px; background: var(--sm-bg-page); display: flex; align-items: center;
+      justify-content: center; font-size: 36px; border-bottom: 1px solid var(--sm-border-default);
+    }
+    .comp-card__body { padding: 14px 16px; }
+    .comp-card__name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .comp-card__id { font-size: 11px; color: #94a3b8; font-family: 'SF Mono', 'Consolas', monospace; margin-bottom: 6px; }
+    .comp-card__meta { display: flex; gap: 6px; flex-wrap: wrap; }
+    .meta-tag { padding: 2px 8px; font-size: 10px; font-weight: 600; border-radius: 9999px; }
+    .meta-tag--states { background: #ede9fe; color: #5b21b6; }
+    .meta-tag--new { background: #f0fdf4; color: #166534; }
+    .meta-tag--variants { background: #fff7ed; color: #9a3412; }
+
+    /* === Token Section === */
+    .token-group { margin-bottom: 24px; }
+    .token-group__title { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+    .color-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+    .color-swatch { width: 56px; text-align: center; }
+    .color-swatch__box { width: 56px; height: 40px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.05); margin-bottom: 4px; }
+    .color-swatch__label { font-size: 9px; color: #64748b; }
+
+    .spacing-grid { display: flex; gap: 4px; align-items: flex-end; }
+    .spacing-item { text-align: center; }
+    .spacing-item__box { background: var(--color-primary); border-radius: 4px; opacity: 0.6; }
+    .spacing-item__label { font-size: 9px; color: #64748b; margin-top: 4px; }
+
+    /* === Screen Grid === */
+    .screen-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    .screen-card { background: var(--sm-bg-surface); border: 1px solid var(--sm-border-default); border-radius: 12px; overflow: hidden; text-decoration: none; color: inherit; }
+    .screen-card:hover { box-shadow: var(--shadow-md); }
+    .screen-card__preview { height: 160px; background: linear-gradient(135deg, #f0fdf4, #eff6ff); display: flex; align-items: center; justify-content: center; font-size: 40px; border-bottom: 1px solid #f1f5f9; }
+    .screen-card__body { padding: 14px 16px; }
+    .screen-card__name { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+    .screen-card__layout { font-size: 11px; color: #94a3b8; }
+
+    /* Footer */
+    .hub-footer { text-align: center; padding: 32px; font-size: 12px; color: #94a3b8; border-top: 1px solid #f1f5f9; }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="hub-header">
+    <div class="hub-header__logo">🏸</div>
+    <h1 class="hub-header__title">Chill Cầu Design System</h1>
+    <p class="hub-header__subtitle">Iteration 4 — Foundation, Core UI & Community Components</p>
+    <div class="hub-header__stats">
+      <div class="stat"><div class="stat__value">20</div><div class="stat__label">Components</div></div>
+      <div class="stat"><div class="stat__value">7</div><div class="stat__label">Screens</div></div>
+      <div class="stat"><div class="stat__value">3</div><div class="stat__label">Layouts</div></div>
+      <div class="stat"><div class="stat__value">100%</div><div class="stat__label">US Coverage</div></div>
+    </div>
+  </header>
+
+  <!-- NAV -->
+  <nav class="hub-nav">
+    <div style="display:flex; flex:1; overflow-x:auto;">
+      <a href="#tokens" class="hub-nav__link hub-nav__link--active">🎨 Tokens</a>
+      <a href="#components" class="hub-nav__link">🧩 Components</a>
+      <a href="#screens" class="hub-nav__link">📱 Screens</a>
+      <a href="#layouts" class="hub-nav__link">📐 Layouts</a>
+      <a href="#states" class="hub-nav__link">🔄 States</a>
+    </div>
+    <div style="padding: 10px 16px;">
+      <button class="navbar__toggle" style="background:var(--color-primary-50); border:1px solid var(--color-primary-200); border-radius:16px; padding:4px 12px; cursor:pointer; font-weight:600; font-family:var(--font-family); color:var(--color-primary-700);">🌓 Sáng</button>
+    </div>
+  </nav>
+
+  <!-- SECTION 1: TOKENS -->
+  <section id="tokens" class="hub-section">
+    <div class="hub-section__header">
+      <h2 class="hub-section__title">🎨 Design Tokens</h2>
+      <p class="hub-section__desc">Source of truth: <code>design-tokens.json</code></p>
+    </div>
+
+    <div class="token-group">
+      <h3 class="token-group__title">Colors — Primary</h3>
+      <div class="color-grid">
+        <div class="color-swatch"><div class="color-swatch__box" style="background:#f0fdf4;"></div><div class="color-swatch__label">50</div></div>
+        <div class="color-swatch"><div class="color-swatch__box" style="background:#dcfce7;"></div><div class="color-swatch__label">100</div></div>
+        <div class="color-swatch"><div class="color-swatch__box" style="background:#86efac;"></div><div class="color-swatch__label">300</div></div>
+        <div class="color-swatch"><div class="color-swatch__box" style="background:#22c55e;"></div><div class="color-swatch__label">500</div></div>
+        <div class="color-swatch"><div class="color-swatch__box" style="background:#16a34a;"></div><div class="color-swatch__label">600 ★</div></div>
+        <div class="color-swatch"><div class="color-swatch__box" style="background:#15803d;"></div><div class="color-swatch__label">700</div></div>
+        <div class="color-swatch"><div class="color-swatch__box" style="background:#166534;"></div><div class="color-swatch__label">800</div></div>
+      </div>
+    </div>
+    <div class="token-group">
+      <h3 class="token-group__title">Colors — Accent (Blue) & Danger (Red)</h3>
+      <div class="color-grid">
+        <div class="color-swatch"><div class="color-swatch__box" style="background:#eff6ff;"></div><div class="color-swatch__label">Acc-50</div></div>
+        <div class="color-swatch"><div class="color-swatch__box" style="background:#3b82f6;"></div><div class="color-swatch__label">Acc-500</div></div>
+        <div class="color-swatch"><div class="color-swatch__box" style="background:#2563eb;"></div><div class="color-swatch__label">Acc-600</div></div>
+        <div class="color-swatch"><div class="color-swatch__box" style="background:#fef2f2;"></div><div class="color-swatch__label">Dng-50</div></div>
+        <div class="color-swatch"><div class="color-swatch__box" style="background:#ef4444;"></div><div class="color-swatch__label">Dng-500</div></div>
+        <div class="color-swatch"><div class="color-swatch__box" style="background:#dc2626;"></div><div class="color-swatch__label">Dng-600</div></div>
+      </div>
+    </div>
+    <div class="token-group">
+      <h3 class="token-group__title">Spacing — 4px rhythm</h3>
+      <div class="spacing-grid">
+        <div class="spacing-item"><div class="spacing-item__box" style="width:4px;height:4px;"></div><div class="spacing-item__label">4</div></div>
+        <div class="spacing-item"><div class="spacing-item__box" style="width:8px;height:8px;"></div><div class="spacing-item__label">8</div></div>
+        <div class="spacing-item"><div class="spacing-item__box" style="width:12px;height:12px;"></div><div class="spacing-item__label">12</div></div>
+        <div class="spacing-item"><div class="spacing-item__box" style="width:16px;height:16px;"></div><div class="spacing-item__label">16</div></div>
+        <div class="spacing-item"><div class="spacing-item__box" style="width:24px;height:24px;"></div><div class="spacing-item__label">24</div></div>
+        <div class="spacing-item"><div class="spacing-item__box" style="width:32px;height:32px;"></div><div class="spacing-item__label">32</div></div>
+        <div class="spacing-item"><div class="spacing-item__box" style="width:48px;height:48px;"></div><div class="spacing-item__label">48</div></div>
+        <div class="spacing-item"><div class="spacing-item__box" style="width:64px;height:64px;"></div><div class="spacing-item__label">64</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: COMPONENTS -->
+  <section id="components" class="hub-section">
+    <div class="hub-section__header">
+      <h2 class="hub-section__title">🧩 Components (20)</h2>
+      <p class="hub-section__desc">Click any card to view the isolated component prototype</p>
+    </div>
+    <div class="comp-grid">
+      <a href="../components/button/index.html" class="comp-card">
+        <div class="comp-card__preview">🔘</div>
+        <div class="comp-card__body">
+          <div class="comp-card__name">Button</div>
+          <div class="comp-card__id">ds:comp:button-001</div>
+          <div class="comp-card__meta"><span class="meta-tag meta-tag--states">4 states</span><span class="meta-tag meta-tag--variants">3 variants</span></div>
+        </div>
+      </a>
+      <a href="../components/post-card/index.html" class="comp-card">
+        <div class="comp-card__preview">🃏</div>
+        <div class="comp-card__body">
+          <div class="comp-card__name">Post Card</div>
+          <div class="comp-card__id">ds:comp:post-card-001</div>
+          <div class="comp-card__meta"><span class="meta-tag meta-tag--states">4 states</span></div>
+        </div>
+      </a>
+      <a href="../components/badge-level/index.html" class="comp-card">
+        <div class="comp-card__preview">🏅</div>
+        <div class="comp-card__body">
+          <div class="comp-card__name">Badge Level</div>
+          <div class="comp-card__id">ds:comp:badge-level-001</div>
+          <div class="comp-card__meta"><span class="meta-tag meta-tag--variants">10 levels</span></div>
+        </div>
+      </a>
+      <a href="../components/navbar/index.html" class="comp-card">
+        <div class="comp-card__preview">📌</div>
+        <div class="comp-card__body">
+          <div class="comp-card__name">Navbar</div>
+          <div class="comp-card__id">ds:comp:navbar-001</div>
+          <div class="comp-card__meta"><span class="meta-tag meta-tag--states">3 states</span></div>
+        </div>
+      </a>
+      <a href="../components/search-bar/index.html" class="comp-card">
+        <div class="comp-card__preview">✨</div>
+        <div class="comp-card__body">
+          <div class="comp-card__name">AI Search Bar</div>
+          <div class="comp-card__id">ds:comp:search-bar-001</div>
+          <div class="comp-card__meta"><span class="meta-tag meta-tag--states">3 states</span></div>
+        </div>
+      </a>
+      <a href="../components/filter-panel/index.html" class="comp-card">
+        <div class="comp-card__preview">🔍</div>
+        <div class="comp-card__body">
+          <div class="comp-card__name">Filter Panel</div>
+          <div class="comp-card__id">ds:comp:filter-panel-001</div>
+          <div class="comp-card__meta"><span class="meta-tag meta-tag--variants">9 filters</span></div>
+        </div>
+      </a>
+      <a href="../components/reminder-card/index.html" class="comp-card">
+        <div class="comp-card__preview">📅</div>
+        <div class="comp-card__body">
+          <div class="comp-card__name">Reminder Card</div>
+          <div class="comp-card__id">ds:comp:reminder-card-001</div>
+          <div class="comp-card__meta"><span class="meta-tag meta-tag--states">2 states</span></div>
+        </div>
+      </a>
+      <a href="../components/auth-form/index.html" class="comp-card">
+        <div class="comp-card__preview">🔐</div>
+        <div class="comp-card__body">
+          <div class="comp-card__name">Auth Form</div>
+          <div class="comp-card__id">ds:comp:auth-form-001</div>
+          <div class="comp-card__meta"><span class="meta-tag meta-tag--states">3 states</span></div>
+        </div>
+      </a>
+      <a href="../components/notification-bell/index.html" class="comp-card">
+        <div class="comp-card__preview">🔔</div>
+        <div class="comp-card__body">
+          <div class="comp-card__name">Notification Bell</div>
+          <div class="comp-card__id">ds:comp:notification-bell-001</div>
+          <div class="comp-card__meta"><span class="meta-tag meta-tag--states">2 states</span></div>
+        </div>
+      </a>
+      <a href="../components/map-marker/index.html" class="comp-card">
+        <div class="comp-card__preview">📍</div>
+        <div class="comp-card__body">
+          <div class="comp-card__name">Map Marker + Popup</div>
+          <div class="comp-card__id">ds:comp:map-marker-001</div>
+          <div class="comp-card__meta"><span class="meta-tag meta-tag--variants">3 variants</span></div>
+        </div>
+      </a>
+      <a href="../components/modal/index.html" class="comp-card">
+        <div class="comp-card__preview">💬</div>
+        <div class="comp-card__body">
+          <div class="comp-card__name">Modal / Dialog</div>
+          <div class="comp-card__id">ds:comp:modal-001</div>
+          <div class="comp-card__meta"><span class="meta-tag meta-tag--new">NEW</span><span class="meta-tag meta-tag--variants">3 variants</span></div>
+        </div>
+      </a>
+      <a href="../components/toast/index.html" class="comp-card">
+        <div class="comp-card__preview">🔔</div>
+        <div class="comp-card__body">
+          <div class="comp-card__name">Toast Notification</div>
+          <div class="comp-card__id">ds:comp:toast-001</div>
+          <div class="comp-card__meta"><span class="meta-tag meta-tag--new">NEW</span><span class="meta-tag meta-tag--variants">4 variants</span></div>
+        </div>
+      </a>
+      <a href="../components/court-dropdown/index.html" class="comp-card">
+        <div class="comp-card__preview">🏟️</div>
+        <div class="comp-card__body">
+          <div class="comp-card__name">Court Dropdown</div>
+          <div class="comp-card__id">ds:comp:court-dropdown-001</div>
+          <div class="comp-card__meta"><span class="meta-tag meta-tag--new">NEW</span><span class="meta-tag meta-tag--states">4 states</span></div>
+        </div>
+      </a>
+      <a href="../components/skeleton/index.html" class="comp-card">
+        <div class="comp-card__preview">💀</div>
+        <div class="comp-card__body">
+          <div class="comp-card__name">Skeleton Loading</div>
+          <div class="comp-card__id">ds:comp:skeleton-001</div>
+          <div class="comp-card__meta"><span class="meta-tag meta-tag--new">NEW</span><span class="meta-tag meta-tag--variants">4 patterns</span></div>
+        </div>
+      </a>
+      <a href="../components/pagination/index.html" class="comp-card">
+        <div class="comp-card__preview">📄</div>
+        <div class="comp-card__body">
+          <div class="comp-card__name">Pagination</div>
+          <div class="comp-card__id">ds:comp:pagination-001</div>
+          <div class="comp-card__meta"><span class="meta-tag meta-tag--new">NEW</span><span class="meta-tag meta-tag--variants">4 patterns</span></div>
+        </div>
+      </a>
+      <a href="../components/mobile-filter/index.html" class="comp-card">
+        <div class="comp-card__preview">📱</div>
+        <div class="comp-card__body">
+          <div class="comp-card__name">Mobile Filter Sheet</div>
+          <div class="comp-card__id">ds:comp:mobile-filter-001</div>
+          <div class="comp-card__meta"><span class="meta-tag meta-tag--new">NEW</span></div>
+        </div>
+      </a>
+      <!-- Community Components (Iteration 4) -->
+      <a href="../components/discussion-card/index.html" class="comp-card">
+        <div class="comp-card__preview">💬</div>
+        <div class="comp-card__body">
+          <div class="comp-card__name">Community Post Card</div>
+          <div class="comp-card__id">ds:comp:discussion-card-001</div>
+          <div class="comp-card__meta"><span class="meta-tag meta-tag--new">NEW</span><span class="meta-tag meta-tag--states">4 states</span></div>
+        </div>
+      </a>
+      <a href="../components/tag-chip/index.html" class="comp-card">
+        <div class="comp-card__preview">🏷️</div>
+        <div class="comp-card__body">
+          <div class="comp-card__name">Community Tag Chip</div>
+          <div class="comp-card__id">ds:comp:tag-chip-001</div>
+          <div class="comp-card__meta"><span class="meta-tag meta-tag--new">NEW</span><span class="meta-tag meta-tag--variants">5 tags</span></div>
+        </div>
+      </a>
+      <a href="../components/post-composer/index.html" class="comp-card">
+        <div class="comp-card__preview">✍️</div>
+        <div class="comp-card__body">
+          <div class="comp-card__name">Post Composer</div>
+          <div class="comp-card__id">ds:comp:post-composer-001</div>
+          <div class="comp-card__meta"><span class="meta-tag meta-tag--new">NEW</span><span class="meta-tag meta-tag--states">5 states</span></div>
+        </div>
+      </a>
+      <a href="../components/comment-thread/index.html" class="comp-card">
+        <div class="comp-card__preview">🗨️</div>
+        <div class="comp-card__body">
+          <div class="comp-card__name">Comment Thread</div>
+          <div class="comp-card__id">ds:comp:comment-thread-001</div>
+          <div class="comp-card__meta"><span class="meta-tag meta-tag--new">NEW</span><span class="meta-tag meta-tag--states">3 states</span></div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- SECTION 3: SCREENS -->
+  <section id="screens" class="hub-section">
+    <div class="hub-section__header">
+      <h2 class="hub-section__title">📱 Screens (7)</h2>
+    </div>
+    <div class="screen-grid">
+      <a href="../screens/feed/index.html" class="screen-card">
+        <div class="screen-card__preview">🏸</div>
+        <div class="screen-card__body">
+          <div class="screen-card__name">Feed — Tìm kèo</div>
+          <div class="screen-card__layout">Layout: Sidebar-Content</div>
+        </div>
+      </a>
+      <a href="../screens/map/index.html" class="screen-card">
+        <div class="screen-card__preview">🗺️</div>
+        <div class="screen-card__body">
+          <div class="screen-card__name">Map — Bản đồ</div>
+          <div class="screen-card__layout">Layout: Master-Detail</div>
+        </div>
+      </a>
+      <a href="../screens/reminder/index.html" class="screen-card">
+        <div class="screen-card__preview">📅</div>
+        <div class="screen-card__body">
+          <div class="screen-card__name">Reminder — Nhắc lịch</div>
+          <div class="screen-card__layout">Layout: Card Grid</div>
+        </div>
+      </a>
+      <a href="../screens/auth/index.html" class="screen-card">
+        <div class="screen-card__preview">🔐</div>
+        <div class="screen-card__body">
+          <div class="screen-card__name">Auth — Đăng nhập</div>
+          <div class="screen-card__layout">Layout: Centered</div>
+        </div>
+      </a>
+      <a href="../screens/profile/index.html" class="screen-card">
+        <div class="screen-card__preview">👤</div>
+        <div class="screen-card__body">
+          <div class="screen-card__name">Profile — Hồ sơ</div>
+          <div class="screen-card__layout">Layout: Single Column</div>
+        </div>
+      </a>
+      <a href="../screens/feed-states/index.html" class="screen-card">
+        <div class="screen-card__preview">🔄</div>
+        <div class="screen-card__body">
+          <div class="screen-card__name">Feed States — Trạng thái</div>
+          <div class="screen-card__layout">Empty / Error / Offline / Permission</div>
+        </div>
+      </a>
+      <a href="../screens/discussion/index.html" class="screen-card">
+        <div class="screen-card__preview" style="background:linear-gradient(135deg,#ede9fe,#fce7f3);">💬</div>
+        <div class="screen-card__body">
+          <div class="screen-card__name">Discussion — Thảo luận</div>
+          <div class="screen-card__layout">Layout: Sidebar-Content · Phase 2</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- SECTION 4: LAYOUTS -->
+  <section id="layouts" class="hub-section">
+    <div class="hub-section__header">
+      <h2 class="hub-section__title">📐 Composite Layouts (2)</h2>
+    </div>
+    <div class="screen-grid">
+      <a href="../screens/feed/index.html" class="screen-card">
+        <div class="screen-card__preview" style="font-size:24px;">◧ ◨</div>
+        <div class="screen-card__body">
+          <div class="screen-card__name">Sidebar-Content</div>
+          <div class="screen-card__layout">ds:layout:sidebar-content-001</div>
+        </div>
+      </a>
+      <a href="../screens/map/index.html" class="screen-card">
+        <div class="screen-card__preview" style="font-size:24px;">◧ 🗺️</div>
+        <div class="screen-card__body">
+          <div class="screen-card__name">Master-Detail</div>
+          <div class="screen-card__layout">ds:layout:master-detail-001</div>
+        </div>
+      </a>
+      <a href="../screens/discussion/index.html" class="screen-card">
+        <div class="screen-card__preview" style="font-size:24px;background:linear-gradient(135deg,#ede9fe,#fce7f3);">◧ 💬</div>
+        <div class="screen-card__body">
+          <div class="screen-card__name">Community Feed (Phase 2)</div>
+          <div class="screen-card__layout">ds:layout:sidebar-content-002</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- SECTION 5: STATE MATRIX -->
+  <section id="states" class="hub-section">
+    <div class="hub-section__header">
+      <h2 class="hub-section__title">🔄 State Coverage</h2>
+      <p class="hub-section__desc">Enterprise State Matrix: 7 mandatory states per screen</p>
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead>
+        <tr style="background:#f8fafc;">
+          <th style="text-align:left;padding:10px 12px;border-bottom:2px solid #e2e8f0;">Screen</th>
+          <th style="padding:10px 8px;border-bottom:2px solid #e2e8f0;">Default</th>
+          <th style="padding:10px 8px;border-bottom:2px solid #e2e8f0;">Loading</th>
+          <th style="padding:10px 8px;border-bottom:2px solid #e2e8f0;">Empty</th>
+          <th style="padding:10px 8px;border-bottom:2px solid #e2e8f0;">Error</th>
+          <th style="padding:10px 8px;border-bottom:2px solid #e2e8f0;">Offline</th>
+          <th style="padding:10px 8px;border-bottom:2px solid #e2e8f0;">Permission</th>
+          <th style="padding:10px 8px;border-bottom:2px solid #e2e8f0;">Special</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="padding:10px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">Feed</td><td style="text-align:center;padding:10px;">✅</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
+        <tr><td style="padding:10px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">Map</td><td style="text-align:center;padding:10px;">✅</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td><td style="text-align:center;">—</td></tr>
+        <tr><td style="padding:10px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">Reminder</td><td style="text-align:center;padding:10px;">✅</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td><td style="text-align:center;">—</td><td style="text-align:center;">—</td></tr>
+        <tr><td style="padding:10px 12px;border-bottom:1px solid #f1f5f9;font-weight:600;">Auth</td><td style="text-align:center;padding:10px;">✅</td><td style="text-align:center;">—</td><td style="text-align:center;">—</td><td style="text-align:center;">✅</td><td style="text-align:center;">—</td><td style="text-align:center;">—</td><td style="text-align:center;">—</td></tr>
+        <tr><td style="padding:10px 12px;font-weight:600;">Profile</td><td style="text-align:center;padding:10px;">✅</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td><td style="text-align:center;">—</td><td style="text-align:center;">—</td><td style="text-align:center;">—</td><td style="text-align:center;">—</td></tr>
+        <tr><td style="padding:10px 12px;font-weight:600;">Discussion <small style="color:#94a3b8;font-weight:400;">(P2)</small></td><td style="text-align:center;padding:10px;">✅</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td><td style="text-align:center;">—</td><td style="text-align:center;">—</td><td style="text-align:center;">—</td><td style="text-align:center;">—</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer class="hub-footer">
+    Chill Cầu Design System · Iteration 4 · 24/03/2026 · Built with HTML + CSS
+  </footer>
+  <script>
+    const theme = localStorage.getItem('sm-theme') || 'light';
+    if (theme === 'dark') document.body.classList.add('theme-dark');
+    
+    document.querySelectorAll('.navbar__toggle').forEach(btn => {
+      btn.innerHTML = theme === 'dark' ? '🌞 Sáng' : '🌓 Tối';
+      btn.addEventListener('click', () => {
+        document.body.classList.toggle('theme-dark');
+        const isDark = document.body.classList.contains('theme-dark');
+        localStorage.setItem('sm-theme', isDark ? 'dark' : 'light');
+        document.querySelectorAll('.navbar__toggle').forEach(b => b.innerHTML = isDark ? '🌞 Sáng' : '🌓 Tối');
+      });
+    });
+  </script>
+</body>
+</html>

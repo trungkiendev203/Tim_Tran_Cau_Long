@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ds:comp:comment-thread-001 — Community Comment Thread</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../tokens/tokens.css" />
+  <link rel="stylesheet" href="../../base/base.css" />
+  <style>
+    body { padding: var(--space-xl); background: var(--sm-bg-page); font-family: var(--font-family); }
+    .showcase { max-width: 540px; }
+    .showcase__title { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); margin-bottom: 4px; color: var(--sm-text-primary); }
+    .showcase__id { font-size: var(--font-size-xs); color: var(--sm-text-muted); font-family: monospace; margin-bottom: var(--space-xl); }
+    .showcase__section { margin-bottom: var(--space-2xl); }
+    .showcase__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--sm-text-secondary); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 12px; }
+
+    /* ===== COMMENT THREAD ===== */
+    .comment-thread {
+      background: var(--sm-bg-surface);
+      border: 1px solid var(--sm-border-default);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .comment-thread__header {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--sm-border-default);
+      font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold);
+      color: var(--sm-text-secondary); display: flex; align-items: center; gap: 6px;
+    }
+
+    /* Comment input */
+    .comment-thread__input-row {
+      display: flex; gap: 8px; align-items: flex-start;
+      padding: 12px 16px; border-bottom: 1px solid var(--sm-border-default);
+    }
+    .comment-avatar {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--color-primary-500), var(--color-accent-500));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: #fff;
+    }
+    .comment-input-wrap { flex: 1; position: relative; }
+    .comment-input {
+      width: 100%; border: 1.5px solid var(--sm-border-default);
+      border-radius: var(--radius-full); padding: 7px 40px 7px 14px;
+      font-family: var(--font-family); font-size: var(--font-size-sm);
+      color: var(--sm-text-primary); background: var(--sm-bg-page);
+      outline: none; resize: none; line-height: 1.4;
+      transition: border-color var(--transition-fast);
+    }
+    .comment-input:focus { border-color: var(--sm-border-focus); }
+    .comment-input::placeholder { color: var(--sm-text-muted); }
+    .comment-send-btn {
+      position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; font-size: 16px;
+      color: var(--color-primary-600); transition: transform var(--transition-fast);
+    }
+    .comment-send-btn:hover { transform: translateY(-50%) scale(1.2); }
+
+    /* Comment list */
+    .comment-thread__list { padding: 0; list-style: none; }
+
+    /* Single comment */
+    .comment-item {
+      display: flex; gap: 10px; padding: 12px 16px;
+      border-bottom: 1px solid var(--color-neutral-100);
+      position: relative;
+    }
+    .comment-item:last-child { border-bottom: none; }
+    .comment-item__avatar {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: #fff;
+      background: linear-gradient(135deg, var(--color-accent-500), #8b5cf6);
+    }
+    .comment-item__body { flex: 1; min-width: 0; }
+    .comment-item__bubble {
+      background: var(--color-neutral-100);
+      border-radius: 0 var(--radius-md) var(--radius-md) var(--radius-md);
+      padding: 8px 12px; display: inline-block; max-width: 100%;
+    }
+    .comment-item__name {
+      font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold);
+      color: var(--sm-text-primary); margin-bottom: 2px;
+    }
+    .comment-item__text {
+      font-size: 13px; color: var(--sm-text-primary);
+      line-height: var(--line-height-relaxed);
+    }
+    .comment-item__text .mention { color: var(--sm-color-accent); font-weight: var(--font-weight-medium); }
+    .comment-item__actions {
+      display: flex; gap: 10px; margin-top: 4px; align-items: center;
+    }
+    .comment-item__time { font-size: 11px; color: var(--sm-text-muted); }
+    .comment-item__action {
+      font-size: 11px; font-weight: var(--font-weight-medium);
+      color: var(--sm-text-muted); background: none; border: none;
+      cursor: pointer; padding: 0; font-family: var(--font-family);
+      transition: color var(--transition-fast);
+    }
+    .comment-item__action:hover { color: var(--sm-text-primary); }
+    .comment-item__action--liked { color: var(--color-danger-500); }
+    .comment-item__like-count { font-size: 11px; color: var(--sm-text-muted); }
+
+    /* Delete btn (only author/admin) */
+    .comment-item__delete {
+      position: absolute; right: 16px; top: 12px;
+      background: none; border: none; cursor: pointer;
+      font-size: 14px; color: var(--sm-text-muted); opacity: 0;
+      transition: opacity var(--transition-fast), color var(--transition-fast);
+    }
+    .comment-item:hover .comment-item__delete { opacity: 1; }
+    .comment-item__delete:hover { color: var(--color-danger-500); }
+
+    /* Reply thread (indent) */
+    .comment-item--reply {
+      padding-left: 58px;
+      background: var(--color-neutral-50);
+    }
+    .comment-item--reply .comment-item__avatar {
+      width: 26px; height: 26px; font-size: 9px;
+    }
+
+    /* Inline reply input */
+    .comment-reply-form {
+      display: flex; gap: 8px; align-items: center;
+      padding: 6px 16px 10px 58px;
+      background: var(--color-neutral-50);
+      border-bottom: 1px solid var(--color-neutral-100);
+    }
+    .comment-reply-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #22c55e, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 9px; color: #fff; font-weight: 700; }
+    .comment-reply-input { flex: 1; border: 1.5px solid var(--sm-border-default); border-radius: var(--radius-full); padding: 5px 14px; font-size: 12px; font-family: var(--font-family); outline: none; background: var(--sm-bg-surface); }
+    .comment-reply-input:focus { border-color: var(--sm-border-focus); }
+
+    /* Soft deleted comment */
+    .comment-item--deleted .comment-item__bubble {
+      background: transparent; border: 1px dashed var(--sm-border-default);
+    }
+    .comment-item--deleted .comment-item__text { color: var(--sm-text-muted); font-style: italic; }
+
+    /* Load more */
+    .comment-thread__load-more {
+      display: block; width: 100%; padding: 10px 16px;
+      background: none; border: none; border-top: 1px solid var(--color-neutral-100);
+      font-size: var(--font-size-sm); color: var(--sm-color-accent);
+      font-weight: var(--font-weight-medium); cursor: pointer;
+      font-family: var(--font-family); text-align: center;
+      transition: background var(--transition-fast);
+    }
+    .comment-thread__load-more:hover { background: var(--color-neutral-50); }
+
+    /* Empty state */
+    .comment-thread--empty .comment-thread__empty {
+      padding: 24px 16px; text-align: center;
+      font-size: var(--font-size-sm); color: var(--sm-text-muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="showcase" data-ds-id="ds:comp:comment-thread-001">
+    <h2 class="showcase__title">Comment Thread</h2>
+    <div class="showcase__id">ds:comp:comment-thread-001 · Phase 2 · Implements US-23, US-24</div>
+
+    <!-- STATE: Default — with comments and reply -->
+    <section class="showcase__section">
+      <div class="showcase__label">Default — Flat Thread with Reply</div>
+      <div class="comment-thread" data-ds-id="ds:comp:comment-thread-001--default">
+        <div class="comment-thread__header">💬 4 bình luận</div>
+
+        <!-- Input -->
+        <div class="comment-thread__input-row">
+          <div class="comment-avatar">K</div>
+          <div class="comment-input-wrap">
+            <textarea class="comment-input" rows="1" placeholder="Viết bình luận..."></textarea>
+            <button class="comment-send-btn" aria-label="Gửi bình luận">➤</button>
+          </div>
+        </div>
+
+        <!-- Comments list -->
+        <ul class="comment-thread__list">
+          <!-- Comment 1 with like -->
+          <li class="comment-item" data-ds-id="ds:comp:comment-thread-001--item">
+            <div class="comment-item__avatar">M</div>
+            <div class="comment-item__body">
+              <div class="comment-item__bubble">
+                <div class="comment-item__name">Minh Tú</div>
+                <div class="comment-item__text">Cảm ơn bạn đã review! Mình cũng hay chơi quanh đó, sẽ thử luôn 👍</div>
+              </div>
+              <div class="comment-item__actions">
+                <span class="comment-item__time">1 giờ trước</span>
+                <button class="comment-item__action comment-item__action--liked" aria-pressed="true">❤️ Thích</button>
+                <span class="comment-item__like-count">3</span>
+                <button class="comment-item__action" id="replyBtn1">Trả lời</button>
+              </div>
+            </div>
+            <button class="comment-item__delete" aria-label="Xóa bình luận">🗑</button>
+          </li>
+
+          <!-- Reply (1 level indent) -->
+          <li class="comment-item comment-item--reply" data-ds-id="ds:comp:comment-thread-001--reply">
+            <div class="comment-item__avatar" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">H</div>
+            <div class="comment-item__body">
+              <div class="comment-item__bubble">
+                <div class="comment-item__name">Hùng Anh</div>
+                <div class="comment-item__text"><span class="mention">@Minh Tú</span> Đúng rồi bạn, giá chiều tầm 80k khá ổn</div>
+              </div>
+              <div class="comment-item__actions">
+                <span class="comment-item__time">45 phút trước</span>
+                <button class="comment-item__action">🤍 Thích</button>
+                <button class="comment-item__action">Trả lời</button>
+              </div>
+            </div>
+          </li>
+
+          <!-- Inline reply input (shown after clicking "Trả lời") -->
+          <li class="comment-reply-form" id="replyForm1" style="display:none;">
+            <div class="comment-reply-avatar">K</div>
+            <input class="comment-reply-input" placeholder="Trả lời Minh Tú..." type="text" />
+          </li>
+
+          <!-- Comment 2 — deleted -->
+          <li class="comment-item comment-item--deleted">
+            <div class="comment-item__avatar" style="background:var(--color-neutral-300)">?</div>
+            <div class="comment-item__body">
+              <div class="comment-item__bubble">
+                <div class="comment-item__text">Bình luận này đã bị xóa.</div>
+              </div>
+              <div class="comment-item__actions">
+                <span class="comment-item__time">2 giờ trước</span>
+              </div>
+            </div>
+          </li>
+
+          <!-- Comment 3 -->
+          <li class="comment-item">
+            <div class="comment-item__avatar" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">L</div>
+            <div class="comment-item__body">
+              <div class="comment-item__bubble">
+                <div class="comment-item__name">Linh Phạm</div>
+                <div class="comment-item__text">Ảnh sân nhìn đẹp, nhưng bãi xe rộng không bạn?</div>
+              </div>
+              <div class="comment-item__actions">
+                <span class="comment-item__time">30 phút trước</span>
+                <button class="comment-item__action">🤍 Thích</button>
+                <button class="comment-item__action">Trả lời</button>
+              </div>
+            </div>
+          </li>
+        </ul>
+
+        <button class="comment-thread__load-more" data-ds-id="ds:comp:comment-thread-001--load-more">
+          Xem thêm 8 bình luận...
+        </button>
+      </div>
+    </section>
+
+    <!-- STATE: Empty -->
+    <section class="showcase__section">
+      <div class="showcase__label">Empty State — Chưa có bình luận</div>
+      <div class="comment-thread comment-thread--empty" data-ds-id="ds:comp:comment-thread-001--empty">
+        <div class="comment-thread__header">💬 0 bình luận</div>
+        <div class="comment-thread__input-row">
+          <div class="comment-avatar">K</div>
+          <div class="comment-input-wrap">
+            <textarea class="comment-input" rows="1" placeholder="Hãy là người đầu tiên bình luận..."></textarea>
+            <button class="comment-send-btn" aria-label="Gửi">➤</button>
+          </div>
+        </div>
+        <div class="comment-thread__empty">
+          💭 Chưa có bình luận nào. Chia sẻ suy nghĩ của bạn!
+        </div>
+      </div>
+    </section>
+
+    <!-- STATE: Guest -->
+    <section class="showcase__section">
+      <div class="showcase__label">Guest View — Đọc được, không comment</div>
+      <div class="comment-thread" data-ds-id="ds:comp:comment-thread-001--guest">
+        <div class="comment-thread__header">💬 2 bình luận</div>
+        <div class="comment-thread__input-row" style="background:var(--color-neutral-50);">
+          <span style="font-size:13px;color:var(--sm-text-secondary);padding:6px 0;">
+            🔒 <a href="#" style="color:var(--sm-color-accent);text-decoration:none;font-weight:500;">Đăng nhập</a> để bình luận
+          </span>
+        </div>
+        <ul class="comment-thread__list">
+          <li class="comment-item">
+            <div class="comment-item__avatar">T</div>
+            <div class="comment-item__body">
+              <div class="comment-item__bubble">
+                <div class="comment-item__name">Tuấn Anh</div>
+                <div class="comment-item__text">Sân này mình biết, có chỗ để xe rộng nữa 👌</div>
+              </div>
+              <div class="comment-item__actions">
+                <span class="comment-item__time">3 giờ trước</span>
+                <span class="comment-item__like-count">❤️ 2</span>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </div>
+  <script>
+    const theme = localStorage.getItem('sm-theme') || 'light';
+    if (theme === 'dark') document.body.classList.add('theme-dark');
+    // Toggle reply form
+    const replyBtn = document.getElementById('replyBtn1');
+    const replyForm = document.getElementById('replyForm1');
+    if (replyBtn && replyForm) {
+      replyBtn.addEventListener('click', () => {
+        const shown = replyForm.style.display !== 'none';
+        replyForm.style.display = shown ? 'none' : 'flex';
+        if (!shown) replyForm.querySelector('input').focus();
+      });
+    }
+  </script>
+</body>
+</html>

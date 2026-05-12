@@ -1,0 +1,218 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Report Modal | ds:comp:report-modal-001</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../tokens/tokens.css" />
+  <link rel="stylesheet" href="../../base/base.css" />
+  <style>
+    /* Showcase wrapper */
+    body { padding: 40px; background: var(--color-neutral-100); display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    
+    /* Overlay */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--sm-bg-overlay);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: var(--z-modal);
+      padding: 16px;
+    }
+
+    /* Modal Container */
+    .report-modal {
+      background: var(--sm-bg-surface);
+      border-radius: var(--radius-xl);
+      width: 100%;
+      max-width: 480px;
+      box-shadow: var(--shadow-xl);
+      overflow: hidden;
+      animation: modal-pop var(--transition-base) forwards;
+    }
+    
+    @keyframes modal-pop {
+      0% { opacity: 0; transform: scale(0.95) translateY(10px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* Header */
+    .report-modal__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--sm-border-default);
+    }
+    .report-modal__title {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-bold);
+      color: var(--sm-text-primary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .report-modal__close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: var(--sm-text-muted);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: color var(--transition-fast), background var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+    }
+    .report-modal__close:hover {
+      background: var(--color-neutral-100);
+      color: var(--sm-text-primary);
+    }
+
+    /* Body */
+    .report-modal__body {
+      padding: 24px;
+    }
+    .report-modal__desc {
+      font-size: var(--font-size-sm);
+      color: var(--sm-text-secondary);
+      margin-bottom: 20px;
+      line-height: var(--line-height-relaxed);
+    }
+    
+    .report-reason-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    
+    /* Custom Radio Label layout */
+    .radio-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 1.5px solid var(--sm-border-default);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      background: var(--sm-bg-surface);
+    }
+    .radio-card:hover {
+      border-color: var(--color-primary-300);
+      background: var(--color-neutral-50);
+    }
+    /* When input inside radio-card is checked, style the card */
+    .radio-card:has(.form-radio:checked) {
+      border-color: var(--color-primary-600);
+      background: var(--color-primary-50);
+    }
+    
+    .radio-card__content {
+      flex: 1;
+    }
+    .radio-card__title {
+      font-weight: var(--font-weight-semibold);
+      font-size: var(--font-size-sm);
+      color: var(--sm-text-primary);
+      margin-bottom: 2px;
+    }
+    .radio-card__desc {
+      font-size: var(--font-size-xs);
+      color: var(--sm-text-secondary);
+    }
+
+    /* Form Fields */
+    .report-modal__form-group {
+      margin-bottom: 16px;
+    }
+
+    /* Footer */
+    .report-modal__footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--sm-border-default);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      background: var(--color-neutral-50);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="modal-overlay">
+    <div class="report-modal" role="dialog" aria-modal="true" aria-labelledby="report-title">
+      
+      <div class="report-modal__header">
+        <h2 id="report-title" class="report-modal__title">
+          <span style="color: var(--color-danger-500);">🚨</span> Báo cáo vi phạm
+        </h2>
+        <button class="report-modal__close" aria-label="Đóng">×</button>
+      </div>
+
+      <div class="report-modal__body">
+        <p class="report-modal__desc">
+          Phát hiện hành vi xấu từ người dùng <strong>@nguyenvan_a</strong>? Vui lòng cung cấp thông tin để quản trị viên xử lý nhắm xây dựng cộng đồng Chill Cầu lành mạnh.
+        </p>
+
+        <!-- Reasons -->
+        <div class="form-group" style="margin-bottom: 24px;">
+          <label class="form-label form-label--required">Lý do báo cáo</label>
+          <div class="report-reason-grid">
+            <label class="radio-card">
+              <input type="radio" name="report_reason" class="form-radio" value="spam" checked />
+              <div class="radio-card__content">
+                <div class="radio-card__title">Spam / Quảng cáo</div>
+                <div class="radio-card__desc">Tài khoản này liên tục đăng kèo rác hoặc quảng cáo dịch vụ/bán hàng.</div>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="report_reason" class="form-radio" value="fake_level" />
+              <div class="radio-card__content">
+                <div class="radio-card__title">Khai man trình độ</div>
+                <div class="radio-card__title" style="font-weight: normal; font-size: var(--font-size-xs); color: var(--sm-text-secondary); margin-bottom: 0;">Cố tình chọn sai trình độ làm lệch nhóm chơi. Tái phạm nhiều lần.</div>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="report_reason" class="form-radio" value="scam" />
+              <div class="radio-card__content">
+                <div class="radio-card__title">Lừa đảo / Quỵt tiền sân</div>
+                <div class="radio-card__desc">Hành vi gian lận tài chính, bùng tiền sân hoặc tiền nước.</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Evidence Link -->
+        <div class="form-group report-modal__form-group">
+          <label class="form-label form-label--required" for="report-link">Link bằng chứng (Facebook / Zalo)</label>
+          <input type="url" id="report-link" class="form-input" placeholder="https://facebook.com/..." required />
+          <div class="form-hint">Dán link bài phốt / ảnh chụp màn hình tin nhắn để Admin có căn cứ xử lý.</div>
+        </div>
+
+        <!-- Details -->
+        <div class="form-group report-modal__form-group">
+          <label class="form-label" for="report-desc">Mô tả chi tiết thêm (Không bắt buộc)</label>
+          <textarea id="report-desc" class="form-input" placeholder="Cung cấp thêm ngữ cảnh cho quản trị viên..."></textarea>
+        </div>
+
+      </div>
+
+      <div class="report-modal__footer">
+        <button class="btn btn--secondary">Hủy bỏ</button>
+        <button class="btn btn--primary" style="background: var(--color-danger-600); border-color: var(--color-danger-600);">
+          Gửi Báo Cáo
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

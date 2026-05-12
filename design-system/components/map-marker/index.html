@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ds:comp:map-marker-001 — Map Marker + Popup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../tokens/tokens.css" />
+  <style>
+    /* tokens.css imported above — no :root needed */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-family); background: var(--sm-bg-page); padding: var(--space-xl); color: var(--sm-text-primary); }
+    .showcase { max-width: 600px; }
+    .showcase__title { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); margin-bottom: var(--space-xl); }
+    .showcase__section { margin-bottom: var(--space-2xl); }
+    .showcase__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--sm-text-secondary); text-transform: uppercase; letter-spacing: .05em; margin-bottom: var(--space-md); }
+
+    /* Markers */
+    .markers { display: flex; gap: 24px; align-items: flex-end; margin-bottom: 24px; }
+    .marker-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .marker-label { font-size: 10px; color: #94a3b8; }
+    .marker {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+      position: relative;
+    }
+    .marker::after {
+      content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
+      width: 0; height: 0;
+      border-left: 6px solid transparent; border-right: 6px solid transparent;
+    }
+    .marker--zero { background: #94a3b8; }
+    .marker--zero::after { border-top: 6px solid #94a3b8; }
+    .marker--low { background: #f59e0b; }
+    .marker--low::after { border-top: 6px solid #f59e0b; }
+    .marker--high { background: var(--color-primary); width: 38px; height: 38px; font-size: 15px; }
+    .marker--high::after { border-top: 7px solid var(--color-primary); }
+
+    /* Popup */
+    .map-popup {
+      background: #fff; border: 1px solid var(--color-border); border-radius: 12px;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); width: 300px; overflow: hidden;
+    }
+    .map-popup__header { padding: 12px 16px; border-bottom: 1px solid #f1f5f9; }
+    .map-popup__name { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+    .map-popup__addr { font-size: 12px; color: #64748b; margin-top: 2px; }
+
+    .map-popup__posts { padding: 0; }
+    .map-popup__post {
+      padding: 10px 16px; border-bottom: 1px solid #f8fafc;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 13px;
+    }
+    .map-popup__post-time { font-weight: 600; color: var(--color-primary); }
+    .map-popup__post-level { display: flex; gap: 4px; }
+    .mini-badge { padding: 2px 6px; font-size: 10px; font-weight: 600; border-radius: 9999px; }
+    .mini-badge--tb { background: #bfdbfe; color: #1d4ed8; }
+    .mini-badge--tb-plus { background: #ede9fe; color: #5b21b6; }
+
+    .map-popup__footer { padding: 10px 16px; display: flex; gap: 8px; }
+    .map-popup__btn {
+      flex: 1; padding: 8px; font-size: 12px; font-weight: 600; text-align: center;
+      border: none; border-radius: 8px; cursor: pointer; font-family: var(--font-family);
+    }
+    .map-popup__btn--dir { background: #f0fdf4; color: var(--color-primary); }
+    .map-popup__btn--dir:hover { background: #dcfce7; }
+    .map-popup__btn--detail { background: var(--color-primary); color: #fff; }
+    .map-popup__btn--detail:hover { background: #15803d; }
+  </style>
+</head>
+<body>
+  <div class="showcase" data-ds-id="ds:comp:map-marker-001">
+    <h2 class="showcase__title">ds:comp:map-marker-001 — Map Marker</h2>
+
+    <section class="showcase__section">
+      <h3 class="showcase__label">Marker Variants</h3>
+      <div class="markers">
+        <div class="marker-wrap">
+          <div class="marker marker--zero" data-ds-id="ds:comp:map-marker-001--zero">0</div>
+          <span class="marker-label">0 bài</span>
+        </div>
+        <div class="marker-wrap">
+          <div class="marker marker--low" data-ds-id="ds:comp:map-marker-001--low">2</div>
+          <span class="marker-label">1–2 bài</span>
+        </div>
+        <div class="marker-wrap">
+          <div class="marker marker--high" data-ds-id="ds:comp:map-marker-001--high">5</div>
+          <span class="marker-label">3+ bài</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="showcase__section">
+      <h3 class="showcase__label">Marker Popup (Click)</h3>
+      <div class="map-popup" data-ds-id="ds:comp:map-marker-001--popup">
+        <div class="map-popup__header">
+          <div class="map-popup__name">🏸 Sân A&C số 32 Đại Tú</div>
+          <div class="map-popup__addr">32 Đại Tú, Đại Kim, Hoàng Mai • 2.3 km</div>
+        </div>
+        <div class="map-popup__posts">
+          <div class="map-popup__post">
+            <span class="map-popup__post-time">20:00 – 22:00</span>
+            <div class="map-popup__post-level">
+              <span class="mini-badge mini-badge--tb">TB</span>
+              <span class="mini-badge mini-badge--tb-plus">TB+</span>
+            </div>
+            <span>👥 2 slot</span>
+          </div>
+          <div class="map-popup__post">
+            <span class="map-popup__post-time">07:00 – 09:00</span>
+            <div class="map-popup__post-level">
+              <span class="mini-badge mini-badge--tb">TB</span>
+            </div>
+            <span>👥 3 slot</span>
+          </div>
+        </div>
+        <div class="map-popup__footer">
+          <button class="map-popup__btn map-popup__btn--dir">🗺️ Chỉ đường</button>
+          <button class="map-popup__btn map-popup__btn--detail">Xem chi tiết</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

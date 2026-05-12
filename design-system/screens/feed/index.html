@@ -1,0 +1,224 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chill Cầu — Tìm kèo cầu lông | ds:screen:feed-001</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- === NAVBAR === -->
+  <nav class="navbar" data-ds-id="ds:comp:navbar-001">
+    <div class="navbar__brand">
+      <span class="navbar__logo">🏸</span>
+      <span class="navbar__name">Chill Cầu</span>
+    </div>
+    <div class="navbar__links">
+      <a href="#" class="navbar__link navbar__link--active">Tìm kèo</a>
+      <a href="../map/index.html" class="navbar__link">Bản đồ</a>
+      <a href="../coming-soon/index.html" class="navbar__link">Xếp hạng</a>
+      <a href="../coming-soon/index.html#bang-gia" class="navbar__link">Bảng giá</a>
+      <a href="../discussion/index.html" class="navbar__link" style="display:flex;align-items:center;gap:4px;">💬 Thảo luận <span style="background:#fef3c7;color:#92400e;border-radius:9999px;font-size:8px;font-weight:700;padding:1px 5px;">Phase 2</span></a>
+    </div>
+    <div class="navbar__actions">
+      <button class="navbar__toggle">🌓 Sáng</button>
+      <a href="#" class="btn btn--warning btn--sm" style="text-decoration:none;">☕ Ủng hộ & Góp ý</a>
+      <button class="navbar__icon-btn">🤍</button>
+      <button class="navbar__bell">🔔<span class="navbar__bell-count">3</span></button>
+      <a href="../profile/index.html" class="navbar__avatar" style="text-decoration:none;"><span class="navbar__avatar-initial">K</span></a>
+    </div>
+  </nav>
+
+  <!-- === MAIN CONTENT: Sidebar-Content Layout === -->
+  <main class="layout-sidebar-content" data-ds-id="ds:layout:sidebar-content-001">
+
+    <!-- SIDEBAR: Filter Panel -->
+    <aside class="sidebar" data-ds-id="ds:comp:filter-panel-001">
+      <div class="filter-panel">
+        <div class="filter-panel__header">
+          <h3 class="filter-panel__title">🔍 Bộ lọc</h3>
+          <button class="filter-panel__clear">Xóa tất cả</button>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-group__label">Tìm kiếm nhanh</label>
+          <input class="filter-input" type="text" placeholder="Tên sân, khu vực, quận..." />
+        </div>
+        <div class="filter-group">
+          <label class="filter-group__label">📅 Ngày chơi</label>
+          <input class="filter-date" type="date" value="2026-03-24" />
+        </div>
+        <div class="filter-group">
+          <label class="filter-group__label">⏰ Khung giờ</label>
+          <div class="filter-time-range">
+            <input class="filter-time" type="time" value="18:00" />
+            <span>→</span>
+            <input class="filter-time" type="time" value="22:00" />
+          </div>
+        </div>
+        <div class="filter-group">
+          <label class="filter-group__label">🎯 Trình độ</label>
+          <div class="filter-btns">
+            <button class="filter-btn">Y</button>
+            <button class="filter-btn">Y+</button>
+            <button class="filter-btn">TBY</button>
+            <button class="filter-btn">TBY+</button>
+            <button class="filter-btn">TB-</button>
+            <button class="filter-btn filter-btn--active">TB</button>
+            <button class="filter-btn filter-btn--active">TB+</button>
+            <button class="filter-btn">TB++</button>
+            <button class="filter-btn">Khá</button>
+            <button class="filter-btn">Giỏi</button>
+          </div>
+        </div>
+        <div class="filter-group">
+          <label class="filter-group__label">👥 Số slot</label>
+          <div class="filter-btns">
+            <button class="filter-btn filter-btn--active">Tất cả</button>
+            <button class="filter-btn">1–2</button>
+            <button class="filter-btn">3–4</button>
+            <button class="filter-btn">5+</button>
+          </div>
+        </div>
+        <div class="filter-group">
+          <label class="filter-group__label">📍 Khoảng cách</label>
+          <select class="filter-select"><option>Tất cả</option><option>1 km</option><option>3 km</option><option selected>5 km</option><option>10 km</option></select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-group__label">⚧ Đối tượng</label>
+          <select class="filter-select"><option selected>Nam & Nữ</option><option>Chỉ Nam</option><option>Chỉ Nữ</option></select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-group__label">🏸 Hình thức</label>
+          <div class="filter-btns">
+            <button class="filter-btn filter-btn--active">Giao lưu</button>
+            <button class="filter-btn">Đối kháng</button>
+            <button class="filter-btn">Tập luyện</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- CONTENT: Feed -->
+    <section class="content" data-ds-id="ds:screen:feed-001">
+      <!-- AI Search -->
+      <div class="search-bar" data-ds-id="ds:comp:search-bar-001">
+        <span class="search-bar__icon">✨</span>
+        <input class="search-bar__input" type="text" placeholder='Tìm kèo bằng AI... VD: "Kèo tối nay Cầu Giấy TB+"' />
+        <button class="search-bar__btn">Tìm</button>
+      </div>
+
+      <!-- Results header -->
+      <div class="feed-header">
+        <h2 class="feed-header__title">🏸 Kèo hôm nay <span class="feed-header__count">(12 kết quả)</span></h2>
+        <div class="feed-header__sort">
+          <label class="sort-label">Sắp xếp:</label>
+          <select class="sort-select">
+            <option selected>Gần nhất</option>
+            <option>Giờ sớm nhất</option>
+            <option>Đăng gần đây</option>
+            <option>Nhiều slot nhất</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Post cards -->
+      <div class="feed-list">
+        <!-- Card 1 -->
+        <article class="post-card" data-ds-id="ds:comp:post-card-001">
+          <div class="post-card__header">
+            <div class="post-card__time"><span class="post-card__time-icon">⏰</span><span>20:00 – 22:00</span></div>
+            <span class="post-card__posted">3 giờ trước</span>
+          </div>
+          <div class="post-card__body">
+            <h3 class="post-card__court"><span>🏸</span> Sân A&C số 32 Đại Tú</h3>
+            <div class="post-card__meta"><span class="post-card__distance">📍 2.3 km</span><span>Hoàng Mai</span></div>
+            <div class="post-card__badges"><span class="badge badge--tb">TB</span><span class="badge badge--tb-plus">TB+</span></div>
+            <div class="post-card__details">
+              <span>👥 Cần thêm <strong>2</strong> người</span>
+              <span>♂ Nam</span>
+              <span>💰 80.000đ</span>
+            </div>
+            <p class="post-card__summary">Sân mới, có quạt, nước uống. Anh em TB TB+ vào kèo nhé.</p>
+          </div>
+          <div class="post-card__actions">
+            <a href="#" class="post-card__action post-card__action--fb"><span>📘</span> Facebook</a>
+            <button class="post-card__action"><span>🔗</span> Chia sẻ</button>
+            <button class="post-card__action post-card__action--fav"><span>🤍</span> Yêu thích</button>
+          </div>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="post-card">
+          <div class="post-card__header">
+            <div class="post-card__time"><span class="post-card__time-icon">⏰</span><span>19:00 – 21:00</span></div>
+            <span class="post-card__posted">1 giờ trước</span>
+          </div>
+          <div class="post-card__body">
+            <h3 class="post-card__court"><span>🏸</span> Sân TT9 Mễ Trì</h3>
+            <div class="post-card__meta"><span class="post-card__distance">📍 4.1 km</span><span>Nam Từ Liêm</span></div>
+            <div class="post-card__badges"><span class="badge badge--tby">TBY</span><span class="badge badge--tb">TB</span></div>
+            <div class="post-card__details">
+              <span>👥 Cần thêm <strong>3</strong> người</span>
+              <span>♂♀ Hỗn hợp</span>
+              <span>💰 70.000đ</span>
+            </div>
+            <p class="post-card__summary">Sân đẹp, anh chị em TBY-TB giao lưu vui vẻ, đặt sân rồi thiếu 3 máy.</p>
+          </div>
+          <div class="post-card__actions">
+            <a href="#" class="post-card__action post-card__action--fb"><span>📘</span> Facebook</a>
+            <button class="post-card__action"><span>🔗</span> Chia sẻ</button>
+            <button class="post-card__action post-card__action--fav"><span>🤍</span> Yêu thích</button>
+          </div>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="post-card">
+          <div class="post-card__header">
+            <div class="post-card__time"><span class="post-card__time-icon">⏰</span><span>06:00 – 08:00</span></div>
+            <span class="post-card__posted">5 giờ trước</span>
+          </div>
+          <div class="post-card__body">
+            <h3 class="post-card__court"><span>🏸</span> Sân Hà Đông Sport</h3>
+            <div class="post-card__meta"><span class="post-card__distance">📍 8.5 km</span><span>Hà Đông</span></div>
+            <div class="post-card__badges"><span class="badge badge--kha">Khá</span></div>
+            <div class="post-card__details">
+              <span>👥 Cần thêm <strong>1</strong> người</span>
+              <span>♂ Nam</span>
+              <span>💰 100.000đ</span>
+            </div>
+            <p class="post-card__summary">Sáng mai sân Hà Đông, trình khá, cần thêm 1 tay vợt. LH sớm.</p>
+          </div>
+          <div class="post-card__actions">
+            <a href="#" class="post-card__action post-card__action--fb"><span>📘</span> Facebook</a>
+            <button class="post-card__action"><span>🔗</span> Chia sẻ</button>
+            <button class="post-card__action post-card__action--fav"><span>🤍</span> Yêu thích</button>
+          </div>
+        </article>
+      </div>
+
+      <!-- Pagination -->
+      <div class="feed-pagination">
+        <span class="feed-pagination__info">Hiển thị 1–20 / 12 kết quả</span>
+        <button class="btn btn--primary">Xem thêm kèo ↓</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const theme = localStorage.getItem('sm-theme') || 'light';
+    if (theme === 'dark') document.body.classList.add('theme-dark');
+    
+    document.querySelectorAll('.navbar__toggle').forEach(btn => {
+      btn.innerHTML = theme === 'dark' ? '🌞 Sáng' : '🌓 Tối';
+      btn.addEventListener('click', () => {
+        document.body.classList.toggle('theme-dark');
+        const isDark = document.body.classList.contains('theme-dark');
+        localStorage.setItem('sm-theme', isDark ? 'dark' : 'light');
+        document.querySelectorAll('.navbar__toggle').forEach(b => b.innerHTML = isDark ? '🌞 Sáng' : '🌓 Tối');
+      });
+    });
+  </script>
+</body>
+</html>

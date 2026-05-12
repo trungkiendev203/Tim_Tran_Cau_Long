@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ds:comp:filter-panel-001 — Smart Filter Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../tokens/tokens.css" />
+  <style>
+    /* ds:comp:filter-panel-001 */
+    /* tokens.css imported above — no :root needed */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-family); background: var(--sm-bg-page); padding: var(--space-xl); color: var(--sm-text-primary); }
+    .showcase { max-width: 320px; }
+    .showcase__title { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); margin-bottom: var(--space-xl); }
+    .showcase__section { margin-bottom: var(--space-2xl); }
+    .showcase__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--sm-text-secondary); text-transform: uppercase; letter-spacing: .05em; margin-bottom: var(--space-md); }
+
+    .filter-panel {
+      background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-lg);
+      padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .filter-panel__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .filter-panel__title { font-size: 16px; font-weight: 700; }
+    .filter-panel__clear { font-size: 12px; color: #ef4444; cursor: pointer; background: none; border: none; font-family: var(--font-family); font-weight: 500; }
+    .filter-panel__clear:hover { text-decoration: underline; }
+
+    .filter-group { margin-bottom: 16px; }
+    .filter-group:last-child { margin-bottom: 0; }
+    .filter-group__label { font-size: 12px; font-weight: 600; color: #64748b; margin-bottom: 8px; display: block; }
+
+    /* Text input */
+    .filter-input {
+      width: 100%; padding: 8px 12px; font-size: 13px; border: 1.5px solid var(--color-border);
+      border-radius: var(--radius-md); font-family: var(--font-family);
+      transition: border-color 150ms ease;
+    }
+    .filter-input:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(22,163,74,0.08); }
+    .filter-input::placeholder { color: #94a3b8; }
+
+    /* Button group (multi-select) */
+    .filter-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+    .filter-btn {
+      padding: 6px 12px; font-size: 12px; font-weight: 500;
+      border: 1.5px solid var(--color-border); border-radius: 9999px;
+      background: #fff; color: #475569; cursor: pointer;
+      font-family: var(--font-family); transition: all 150ms ease;
+    }
+    .filter-btn:hover { border-color: #cbd5e1; background: #f8fafc; }
+    .filter-btn--active { background: #f0fdf4; border-color: #86efac; color: var(--color-primary); font-weight: 600; }
+
+    /* Select */
+    .filter-select {
+      width: 100%; padding: 8px 12px; font-size: 13px;
+      border: 1.5px solid var(--color-border); border-radius: var(--radius-md);
+      background: #fff; font-family: var(--font-family); cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center;
+    }
+    .filter-select:focus { outline: none; border-color: var(--color-primary); }
+
+    /* Date input */
+    .filter-date {
+      width: 100%; padding: 8px 12px; font-size: 13px;
+      border: 1.5px solid var(--color-border); border-radius: var(--radius-md);
+      font-family: var(--font-family);
+    }
+    .filter-date:focus { outline: none; border-color: var(--color-primary); }
+
+    /* Time range */
+    .filter-time-range { display: flex; gap: 8px; align-items: center; }
+    .filter-time-range span { font-size: 12px; color: #94a3b8; }
+    .filter-time { flex: 1; padding: 8px 10px; font-size: 13px; border: 1.5px solid var(--color-border); border-radius: var(--radius-md); font-family: var(--font-family); }
+    .filter-time:focus { outline: none; border-color: var(--color-primary); }
+
+    /* Active count */
+    .filter-panel__count { font-size: 12px; color: var(--color-primary); font-weight: 600; margin-top: 12px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="showcase" data-ds-id="ds:comp:filter-panel-001">
+    <h2 class="showcase__title">ds:comp:filter-panel-001 — Smart Filter</h2>
+
+    <section class="showcase__section">
+      <h3 class="showcase__label">Default State</h3>
+      <div class="filter-panel" data-ds-id="ds:comp:filter-panel-001--default">
+        <div class="filter-panel__header">
+          <h3 class="filter-panel__title">🔍 Bộ lọc</h3>
+          <button class="filter-panel__clear">Xóa tất cả</button>
+        </div>
+
+        <div class="filter-group" data-ds-id="ds:comp:filter-panel-001--search">
+          <label class="filter-group__label">Tìm kiếm nhanh</label>
+          <input class="filter-input" type="text" placeholder="Tên sân, khu vực, quận..." />
+        </div>
+
+        <div class="filter-group" data-ds-id="ds:comp:filter-panel-001--date">
+          <label class="filter-group__label">📅 Ngày chơi</label>
+          <input class="filter-date" type="date" value="2026-03-24" />
+        </div>
+
+        <div class="filter-group" data-ds-id="ds:comp:filter-panel-001--time">
+          <label class="filter-group__label">⏰ Khung giờ</label>
+          <div class="filter-time-range">
+            <input class="filter-time" type="time" value="18:00" />
+            <span>→</span>
+            <input class="filter-time" type="time" value="22:00" />
+          </div>
+        </div>
+
+        <div class="filter-group" data-ds-id="ds:comp:filter-panel-001--level">
+          <label class="filter-group__label">🎯 Trình độ</label>
+          <div class="filter-btns">
+            <button class="filter-btn">Y</button>
+            <button class="filter-btn">Y+</button>
+            <button class="filter-btn">TBY</button>
+            <button class="filter-btn">TBY+</button>
+            <button class="filter-btn">TB-</button>
+            <button class="filter-btn filter-btn--active">TB</button>
+            <button class="filter-btn filter-btn--active">TB+</button>
+            <button class="filter-btn">TB++</button>
+            <button class="filter-btn">Khá</button>
+            <button class="filter-btn">Giỏi</button>
+          </div>
+        </div>
+
+        <div class="filter-group" data-ds-id="ds:comp:filter-panel-001--slots">
+          <label class="filter-group__label">👥 Số slot cần thêm</label>
+          <div class="filter-btns">
+            <button class="filter-btn filter-btn--active">Tất cả</button>
+            <button class="filter-btn">1–2</button>
+            <button class="filter-btn">3–4</button>
+            <button class="filter-btn">5+</button>
+          </div>
+        </div>
+
+        <div class="filter-group" data-ds-id="ds:comp:filter-panel-001--distance">
+          <label class="filter-group__label">📍 Khoảng cách tối đa</label>
+          <select class="filter-select">
+            <option>Tất cả</option>
+            <option>1 km</option>
+            <option>3 km</option>
+            <option selected>5 km</option>
+            <option>10 km</option>
+          </select>
+        </div>
+
+        <div class="filter-group" data-ds-id="ds:comp:filter-panel-001--gender">
+          <label class="filter-group__label">⚧ Đối tượng</label>
+          <select class="filter-select">
+            <option selected>Nam & Nữ</option>
+            <option>Chỉ Nam</option>
+            <option>Chỉ Nữ</option>
+          </select>
+        </div>
+
+        <div class="filter-group" data-ds-id="ds:comp:filter-panel-001--type">
+          <label class="filter-group__label">🏸 Hình thức</label>
+          <div class="filter-btns">
+            <button class="filter-btn filter-btn--active">Giao lưu</button>
+            <button class="filter-btn">Đối kháng</button>
+            <button class="filter-btn">Tập luyện</button>
+          </div>
+        </div>
+
+        <div class="filter-panel__count">Đang lọc: 2 bộ lọc đang bật</div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chill Cầu — Sắp ra mắt | ds:screen:coming-soon-001</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../tokens/tokens.css" />
+  <style>
+    :root { --font-family: 'Inter', -apple-system, sans-serif; --color-primary: #16a34a; --color-primary-hover: #15803d; --shadow-sm: 0 1px 2px rgba(0,0,0,0.05); --radius-md: 8px; --radius-lg: 12px; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-family); background: var(--sm-bg-page); color: var(--sm-text-primary); min-height: 100vh; display: flex; flex-direction: column; transition: background 200ms ease, color 200ms ease; }
+
+    /* Navbar */
+    .navbar { display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 56px; background: var(--sm-bg-surface); border-bottom: 1px solid var(--sm-border-default); z-index: 100; }
+    .navbar__brand { display: flex; align-items: center; gap: 8px; }
+    .navbar__logo { font-size: 24px; }
+    .navbar__name { font-size: 18px; font-weight: 700; color: var(--color-primary); }
+    .navbar__links { display: flex; gap: 4px; }
+    .navbar__link { padding: 8px 16px; font-size: 14px; font-weight: 500; color: var(--sm-text-secondary); text-decoration: none; border-radius: 8px; transition: all 150ms ease; }
+    .navbar__link:hover { background: var(--color-neutral-100); color: var(--sm-text-primary); }
+    .navbar__link--active { background: var(--color-primary-50); color: var(--color-primary-600); font-weight: 600; }
+    .navbar__actions { display: flex; align-items: center; gap: 12px; }
+    .navbar__avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #16a34a, #22c55e); display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; }
+    .navbar__avatar-initial { color: #fff; font-size: 13px; font-weight: 700; }
+    .navbar__icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; padding: 4px; border-radius: 8px; transition: background 150ms ease; color: var(--sm-text-secondary); }
+    .navbar__icon-btn:hover { background: var(--color-neutral-100); color: var(--color-danger-500); }
+    .navbar__toggle { display: flex; align-items: center; gap: 6px; background: var(--color-neutral-100); border: 1px solid var(--sm-border-default); border-radius: 20px; padding: 4px 12px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font-family); color: var(--sm-text-secondary); }
+    .navbar__toggle:hover { background: var(--color-neutral-200); }
+    .btn--warning { background: var(--color-warning-50); color: var(--color-warning-600); border: 1px solid var(--color-warning-400); }
+    .btn--warning:hover { background: var(--color-warning-100); }
+    .btn--sm { padding: 6px 14px; font-size: 12px; }
+    .btn { display: inline-flex; align-items: center; font-weight: 600; border-radius: 8px; cursor: pointer; font-family: var(--font-family); text-decoration: none; border: 1.5px solid transparent; transition: all 200ms ease; }
+    .btn--primary { background: var(--color-primary-600); color: #fff; border-color: var(--color-primary-600); }
+
+    /* Coming Soon */
+    .coming-soon { flex: 1; display: flex; align-items: center; justify-content: center; }
+    .coming-soon__card { text-align: center; max-width: 480px; padding: 48px 32px; background: var(--sm-bg-surface); border: 1px solid var(--sm-border-default); border-radius: 16px; box-shadow: var(--shadow-sm); }
+    .coming-soon__icon { font-size: 64px; margin-bottom: 20px; }
+    .coming-soon__title { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+    .coming-soon__desc { font-size: 14px; color: var(--sm-text-secondary); line-height: 1.6; margin-bottom: 24px; }
+    .coming-soon__badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; font-size: 13px; font-weight: 600; background: var(--color-accent-50); color: var(--color-accent-600); border-radius: 9999px; margin-bottom: 24px; }
+    .coming-soon__back { display: inline-flex; align-items: center; gap: 6px; padding: 10px 24px; font-size: 14px; font-weight: 600; background: var(--color-primary-600); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-family: var(--font-family); text-decoration: none; }
+    .coming-soon__back:hover { background: var(--color-primary-hover); }
+  </style>
+</head>
+<body>
+  <nav class="navbar" data-ds-id="ds:comp:navbar-001">
+    <div class="navbar__brand"><span class="navbar__logo">🏸</span><span class="navbar__name">Chill Cầu</span></div>
+    <div class="navbar__links">
+      <a href="../feed/index.html" class="navbar__link">Tìm kèo</a>
+      <a href="../map/index.html" class="navbar__link">Bản đồ</a>
+      <a href="#" class="navbar__link navbar__link--active" id="nav-current">Xếp hạng</a>
+      <a href="#" class="navbar__link" id="nav-other">Bảng giá</a>
+      <a href="../discussion/index.html" class="navbar__link" style="display:flex;align-items:center;gap:4px;">💬 Thảo luận <span style="background:#fef3c7;color:#92400e;border-radius:9999px;font-size:8px;font-weight:700;padding:1px 5px;">Phase 2</span></a>
+    </div>
+    <div class="navbar__actions">
+      <button class="navbar__toggle">🌓 Sáng</button>
+      <a href="#" class="btn btn--warning btn--sm" style="text-decoration:none;">☕ Ủng hộ &amp; Góp ý</a>
+      <button class="navbar__icon-btn">🤍</button>
+      <button style="position:relative;background:none;border:none;font-size:20px;cursor:pointer;">🔔<span style="position:absolute;top:-2px;right:-4px;background:var(--color-danger-500);color:#fff;font-size:10px;font-weight:700;min-width:16px;height:16px;border-radius:9999px;display:flex;align-items:center;justify-content:center;">3</span></button>
+      <a href="../profile/index.html" class="navbar__avatar" style="text-decoration:none;"><span class="navbar__avatar-initial">K</span></a>
+    </div>
+  </nav>
+
+  <main class="coming-soon" data-ds-id="ds:screen:coming-soon-001">
+    <div class="coming-soon__card">
+      <div class="coming-soon__icon" id="page-icon">🏆</div>
+      <div class="coming-soon__badge">🚀 Phase 2 — Đang phát triển</div>
+      <h1 class="coming-soon__title" id="page-title">Xếp hạng người chơi</h1>
+      <p class="coming-soon__desc" id="page-desc">
+        Tính năng xếp hạng người chơi dựa trên trình độ, uy tín và lịch sử thi đấu đang được phát triển.
+        Bạn sẽ được thông báo ngay khi tính năng này sẵn sàng!
+      </p>
+      <a href="../feed/index.html" class="coming-soon__back">← Quay lại Tìm kèo</a>
+    </div>
+  </main>
+
+  <script>
+    const theme = localStorage.getItem('sm-theme') || 'light';
+    if (theme === 'dark') document.body.classList.add('theme-dark');
+
+    document.querySelectorAll('.navbar__toggle').forEach(btn => {
+      btn.innerHTML = theme === 'dark' ? '🌞 Sáng' : '🌓 Tối';
+      btn.addEventListener('click', () => {
+        document.body.classList.toggle('theme-dark');
+        const isDark = document.body.classList.contains('theme-dark');
+        localStorage.setItem('sm-theme', isDark ? 'dark' : 'light');
+        document.querySelectorAll('.navbar__toggle').forEach(b => b.innerHTML = isDark ? '🌞 Sáng' : '🌓 Tối');
+      });
+    });
+
+    // Dynamic page content based on URL hash
+    const hash = location.hash || location.search;
+    if (hash.includes('bang-gia') || hash.includes('pricing')) {
+      document.getElementById('page-icon').textContent = '💰';
+      document.getElementById('page-title').textContent = 'Bảng giá sân cầu lông';
+      document.getElementById('page-desc').textContent = 'Tính năng so sánh giá sân cầu lông theo khu vực, thời gian và loại sân đang được phát triển. Bạn sẽ được thông báo ngay khi tính năng này sẵn sàng!';
+      document.getElementById('nav-current').classList.remove('navbar__link--active');
+      document.getElementById('nav-other').classList.add('navbar__link--active');
+    }
+  </script>
+</body>
+</html>

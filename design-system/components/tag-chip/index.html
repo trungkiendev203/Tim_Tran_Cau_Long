@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ds:comp:tag-chip-001 — Community Tag Chip</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../tokens/tokens.css" />
+  <link rel="stylesheet" href="../../base/base.css" />
+  <style>
+    body { padding: var(--space-xl); background: var(--sm-bg-page); font-family: var(--font-family); }
+    .showcase { max-width: 520px; }
+    .showcase__title { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); margin-bottom: 4px; color: var(--sm-text-primary); }
+    .showcase__id { font-size: var(--font-size-xs); color: var(--sm-text-muted); font-family: monospace; margin-bottom: var(--space-xl); }
+    .showcase__section { margin-bottom: var(--space-2xl); }
+    .showcase__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--sm-text-secondary); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 12px; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+    /* ===== TAG CHIP ===== */
+    /* Base */
+    .tag-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      border: 1.5px solid transparent;
+      font-family: var(--font-family);
+      font-weight: var(--font-weight-semibold);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      white-space: nowrap; text-decoration: none;
+    }
+    .tag-chip:focus-visible { outline: 2px solid var(--sm-border-focus); outline-offset: 2px; }
+
+    /* Sizes */
+    .tag-chip--sm  { font-size: 10px; padding: 2px 8px; }
+    .tag-chip--md  { font-size: 12px; padding: 4px 12px; }
+    .tag-chip--lg  { font-size: 13px; padding: 6px 14px; }
+
+    /* Variants — 5 system tags */
+    .tag-chip--review {
+      background: #fef3c7; color: #92400e; border-color: #fde68a;
+    }
+    .tag-chip--review:hover, .tag-chip--review.is-active {
+      background: #f59e0b; color: #fff; border-color: #f59e0b;
+    }
+    .tag-chip--hoidap {
+      background: #ede9fe; color: #5b21b6; border-color: #ddd6fe;
+    }
+    .tag-chip--hoidap:hover, .tag-chip--hoidap.is-active {
+      background: #7c3aed; color: #fff; border-color: #7c3aed;
+    }
+    .tag-chip--timdoi {
+      background: #dcfce7; color: #166534; border-color: #bbf7d0;
+    }
+    .tag-chip--timdoi:hover, .tag-chip--timdoi.is-active {
+      background: #16a34a; color: #fff; border-color: #16a34a;
+    }
+    .tag-chip--meo {
+      background: #dbeafe; color: #1e40af; border-color: #bfdbfe;
+    }
+    .tag-chip--meo:hover, .tag-chip--meo.is-active {
+      background: #2563eb; color: #fff; border-color: #2563eb;
+    }
+    .tag-chip--chungvui {
+      background: #fce7f3; color: #9d174d; border-color: #fbcfe8;
+    }
+    .tag-chip--chungvui:hover, .tag-chip--chungvui.is-active {
+      background: #db2777; color: #fff; border-color: #db2777;
+    }
+
+    /* Dismissible */
+    .tag-chip--dismissible .tag-chip__dismiss {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: rgba(0,0,0,0.15); color: inherit;
+      font-size: 8px; font-weight: bold;
+      border: none; cursor: pointer; padding: 0;
+      transition: background var(--transition-fast);
+    }
+    .tag-chip--dismissible .tag-chip__dismiss:hover { background: rgba(0,0,0,0.3); }
+
+    /* Count badge for sidebar */
+    .tag-chip__count {
+      background: rgba(0,0,0,0.12); border-radius: var(--radius-full);
+      padding: 0 5px; font-size: 10px; font-weight: var(--font-weight-bold);
+    }
+
+    /* All Tags block */
+    .tag-chip.is-active { font-weight: var(--font-weight-bold); }
+
+    /* All tag "ghost" (unselected sidebar) */
+    .tag-chip--ghost {
+      background: var(--sm-bg-surface); color: var(--sm-text-secondary);
+      border-color: var(--sm-border-default);
+      font-weight: var(--font-weight-medium);
+    }
+    .tag-chip--ghost:hover { border-color: var(--color-primary-400); color: var(--sm-text-primary); }
+    .tag-chip--ghost.is-active { background: var(--color-primary-600); color: #fff; border-color: var(--color-primary-600); }
+
+    /* Sidebar filter panel example */
+    .tag-filter-panel {
+      background: var(--sm-bg-surface); border: 1px solid var(--sm-border-default);
+      border-radius: var(--radius-lg); padding: var(--space-lg);
+    }
+    .tag-filter-panel__title {
+      font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold);
+      color: var(--sm-text-secondary); margin-bottom: var(--space-md);
+    }
+    .tag-filter-panel__list { display: flex; flex-direction: column; gap: 6px; }
+    .tag-filter-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 4px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="showcase" data-ds-id="ds:comp:tag-chip-001">
+    <h2 class="showcase__title">Community Tag Chip</h2>
+    <div class="showcase__id">ds:comp:tag-chip-001 · Phase 2 · Implements US-25</div>
+
+    <!-- All 5 system tags — default state (md) -->
+    <section class="showcase__section">
+      <div class="showcase__label">5 System Tags — Default (md)</div>
+      <div class="row">
+        <button class="tag-chip tag-chip--md tag-chip--review" data-ds-id="ds:comp:tag-chip-001--review"># review-sân</button>
+        <button class="tag-chip tag-chip--md tag-chip--hoidap" data-ds-id="ds:comp:tag-chip-001--hoidap"># hỏi-đáp</button>
+        <button class="tag-chip tag-chip--md tag-chip--timdoi" data-ds-id="ds:comp:tag-chip-001--timdoi"># tìm-đôi</button>
+        <button class="tag-chip tag-chip--md tag-chip--meo" data-ds-id="ds:comp:tag-chip-001--meo"># mẹo-kỹ-thuật</button>
+        <button class="tag-chip tag-chip--md tag-chip--chungvui" data-ds-id="ds:comp:tag-chip-001--chungvui"># chung-vui</button>
+      </div>
+    </section>
+
+    <!-- Active states -->
+    <section class="showcase__section">
+      <div class="showcase__label">Active State (filled)</div>
+      <div class="row">
+        <button class="tag-chip tag-chip--md tag-chip--review is-active"># review-sân</button>
+        <button class="tag-chip tag-chip--md tag-chip--hoidap is-active"># hỏi-đáp</button>
+        <button class="tag-chip tag-chip--md tag-chip--timdoi is-active"># tìm-đôi</button>
+        <button class="tag-chip tag-chip--md tag-chip--meo is-active"># mẹo-kỹ-thuật</button>
+        <button class="tag-chip tag-chip--md tag-chip--chungvui is-active"># chung-vui</button>
+      </div>
+    </section>
+
+    <!-- Sizes -->
+    <section class="showcase__section">
+      <div class="showcase__label">Sizes — sm / md / lg</div>
+      <div class="row">
+        <button class="tag-chip tag-chip--sm tag-chip--timdoi"># tìm-đôi</button>
+        <button class="tag-chip tag-chip--md tag-chip--timdoi"># tìm-đôi</button>
+        <button class="tag-chip tag-chip--lg tag-chip--timdoi"># tìm-đôi</button>
+      </div>
+    </section>
+
+    <!-- Dismissible (used in post-composer) -->
+    <section class="showcase__section">
+      <div class="showcase__label">Dismissible — Post Composer Selected Tags</div>
+      <div class="row">
+        <button class="tag-chip tag-chip--md tag-chip--review is-active tag-chip--dismissible" data-ds-id="ds:comp:tag-chip-001--dismissible">
+          # review-sân
+          <button class="tag-chip__dismiss" aria-label="Bỏ tag review-sân">✕</button>
+        </button>
+        <button class="tag-chip tag-chip--md tag-chip--meo is-active tag-chip--dismissible">
+          # mẹo-kỹ-thuật
+          <button class="tag-chip__dismiss" aria-label="Bỏ tag mẹo-kỹ-thuật">✕</button>
+        </button>
+      </div>
+    </section>
+
+    <!-- Sidebar filter panel context -->
+    <section class="showcase__section">
+      <div class="showcase__label">Sidebar Filter Context — Tag với bài count</div>
+      <div class="tag-filter-panel" data-ds-id="ds:comp:tag-chip-001--filter-panel">
+        <div class="tag-filter-panel__title">🏷️ Chủ đề</div>
+        <div class="tag-filter-panel__list">
+          <div class="tag-filter-row">
+            <button class="tag-chip tag-chip--md tag-chip--ghost is-active"># Tất cả</button>
+            <span style="font-size:11px;color:var(--sm-text-muted);">142 bài</span>
+          </div>
+          <div class="tag-filter-row">
+            <button class="tag-chip tag-chip--md tag-chip--review"># review-sân</button>
+            <span style="font-size:11px;color:var(--sm-text-muted);">38 bài</span>
+          </div>
+          <div class="tag-filter-row">
+            <button class="tag-chip tag-chip--md tag-chip--hoidap"># hỏi-đáp</button>
+            <span style="font-size:11px;color:var(--sm-text-muted);">31 bài</span>
+          </div>
+          <div class="tag-filter-row">
+            <button class="tag-chip tag-chip--md tag-chip--timdoi"># tìm-đôi</button>
+            <span style="font-size:11px;color:var(--sm-text-muted);">27 bài</span>
+          </div>
+          <div class="tag-filter-row">
+            <button class="tag-chip tag-chip--md tag-chip--meo"># mẹo-kỹ-thuật</button>
+            <span style="font-size:11px;color:var(--sm-text-muted);">22 bài</span>
+          </div>
+          <div class="tag-filter-row">
+            <button class="tag-chip tag-chip--md tag-chip--chungvui"># chung-vui</button>
+            <span style="font-size:11px;color:var(--sm-text-muted);">24 bài</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+    const theme = localStorage.getItem('sm-theme') || 'light';
+    if (theme === 'dark') document.body.classList.add('theme-dark');
+    // Interactive toggle demo
+    document.querySelectorAll('.tag-chip:not(.tag-chip--dismissible)').forEach(chip => {
+      chip.addEventListener('click', function() {
+        this.classList.toggle('is-active');
+      });
+    });
+    document.querySelectorAll('.tag-chip__dismiss').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        this.closest('.tag-chip').remove();
+      });
+    });
+  </script>
+</body>
+</html>

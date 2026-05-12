@@ -1,0 +1,140 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ds:comp:navbar-001 — Navigation Bar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../tokens/tokens.css" />
+  <link rel="stylesheet" href="../../base/base.css" />
+  <style>
+    /* tokens.css + base.css imported above */
+    body { padding: var(--space-xl); background: var(--sm-bg-page); }
+    .showcase { max-width: 960px; }
+    .showcase__title { font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); margin-bottom: var(--space-xl); }
+    .showcase__section { margin-bottom: var(--space-xl); }
+    .showcase__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--sm-text-secondary); text-transform: uppercase; margin-bottom: 12px; }
+
+    /* ===== NAVBAR ===== */
+    .navbar { display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 56px; background: var(--sm-bg-surface); border: 1px solid var(--sm-border-default); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
+    .navbar__brand { display: flex; align-items: center; gap: 8px; }
+    .navbar__logo { font-size: 24px; }
+    .navbar__name { font-size: 18px; font-weight: 700; color: var(--color-primary-600); }
+
+    .navbar__links { display: flex; gap: 4px; }
+    .navbar__link { padding: 8px 16px; font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); color: var(--sm-text-secondary); text-decoration: none; border-radius: var(--radius-md); transition: all var(--transition-fast); }
+    .navbar__link:hover { background: var(--color-neutral-100); color: var(--sm-text-primary); }
+    .navbar__link--active { background: var(--color-primary-50); color: var(--color-primary-600); font-weight: var(--font-weight-semibold); }
+
+    .navbar__actions { display: flex; align-items: center; gap: 12px; }
+
+    /* Bell */
+    .navbar__bell { position: relative; background: none; border: none; font-size: 20px; cursor: pointer; padding: 4px; border-radius: var(--radius-md); transition: background var(--transition-fast); }
+    .navbar__bell:hover { background: var(--color-neutral-100); }
+    .navbar__bell-count { position: absolute; top: -2px; right: -4px; background: var(--color-danger-500); color: #fff; font-size: 10px; font-weight: 700; min-width: 16px; height: 16px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; padding: 0 4px; }
+
+    /* Avatar */
+    .navbar__avatar { width: 32px; height: 32px; border-radius: 9999px; background: linear-gradient(135deg, #16a34a, #22c55e); display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; }
+    .navbar__avatar-initial { color: #fff; font-size: 13px; font-weight: 700; }
+
+    /* Hamburger */
+    .navbar__hamburger { display: flex; flex-direction: column; gap: 4px; background: none; border: none; cursor: pointer; padding: 4px; }
+    .navbar__hamburger span { display: block; width: 20px; height: 2px; background: var(--sm-text-secondary); border-radius: 1px; }
+
+    /* New Actions */
+    .navbar__icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; padding: 4px; border-radius: var(--radius-md); transition: background var(--transition-fast); color: var(--sm-text-secondary); }
+    .navbar__icon-btn:hover { background: var(--color-neutral-100); color: var(--color-danger-500); }
+
+    .navbar__toggle { display: flex; align-items: center; gap: 6px; background: var(--color-neutral-100); border: 1px solid var(--sm-border-default); border-radius: 20px; padding: 4px 12px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font-family); color: var(--sm-text-secondary); }
+    .navbar__toggle:hover { background: var(--color-neutral-200); }
+
+    /* Mobile */
+    .navbar--mobile .navbar__links { display: none; }
+  </style>
+<body>
+  <div class="showcase" data-ds-id="ds:comp:navbar-001">
+    <h2 class="showcase__title">ds:comp:navbar-001 — Navigation Bar</h2>
+
+    <!-- Guest state -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Guest State</h3>
+      <nav class="navbar" data-ds-id="ds:comp:navbar-001--guest">
+        <div class="navbar__brand">
+          <span class="navbar__logo">🏸</span>
+          <span class="navbar__name">Chill Cầu</span>
+        </div>
+        <div class="navbar__links">
+          <a href="#" class="navbar__link">Tìm kèo</a>
+          <a href="#" class="navbar__link navbar__link--active">Bản đồ</a>
+          <a href="#" class="navbar__link">Xếp hạng</a>
+          <a href="#" class="navbar__link">Bảng giá</a>
+        </div>
+        <div class="navbar__actions">
+          <button class="navbar__toggle">🌓 Sáng</button>
+          <a href="#" class="btn btn--warning btn--sm">☕ Ủng hộ & Góp ý</a>
+          <button class="navbar__icon-btn">🤍</button>
+          <button class="navbar__icon-btn">🔔</button>
+          <a href="#" class="btn btn--primary btn--sm">➜ Đăng nhập</a>
+        </div>
+      </nav>
+    </section>
+
+    <!-- Logged-in state -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Logged-in State</h3>
+      <nav class="navbar" data-ds-id="ds:comp:navbar-001--logged-in">
+        <div class="navbar__brand">
+          <span class="navbar__logo">🏸</span>
+          <span class="navbar__name">Chill Cầu</span>
+        </div>
+        <div class="navbar__links">
+          <a href="#" class="navbar__link">Tìm kèo</a>
+          <a href="#" class="navbar__link navbar__link--active">Bản đồ</a>
+          <a href="#" class="navbar__link">Xếp hạng</a>
+          <a href="#" class="navbar__link">Bảng giá</a>
+        </div>
+        <div class="navbar__actions">
+          <button class="navbar__toggle">🌓 Sáng</button>
+          <a href="#" class="btn btn--warning btn--sm">☕ Ủng hộ & Góp ý</a>
+          <button class="navbar__icon-btn">🤍</button>
+          <button class="navbar__bell" data-ds-id="ds:comp:navbar-001--bell">
+            🔔<span class="navbar__bell-count">3</span>
+          </button>
+          <a href="../profile/index.html" class="navbar__avatar" data-ds-id="ds:comp:navbar-001--avatar" style="text-decoration:none;">
+            <span class="navbar__avatar-initial">K</span>
+          </a>
+        </div>
+      </nav>
+    </section>
+
+    <!-- Mobile state -->
+    <section class="showcase__section">
+      <h3 class="showcase__label">Mobile State</h3>
+      <nav class="navbar navbar--mobile" data-ds-id="ds:comp:navbar-001--mobile">
+        <div class="navbar__brand">
+          <span class="navbar__logo">🏸</span>
+          <span class="navbar__name">Chill Cầu</span>
+        </div>
+        <button class="navbar__hamburger" data-ds-id="ds:comp:navbar-001--hamburger">
+          <span></span><span></span><span></span>
+        </button>
+      </nav>
+    </section>
+  </div>
+
+  <script>
+    const theme = localStorage.getItem('sm-theme') || 'light';
+    if (theme === 'dark') document.body.classList.add('theme-dark');
+    
+    document.querySelectorAll('.navbar__toggle').forEach(btn => {
+      btn.innerHTML = theme === 'dark' ? '🌞 Sáng' : '🌓 Tối';
+      btn.addEventListener('click', () => {
+        document.body.classList.toggle('theme-dark');
+        const isDark = document.body.classList.contains('theme-dark');
+        localStorage.setItem('sm-theme', isDark ? 'dark' : 'light');
+        document.querySelectorAll('.navbar__toggle').forEach(b => b.innerHTML = isDark ? '🌞 Sáng' : '🌓 Tối');
+      });
+    });
+  </script>
+</body>
+</html>
